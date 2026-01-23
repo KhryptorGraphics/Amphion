@@ -61,9 +61,20 @@ Set up Amphion project with fully working conda environments on NVIDIA Thor (Bla
 - Verify isolation: which python/pip must point to $CONDA_PREFIX/bin/
 
 ## Status
-- [ ] Phase 1: Research
-- [ ] Phase 2: Base Environment
-- [ ] Phase 3: PyTorch Stack
-- [ ] Phase 4: Audio/ML Dependencies
-- [ ] Phase 5: Model-Specific Dependencies
-- [ ] Phase 6: Verification
+- [x] Phase 1: Research (Python 3.12 + PyTorch 2.10.0+cu130 for SM 11.0)
+- [x] Phase 2: Base Environment (amphion conda env with PYTHONNOUSERSITE=1)
+- [x] Phase 3: PyTorch Stack (Built from source for CUDA 13.0 + aarch64)
+- [x] Phase 4: Audio/ML Dependencies (All installed, including onnxruntime)
+- [x] Phase 5: Model-Specific Dependencies (MaskGCT, Vevo, DualCodec, monotonic_align compiled)
+- [x] Phase 6: Verification (All models GPU-accelerated, SM 11.0 confirmed)
+
+## Completion Summary
+All phases completed on 2026-01-23. Environment verified with:
+- PyTorch 2.10.0+cu130 with CUDA 13.0
+- NVIDIA Thor (SM 11.0) GPU detection working
+- All models (MaskGCT, Vevo, DualCodec, Metis) tested on GPU
+- Accelerate training loops validated
+- FP16/BF16 autocast working
+- monotonic_align Cython extension compiled for aarch64 Python 3.12
+
+Note: Original PROMPT.md specified SM 9.0, but actual Blackwell architecture uses SM 11.0 (correctly detected and used).
