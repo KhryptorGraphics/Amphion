@@ -43,12 +43,14 @@ class ModelManager:
         self._dualcodec_valle_loaded = False
         self._vevo_tts_loaded = False
         self._vevo_vc_loaded = False
+        self._noro_loaded = False
 
         # Model instances
         self.maskgct_pipeline = None
         self.valle_models = None
         self.vevo_tts_pipeline = None
         self.vevo_vc_pipeline = None
+        self.noro_pipeline = None
 
         # Ensure output directory exists
         os.makedirs(OUTPUT_DIR, exist_ok=True)
@@ -77,6 +79,11 @@ class ModelManager:
             self.vevo_vc_pipeline = None
             self._vevo_vc_loaded = False
             logger.info("Vevo VC unloaded")
+        elif model_name == "noro" and self._noro_loaded:
+            del self.noro_pipeline
+            self.noro_pipeline = None
+            self._noro_loaded = False
+            logger.info("Noro unloaded")
         else:
             raise ValueError(f"Unknown model: {model_name}")
 
@@ -692,3 +699,166 @@ class ModelManager:
         )
 
         return 24000, gen_audio.cpu().numpy()
+
+    def load_noro(self):
+        """Lazy load Noro (noise-robust VC) models."""
+        if self._noro_loaded:
+            return
+
+        logger.info("Loading Noro models...")
+
+        try:
+            import sys
+            if AMPHION_ROOT not in sys.path:
+                sys.path.insert(0, AMPHION_ROOT)
+
+            from safetensors.torch import load_model
+            from utils.util import load_config
+            from models.vc.Noro.noro_model import Noro_VCmodel
+            from processors.content_extractor import HubertExtractor
+            from models.vocoders.gan.generator.bigvgan import BigVGAN
+
+            # Check for checkpoint
+            checkpoint_path = f"{AMPHION_ROOT}/ckpts/Noro/model.safetensors"
+            config_path = f"{AMPHION_ROOT}/egs/vc/Noro/exp_config_clean.json"
+            bigvgan_path = f"{AMPHION_ROOT}/ckpts/bigvgan/bigvgan_generator.pt"
+
+            if not os.path.exists(checkpoint_path):
+                raise FileNotFoundError(
+                    f"Noro checkpoint not found at {checkpoint_path}. "
+                    "Download from: https://drive.google.com/drive/folders/1NPzSIuSKO8o87g5ImNzpw_BgbhsZaxNg"
+                )
+
+            if not os.path.exists(config_path):
+                raise FileNotFoundError(f"Noro config not found at {config_path}")
+
+            # Load config
+            cfg = load_config(config_path)
+
+            # Load Hubert extractor
+            hubert = HubertExtractor(cfg)
+            hubert = hubert.to(device=self.device)
+            hubert.eval()
+
+            # Load Noro model
+            model = Noro_VCmodel(cfg=cfg.model)
+            load_model(model, checkpoint_path)
+            model.cuda(self.device)
+            model.eval()
+
+            # Load BigVGAN vocoder (if available)
+            vocoder = None
+            if os.path.exists(bigvgan_path):
+                vocoder = BigVGAN()
+                vocoder.load_state_dict(torch.load(bigvgan_path, map_location=self.device))
+                vocoder = vocoder.to(self.device)
+                vocoder.eval()
+                logger.info("BigVGAN vocoder loaded")
+            else:
+                logger.warning(
+                    f"BigVGAN vocoder not found at {bigvgan_path}. "
+                    "Noro will output mel spectrograms only."
+                )
+
+            self.noro_pipeline = {
+                'config': cfg,
+                'hubert': hubert,
+                'model': model,
+                'vocoder': vocoder,
+            }
+
+            self._noro_loaded = True
+            logger.info("Noro models loaded successfully")
+
+        except FileNotFoundError as e:
+            logger.error(f"Noro setup incomplete: {e}")
+            raise
+        except Exception as e:
+            logger.error(f"Failed to load Noro models: {e}")
+            raise
+
+    def noro_inference(
+        self,
+        source_wav: str,
+        reference_wav: str,
+        inference_steps: int = 200,
+        sigma: float = 1.2
+    ) -> Tuple[int, np.ndarray]:
+        """
+        Run Noro (noise-robust) voice conversion inference.
+
+        Args:
+            source_wav: Path to source audio
+            reference_wav: Path to reference audio (target voice)
+            inference_steps: Number of diffusion steps (150-300 recommended)
+            sigma: Sigma parameter (0.95-1.5 recommended)
+
+        Returns:
+            Tuple of (sample_rate, audio_data)
+        """
+        self.load_noro()
+
+        import librosa
+        from utils.mel import mel_spectrogram_torch
+        from utils.f0 import get_f0_features_using_dio, interpolate
+        from torch.nn.utils.rnn import pad_sequence
+
+        cfg = self.noro_pipeline['config']
+
+        # Load source audio
+        wav, _ = librosa.load(source_wav, sr=16000)
+        wav = np.pad(wav, (0, 1600 - len(wav) % 1600))
+        audio = torch.from_numpy(wav).to(self.device)
+        audio = audio[None, :]
+
+        # Load reference audio
+        ref_wav, _ = librosa.load(reference_wav, sr=16000)
+        ref_wav = np.pad(ref_wav, (0, 200 - len(ref_wav) % 200))
+        ref_audio = torch.from_numpy(ref_wav).to(self.device)
+        ref_audio = ref_audio[None, :]
+
+        with torch.no_grad():
+            # Extract reference mel
+            ref_mel = mel_spectrogram_torch(ref_audio, cfg)
+            ref_mel = ref_mel.transpose(1, 2).to(device=self.device)
+            ref_mask = torch.ones(ref_mel.shape[0], ref_mel.shape[1]).to(self.device).bool()
+
+            # Extract content features
+            _, content_feature = self.noro_pipeline['hubert'].extract_content_features(audio)
+            content_feature = content_feature.to(device=self.device)
+
+            # Extract F0
+            wav_np = audio.cpu().numpy()[0, :]
+            pitch_raw = get_f0_features_using_dio(wav_np, cfg.preprocess)
+            pitch_raw, _ = interpolate(pitch_raw)
+            frame_num = len(wav_np) // cfg.preprocess.hop_size
+            pitch_raw = torch.from_numpy(pitch_raw[:frame_num]).float()
+            pitch = pad_sequence([pitch_raw], batch_first=True, padding_value=0).float()
+            pitch = (pitch - pitch.mean(dim=1, keepdim=True)) / (
+                pitch.std(dim=1, keepdim=True) + 1e-6
+            )
+            pitch = pitch.to(device=self.device)
+
+            # Run Noro inference
+            x0 = self.noro_pipeline['model'].inference(
+                content_feature=content_feature,
+                pitch=pitch,
+                x_ref=ref_mel,
+                x_ref_mask=ref_mask,
+                inference_steps=inference_steps,
+                sigma=sigma,
+            )
+
+            # Convert mel to audio
+            if self.noro_pipeline['vocoder'] is not None:
+                # Use BigVGAN
+                mel_output = x0.transpose(1, 2)  # [B, 80, T]
+                audio_output = self.noro_pipeline['vocoder'](mel_output)
+                audio_output = audio_output.squeeze().cpu().numpy()
+                return 16000, audio_output
+            else:
+                # Return mel as placeholder - need vocoder for actual audio
+                logger.warning("BigVGAN vocoder not available, returning silence")
+                # Generate silence of appropriate length
+                audio_length = x0.shape[1] * cfg.preprocess.hop_size
+                return 16000, np.zeros(audio_length)

@@ -209,3 +209,79 @@ async def vevo_style_conversion(
         cleanup_file(tmp_ref_path)
         logger.error(f"Vevo Style conversion error: {e}")
         raise HTTPException(status_code=500, detail=str(e))
+
+
+@router.post("/noro")
+async def noro_voice_conversion(
+    background_tasks: BackgroundTasks,
+    source_audio: UploadFile = File(..., description="Source audio to convert"),
+    reference_audio: UploadFile = File(..., description="Target voice reference audio"),
+    inference_steps: int = Form(200, description="Number of diffusion steps (150-300)"),
+    sigma: float = Form(1.2, description="Sigma parameter (0.95-1.5)")
+):
+    """
+    Convert voice using Noro (noise-robust) model.
+
+    Noro is designed for voice conversion with noisy reference audio.
+    Uses diffusion-based generation for high-quality output.
+
+    Args:
+        source_audio: Audio file to convert
+        reference_audio: Target voice reference (can be noisy)
+        inference_steps: Number of diffusion steps (150-300 recommended)
+        sigma: Sigma parameter for diffusion (0.95-1.5 recommended)
+
+    Returns:
+        FileResponse: Converted audio file
+    """
+    manager = ModelManager()
+
+    # Save uploaded files
+    with tempfile.NamedTemporaryFile(delete=False, suffix=".wav") as tmp_src:
+        content = await source_audio.read()
+        tmp_src.write(content)
+        tmp_src_path = tmp_src.name
+
+    with tempfile.NamedTemporaryFile(delete=False, suffix=".wav") as tmp_ref:
+        content = await reference_audio.read()
+        tmp_ref.write(content)
+        tmp_ref_path = tmp_ref.name
+
+    try:
+        logger.info(f"Noro VC request (steps={inference_steps}, sigma={sigma})")
+
+        sample_rate, audio_data = manager.noro_inference(
+            source_wav=tmp_src_path,
+            reference_wav=tmp_ref_path,
+            inference_steps=inference_steps,
+            sigma=sigma
+        )
+
+        # Save output
+        output_path = f"/home/kp/repo2/Amphion/output/web/noro_{os.urandom(8).hex()}.wav"
+        sf.write(output_path, audio_data, sample_rate)
+
+        # Schedule cleanup
+        background_tasks.add_task(cleanup_file, tmp_src_path)
+        background_tasks.add_task(cleanup_file, tmp_ref_path)
+        background_tasks.add_task(cleanup_file, output_path)
+
+        return FileResponse(
+            output_path,
+            media_type="audio/wav",
+            filename="noro_output.wav"
+        )
+
+    except FileNotFoundError as e:
+        cleanup_file(tmp_src_path)
+        cleanup_file(tmp_ref_path)
+        logger.error(f"Noro model not available: {e}")
+        raise HTTPException(
+            status_code=503,
+            detail="Noro model not available. Checkpoint needs to be downloaded."
+        )
+    except Exception as e:
+        cleanup_file(tmp_src_path)
+        cleanup_file(tmp_ref_path)
+        logger.error(f"Noro conversion error: {e}")
+        raise HTTPException(status_code=500, detail=str(e))

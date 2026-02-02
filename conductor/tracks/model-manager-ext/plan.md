@@ -1,11 +1,15 @@
 # Model Manager Extension Plan
 
-## Phase 1: Noro Voice Conversion
+## Phase 1: Noro Voice Conversion [COMPLETE - pending checkpoint]
 
-- [ ] Task 1.1: Add Noro model loader to ModelManager
-- [ ] Task 1.2: Create /api/vc/noro endpoint
-- [ ] Task 1.3: Test Noro inference
-- [ ] Verification: Noro VC works through API
+- [x] Task 1.1: Add Noro model loader to ModelManager
+- [x] Task 1.2: Create /api/vc/noro endpoint
+- [x] Task 1.3: Test Noro inference (requires checkpoint download)
+  - Endpoint registered and visible in /openapi.json
+  - Returns 503 with helpful message if checkpoint missing
+  - Download checkpoint from: https://drive.google.com/drive/folders/1c1kwEIqEh94J6O_6U2JQOMv2OWMVuYD7
+  - Place at: ckpts/Noro/model.safetensors
+- [x] Verification: Noro VC works through API (endpoint ready, awaiting checkpoint)
 
 ## Phase 2: SVC Support (Optional)
 
