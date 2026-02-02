@@ -1,0 +1,16 @@
+{
+  "id": "api-docs_20260201",
+  "title": "API Documentation Page",
+  "type": "feature",
+  "status": "pending",
+  "created": "2026-02-01T21:45:00Z",
+  "updated": "2026-02-01T21:45:00Z",
+  "phases": {
+    "total": 5,
+    "completed": 0
+  },
+  "tasks": {
+    "total": 24,
+    "completed": 0
+  }
+}
