@@ -151,7 +151,7 @@ export default function DebaTTSPage() {
                 <div key={key} className="space-y-2">
                   <div className="flex justify-between">
                     <Label className="flex items-center gap-2">{label} <HelpTooltip content={PARAMETER_HELP[key as keyof typeof PARAMETER_HELP]} /></Label>
-                    <span className="text-sm text-muted-foreground">{params[key as keyof DebaTTSParams]?.toFixed(2)}</span>
+                    <span className="text-sm text-muted-foreground">{typeof params[key as keyof DebaTTSParams] === 'number' ? (params[key as keyof DebaTTSParams] as number).toFixed(2) : params[key as keyof DebaTTSParams]}</span>
                   </div>
                   <Slider
                     value={[params[key as keyof DebaTTSParams] as number]}

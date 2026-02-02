@@ -63,4 +63,4 @@ result
 conversion_results
 get_available_gpu.py
 
-*.safetensors
+*.safetensors.next
