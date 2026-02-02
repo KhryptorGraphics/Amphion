@@ -24,6 +24,7 @@ app = FastAPI(
     title="Amphion API",
     version="1.0.0",
     description="REST API for Amphion TTS and Voice Conversion models",
+    openapi_url="/api/openapi.json",
     docs_url="/api/docs",
     redoc_url="/api/redoc"
 )
