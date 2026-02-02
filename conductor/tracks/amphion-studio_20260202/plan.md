@@ -178,9 +178,9 @@ Redesign the main navigation and layout.
 Create full-featured pages for all TTS models.
 
 - [x] Task 9.1: Create TTS page template with full parameter controls
-- [ ] Task 9.2: Update MaskGCT page with all parameters
-- [ ] Task 9.3: Update DualCodec-VALLE page with all parameters
-- [ ] Task 9.4: Update Vevo TTS page with all parameters
+- [x] Task 9.2: Update MaskGCT page with all parameters
+- [x] Task 9.3: Update DualCodec-VALLE page with all parameters
+- [~] Task 9.4: Update Vevo TTS page with all parameters
 - [ ] Task 9.5: Create VALLE (original) page
 - [ ] Task 9.6: Create VITS page
 - [ ] Task 9.7: Create FastSpeech2 page
