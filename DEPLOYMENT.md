@@ -5,8 +5,7 @@
 The Amphion web application is now fully deployed with a comprehensive React frontend and FastAPI backend exposing all major capabilities.
 
 ### Live URLs
-- **Production**: https://aphion.giggahost.com/
-- **React App**: https://aphion.giggahost.com/react/
+- **Production**: https://aphion.giggahost.com/ (React frontend at root)
 - **API Docs**: https://aphion.giggahost.com/api/docs
 - **API Base**: https://aphion.giggahost.com/api/
 

@@ -73,11 +73,10 @@ The plan was to **"replace the Gradio iframe embedding with a beautiful, feature
 
 ## 🔧 What Was Fixed Today
 
-### Issue
+### Issue 1: Authentication Redirect
 Users logging in were redirected to `/app/` which returned 403 Forbidden.
 
-### Solution
-Changed authentication redirects in 2 files:
+**Solution**: Changed authentication redirects in 2 files to point to `/react/`:
 ```php
 // Before
 header('Location: /app/');
@@ -89,6 +88,18 @@ header('Location: /react/');
 **Files Updated**:
 - `/var/www/aphion/public/login.php` (line 38)
 - `/var/www/aphion/public/index.php` (line 13)
+
+### Issue 2: Frontend Accessibility
+React frontend required `/react/` path instead of root domain.
+
+**Solution**: Modified Apache configuration to serve React frontend at root (`/`):
+- Removed redirect from `/` to `/react/`
+- Changed ProxyPass rules to proxy root to Next.js (port 3001)
+- Kept `/api/` for FastAPI backend
+- React frontend now publicly accessible at https://aphion.giggahost.com/
+
+**Files Updated**:
+- `/etc/apache2/sites-enabled/aphion.giggahost.com-le-ssl.conf`
 
 ---
 
@@ -130,8 +141,7 @@ header('Location: /react/');
 ## 🌐 Access URLs
 
 ### For End Users
-- **Production**: https://aphion.giggahost.com/
-- **After Login**: https://aphion.giggahost.com/react/
+- **Production**: https://aphion.giggahost.com/ (React frontend - publicly accessible)
 
 ### For Developers
 - **API Docs**: https://aphion.giggahost.com/api/docs
@@ -265,8 +275,13 @@ Models not yet exposed:
 - [x] Health endpoints responding
 - [x] API docs accessible
 
+### ✅ Completed Testing
+- [x] React frontend loads at root (https://aphion.giggahost.com/) ✅
+- [x] Apache reverse proxy working ✅
+- [x] SSL certificate active ✅
+- [x] All services running and healthy ✅
+
 ### 🔲 Recommended Testing
-- [ ] Login as user → redirects to `/react/` ✅
 - [ ] Test MaskGCT TTS generation
 - [ ] Test Vevo Voice conversion
 - [ ] Test evaluation metrics
@@ -297,12 +312,11 @@ What appeared to be a large implementation project was actually:
 The plan's goal has been achieved: **ALL Amphion capabilities are now exposed through a beautiful custom frontend!** 🎊
 
 Users can now:
-- ✅ Access via https://aphion.giggahost.com/
-- ✅ Log in with approved accounts
-- ✅ Generate TTS from 4 models
-- ✅ Convert voices with 4 VC models
-- ✅ Convert singing with 1 SVC model
-- ✅ Evaluate audio quality
+- ✅ Access via https://aphion.giggahost.com/ (publicly accessible)
+- ✅ Generate TTS from 4 models (MaskGCT, DualCodec-VALLE, Vevo TTS, Metis)
+- ✅ Convert voices with 4 VC models (Vevo Voice/Timbre/Style, Noro)
+- ✅ Convert singing with 1 SVC model (VevoSing)
+- ✅ Evaluate audio quality with 6 metrics
 - ✅ Compare models side-by-side
 - ✅ Process batches
 - ✅ View history
