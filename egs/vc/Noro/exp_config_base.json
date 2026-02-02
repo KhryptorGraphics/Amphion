@@ -12,13 +12,13 @@
     "fmin": 0,
     "fmax": 8000,
     "preprocess": {
-        "kmeans_model_path": "path/to/kmeans_model",
-        "hubert_model_path": "path/to/hubert_model",
-        "sample_rate": 16000, 
-        "hop_size": 200,       
-        "f0_min": 50,         
-        "f0_max": 500,        
-        "frame_period": 12.5  
+        "kmeans_model_path": "ckpts/hubert/hubert_base_ls960_L9_km500.bin",
+        "hubert_model_path": "ckpts/hubert/hubert_base_ls960.pt",
+        "sample_rate": 16000,
+        "hop_size": 200,
+        "f0_min": 50,
+        "f0_max": 500,
+        "frame_period": 12.5
     },
     "model": {
         "reference_encoder": {

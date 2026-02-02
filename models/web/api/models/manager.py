@@ -715,14 +715,17 @@ class ModelManager:
             from safetensors.torch import load_model
             from utils.util import load_config
             from models.vc.Noro.noro_model import Noro_VCmodel
-            from processors.content_extractor import HubertExtractor
-            from models.vocoders.gan.generator.bigvgan import BigVGAN
+            from .hubert_loader import load_hubert_extractor
+            from .bigvgan_loader import load_bigvgan
+
+            # Paths
+            checkpoint_path = f"{AMPHION_ROOT}/ckpts/Noro/model.safetensors"
+            config_path = f"{AMPHION_ROOT}/egs/vc/Noro/exp_config_base.json"
+            bigvgan_dir = f"{AMPHION_ROOT}/ckpts/bigvgan_22khz_80band"
+            hubert_model_path = f"{AMPHION_ROOT}/ckpts/hubert/hubert_base_ls960.pt"
+            kmeans_model_path = f"{AMPHION_ROOT}/ckpts/hubert/hubert_base_ls960_L9_km500.bin"
 
             # Check for checkpoint
-            checkpoint_path = f"{AMPHION_ROOT}/ckpts/Noro/model.safetensors"
-            config_path = f"{AMPHION_ROOT}/egs/vc/Noro/exp_config_clean.json"
-            bigvgan_path = f"{AMPHION_ROOT}/ckpts/bigvgan/bigvgan_generator.pt"
-
             if not os.path.exists(checkpoint_path):
                 raise FileNotFoundError(
                     f"Noro checkpoint not found at {checkpoint_path}. "
@@ -732,31 +735,42 @@ class ModelManager:
             if not os.path.exists(config_path):
                 raise FileNotFoundError(f"Noro config not found at {config_path}")
 
+            if not os.path.exists(hubert_model_path):
+                raise FileNotFoundError(
+                    f"Hubert model not found at {hubert_model_path}. "
+                    "Download from: https://dl.fbaipublicfiles.com/hubert/hubert_base_ls960.pt"
+                )
+
+            if not os.path.exists(kmeans_model_path):
+                raise FileNotFoundError(
+                    f"KMeans model not found at {kmeans_model_path}. "
+                    "Download from: https://dl.fbaipublicfiles.com/hubert/hubert_base_ls960_L9_km500.bin"
+                )
+
             # Load config
             cfg = load_config(config_path)
 
-            # Load Hubert extractor
-            hubert = HubertExtractor(cfg)
-            hubert = hubert.to(device=self.device)
-            hubert.eval()
+            # Load Hubert extractor using torchaudio (avoids fairseq dependency)
+            logger.info("Loading Hubert extractor (torchaudio)...")
+            hubert = load_hubert_extractor(kmeans_model_path, str(self.device))
 
             # Load Noro model
+            logger.info("Loading Noro model...")
             model = Noro_VCmodel(cfg=cfg.model)
             load_model(model, checkpoint_path)
             model.cuda(self.device)
-            model.eval()
+            model.train(False)
 
-            # Load BigVGAN vocoder (if available)
+            # Load BigVGAN vocoder
             vocoder = None
-            if os.path.exists(bigvgan_path):
-                vocoder = BigVGAN()
-                vocoder.load_state_dict(torch.load(bigvgan_path, map_location=self.device))
-                vocoder = vocoder.to(self.device)
-                vocoder.eval()
-                logger.info("BigVGAN vocoder loaded")
+            vocoder_config = None
+            if os.path.exists(bigvgan_dir):
+                logger.info("Loading BigVGAN vocoder...")
+                vocoder, vocoder_config = load_bigvgan(bigvgan_dir, str(self.device))
+                logger.info(f"BigVGAN vocoder loaded (sample_rate={vocoder_config.get('sampling_rate', 22050)})")
             else:
                 logger.warning(
-                    f"BigVGAN vocoder not found at {bigvgan_path}. "
+                    f"BigVGAN vocoder not found at {bigvgan_dir}. "
                     "Noro will output mel spectrograms only."
                 )
 
@@ -765,6 +779,7 @@ class ModelManager:
                 'hubert': hubert,
                 'model': model,
                 'vocoder': vocoder,
+                'vocoder_config': vocoder_config,
             }
 
             self._noro_loaded = True
@@ -775,6 +790,8 @@ class ModelManager:
             raise
         except Exception as e:
             logger.error(f"Failed to load Noro models: {e}")
+            import traceback
+            traceback.print_exc()
             raise
 
     def noro_inference(
@@ -805,29 +822,31 @@ class ModelManager:
 
         cfg = self.noro_pipeline['config']
 
-        # Load source audio
+        # Load source audio at 16kHz
         wav, _ = librosa.load(source_wav, sr=16000)
         wav = np.pad(wav, (0, 1600 - len(wav) % 1600))
-        audio = torch.from_numpy(wav).to(self.device)
+        audio = torch.from_numpy(wav).float().to(self.device)
         audio = audio[None, :]
 
-        # Load reference audio
+        # Load reference audio at 16kHz
         ref_wav, _ = librosa.load(reference_wav, sr=16000)
         ref_wav = np.pad(ref_wav, (0, 200 - len(ref_wav) % 200))
-        ref_audio = torch.from_numpy(ref_wav).to(self.device)
+        ref_audio = torch.from_numpy(ref_wav).float().to(self.device)
         ref_audio = ref_audio[None, :]
 
         with torch.no_grad():
-            # Extract reference mel
+            # Extract reference mel spectrogram
             ref_mel = mel_spectrogram_torch(ref_audio, cfg)
             ref_mel = ref_mel.transpose(1, 2).to(device=self.device)
             ref_mask = torch.ones(ref_mel.shape[0], ref_mel.shape[1]).to(self.device).bool()
 
-            # Extract content features
+            # Extract content features using Hubert
+            logger.info("Extracting content features with Hubert...")
             _, content_feature = self.noro_pipeline['hubert'].extract_content_features(audio)
             content_feature = content_feature.to(device=self.device)
 
-            # Extract F0
+            # Extract F0 (pitch)
+            logger.info("Extracting F0 features...")
             wav_np = audio.cpu().numpy()[0, :]
             pitch_raw = get_f0_features_using_dio(wav_np, cfg.preprocess)
             pitch_raw, _ = interpolate(pitch_raw)
@@ -839,7 +858,8 @@ class ModelManager:
             )
             pitch = pitch.to(device=self.device)
 
-            # Run Noro inference
+            # Run Noro diffusion inference
+            logger.info(f"Running Noro inference (steps={inference_steps}, sigma={sigma})...")
             x0 = self.noro_pipeline['model'].inference(
                 content_feature=content_feature,
                 pitch=pitch,
@@ -849,16 +869,27 @@ class ModelManager:
                 sigma=sigma,
             )
 
-            # Convert mel to audio
+            # Convert mel to audio using BigVGAN vocoder
             if self.noro_pipeline['vocoder'] is not None:
-                # Use BigVGAN
-                mel_output = x0.transpose(1, 2)  # [B, 80, T]
+                logger.info("Converting mel to audio with BigVGAN...")
+                # x0 is [B, T, 80], need [B, 80, T] for BigVGAN
+                mel_output = x0.transpose(1, 2)
                 audio_output = self.noro_pipeline['vocoder'](mel_output)
                 audio_output = audio_output.squeeze().cpu().numpy()
+
+                # BigVGAN outputs at 22050 Hz, resample to 16000 Hz
+                vocoder_sr = self.noro_pipeline['vocoder_config'].get('sampling_rate', 22050)
+                if vocoder_sr != 16000:
+                    logger.info(f"Resampling from {vocoder_sr}Hz to 16000Hz...")
+                    audio_output = librosa.resample(
+                        audio_output,
+                        orig_sr=vocoder_sr,
+                        target_sr=16000
+                    )
+
                 return 16000, audio_output
             else:
-                # Return mel as placeholder - need vocoder for actual audio
+                # No vocoder available - return silence
                 logger.warning("BigVGAN vocoder not available, returning silence")
-                # Generate silence of appropriate length
                 audio_length = x0.shape[1] * cfg.preprocess.hop_size
                 return 16000, np.zeros(audio_length)
