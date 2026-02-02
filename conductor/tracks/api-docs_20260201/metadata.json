@@ -2,15 +2,16 @@
   "id": "api-docs_20260201",
   "title": "API Documentation Page",
   "type": "feature",
-  "status": "pending",
+  "status": "complete",
   "created": "2026-02-01T21:45:00Z",
-  "updated": "2026-02-01T21:45:00Z",
+  "updated": "2026-02-02T04:47:00Z",
   "phases": {
     "total": 5,
-    "completed": 0
+    "completed": 5
   },
   "tasks": {
     "total": 24,
-    "completed": 0
-  }
+    "completed": 22
+  },
+  "notes": "Tasks 4.2 and 4.3 deferred (Try-it panel and WebSocket docs) - marked as out of scope for initial release"
 }
