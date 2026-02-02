@@ -180,14 +180,14 @@ Create full-featured pages for all TTS models.
 - [x] Task 9.1: Create TTS page template with full parameter controls
 - [x] Task 9.2: Update MaskGCT page with all parameters
 - [x] Task 9.3: Update DualCodec-VALLE page with all parameters
-- [~] Task 9.4: Update Vevo TTS page with all parameters
-- [ ] Task 9.5: Create VALLE (original) page
-- [ ] Task 9.6: Create VITS page
-- [ ] Task 9.7: Create FastSpeech2 page
-- [ ] Task 9.8: Create NaturalSpeech2 page
-- [ ] Task 9.9: Create Jets page
-- [ ] Task 9.10: Create Metis page (multi-task: TTS, VC, TSE, SE)
-- [ ] Task 9.11: Create DebaTTS page
+- [x] Task 9.4: Update Vevo TTS page with all parameters
+- [x] Task 9.5: Create VALLE (original) page
+- [x] Task 9.6: Create VITS page
+- [x] Task 9.7: Create FastSpeech2 page
+- [x] Task 9.8: Create NaturalSpeech2 page
+- [x] Task 9.9: Create Jets page
+- [x] Task 9.10: Create Metis page (multi-task: TTS, VC, TSE, SE)
+- [x] Task 9.11: Create DebaTTS page
 - [ ] Task 9.12: Add model comparison view for TTS
 - [ ] Task 9.13: Build and deploy frontend
 - [ ] Task 9.14: Browser test - generate audio with each TTS model
