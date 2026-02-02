@@ -1,15 +1,16 @@
 # Model Manager Extension Plan
 
-## Phase 1: Noro Voice Conversion [COMPLETE - pending checkpoint]
+## Phase 1: Noro Voice Conversion [COMPLETE]
 
 - [x] Task 1.1: Add Noro model loader to ModelManager
 - [x] Task 1.2: Create /api/vc/noro endpoint
-- [x] Task 1.3: Test Noro inference (requires checkpoint download)
-  - Endpoint registered and visible in /openapi.json
-  - Returns 503 with helpful message if checkpoint missing
-  - Download checkpoint from: https://drive.google.com/drive/folders/1c1kwEIqEh94J6O_6U2JQOMv2OWMVuYD7
-  - Place at: ckpts/Noro/model.safetensors
-- [x] Verification: Noro VC works through API (endpoint ready, awaiting checkpoint)
+- [x] Task 1.3: Test Noro inference
+  - Checkpoint downloaded (983MB) from Google Drive
+  - Hubert extractor using torchaudio HUBERT_BASE (768-dim, avoids fairseq)
+  - KMeans quantization model loaded (hubert_base_ls960_L9_km500.bin)
+  - BigVGAN vocoder using official nvidia/bigvgan pip package
+  - End-to-end inference tested successfully
+- [x] Verification: Noro VC works through API
 
 ## Phase 2: SVC Support (Optional)
 
