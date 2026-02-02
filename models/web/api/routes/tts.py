@@ -224,3 +224,71 @@ async def vevo_tts(
             cleanup_file(tmp_timbre_path)
         logger.error(f"Vevo TTS inference error: {e}")
         raise HTTPException(status_code=500, detail=str(e))
+
+
+@router.post("/metis")
+async def metis_tts(
+    background_tasks: BackgroundTasks,
+    audio: UploadFile = File(..., description="Reference/prompt audio file"),
+    text: str = Form(..., description="Text to synthesize"),
+    prompt_text: str = Form(..., description="Transcript of reference audio"),
+    target_len: Optional[float] = Form(None, description="Target duration in seconds (None for auto)"),
+    n_timesteps: int = Form(25, description="Number of diffusion steps"),
+    cfg_scale: float = Form(2.5, description="Classifier-free guidance scale")
+):
+    """
+    Generate speech using Metis foundation model.
+
+    Metis is a unified speech generation model that supports TTS, VC, SE, and TSE tasks.
+    This endpoint handles the TTS task.
+
+    Args:
+        audio: Reference audio file for voice cloning
+        text: Text to synthesize
+        prompt_text: Transcript of the reference audio
+        target_len: Target duration in seconds (None for automatic estimation)
+        n_timesteps: Number of diffusion steps (higher = better quality, slower)
+        cfg_scale: Classifier-free guidance scale
+
+    Returns:
+        FileResponse: Generated audio file (24kHz WAV)
+    """
+    manager = ModelManager()
+
+    # Save uploaded audio to temp file
+    with tempfile.NamedTemporaryFile(delete=False, suffix=".wav") as tmp_audio:
+        content = await audio.read()
+        tmp_audio.write(content)
+        tmp_audio_path = tmp_audio.name
+
+    try:
+        logger.info(f"Metis TTS inference request: text='{text[:50]}...'")
+
+        sample_rate, audio_data = manager.metis_inference(
+            prompt_wav_path=tmp_audio_path,
+            target_text=text,
+            prompt_text=prompt_text,
+            model_type="tts",
+            target_len=target_len,
+            n_timesteps=n_timesteps,
+            cfg_scale=cfg_scale,
+        )
+
+        # Save output
+        output_path = f"/home/kp/repo2/Amphion/output/web/metis_tts_{os.urandom(8).hex()}.wav"
+        sf.write(output_path, audio_data, sample_rate)
+
+        # Schedule cleanup
+        background_tasks.add_task(cleanup_file, tmp_audio_path)
+        background_tasks.add_task(cleanup_file, output_path)
+
+        return FileResponse(
+            output_path,
+            media_type="audio/wav",
+            filename="metis_tts_output.wav"
+        )
+
+    except Exception as e:
+        cleanup_file(tmp_audio_path)
+        logger.error(f"Metis TTS inference error: {e}")
+        raise HTTPException(status_code=500, detail=str(e))

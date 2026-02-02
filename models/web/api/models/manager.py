@@ -44,6 +44,8 @@ class ModelManager:
         self._vevo_tts_loaded = False
         self._vevo_vc_loaded = False
         self._noro_loaded = False
+        self._metis_loaded = False
+        self._vevosing_loaded = False
 
         # Model instances
         self.maskgct_pipeline = None
@@ -51,6 +53,8 @@ class ModelManager:
         self.vevo_tts_pipeline = None
         self.vevo_vc_pipeline = None
         self.noro_pipeline = None
+        self.metis_pipeline = None
+        self.vevosing_pipeline = None
 
         # Ensure output directory exists
         os.makedirs(OUTPUT_DIR, exist_ok=True)
@@ -84,6 +88,16 @@ class ModelManager:
             self.noro_pipeline = None
             self._noro_loaded = False
             logger.info("Noro unloaded")
+        elif model_name == "metis" and self._metis_loaded:
+            del self.metis_pipeline
+            self.metis_pipeline = None
+            self._metis_loaded = False
+            logger.info("Metis unloaded")
+        elif model_name == "vevosing" and self._vevosing_loaded:
+            del self.vevosing_pipeline
+            self.vevosing_pipeline = None
+            self._vevosing_loaded = False
+            logger.info("VevoSing unloaded")
         else:
             raise ValueError(f"Unknown model: {model_name}")
 
@@ -893,3 +907,277 @@ class ModelManager:
                 logger.warning("BigVGAN vocoder not available, returning silence")
                 audio_length = x0.shape[1] * cfg.preprocess.hop_size
                 return 16000, np.zeros(audio_length)
+
+    def load_metis(self, model_type: str = "tts"):
+        """Lazy load Metis foundation model.
+
+        Args:
+            model_type: One of "tts", "vc", "se", "tse" (default: "tts")
+        """
+        if self._metis_loaded:
+            return
+
+        logger.info(f"Loading Metis model (type={model_type})...")
+
+        try:
+            import sys
+            if AMPHION_ROOT not in sys.path:
+                sys.path.insert(0, AMPHION_ROOT)
+
+            from huggingface_hub import snapshot_download
+            from models.tts.metis.metis import Metis
+            from utils.util import load_config
+
+            # Load config based on model type
+            config_path = f"{AMPHION_ROOT}/models/tts/metis/config/{model_type}.json"
+            if not os.path.exists(config_path):
+                # Fallback to TTS config if specific one doesn't exist
+                config_path = f"{AMPHION_ROOT}/models/tts/metis/config/tts.json"
+
+            metis_cfg = load_config(config_path)
+
+            # Download checkpoint from HuggingFace
+            ckpt_dir = snapshot_download(
+                repo_id="amphion/maskgct",
+                repo_type="model",
+                local_dir=f"{AMPHION_ROOT}/models/tts/maskgct/ckpt",
+                allow_patterns=["t2s/model.safetensors"],
+            )
+            ckpt_path = os.path.join(ckpt_dir, "t2s/model.safetensors")
+
+            # Initialize Metis
+            metis = Metis(
+                ckpt_path=ckpt_path,
+                cfg=metis_cfg,
+                device=str(self.device),
+                model_type=model_type,
+            )
+
+            self.metis_pipeline = {
+                'model': metis,
+                'config': metis_cfg,
+                'model_type': model_type,
+            }
+
+            self._metis_loaded = True
+            logger.info("Metis model loaded successfully")
+
+        except Exception as e:
+            logger.error(f"Failed to load Metis model: {e}")
+            import traceback
+            traceback.print_exc()
+            raise
+
+    def metis_inference(
+        self,
+        prompt_wav_path: str,
+        target_text: str,
+        prompt_text: str,
+        model_type: str = "tts",
+        target_len: Optional[float] = None,
+        n_timesteps: int = 25,
+        cfg_scale: float = 2.5,
+        source_wav_path: Optional[str] = None,
+    ) -> Tuple[int, np.ndarray]:
+        """
+        Run Metis inference.
+
+        Args:
+            prompt_wav_path: Path to reference/prompt audio
+            target_text: Text to synthesize (for TTS)
+            prompt_text: Transcript of prompt audio
+            model_type: One of "tts", "vc", "se", "tse"
+            target_len: Target duration in seconds (None for auto)
+            n_timesteps: Number of diffusion timesteps
+            cfg_scale: Classifier-free guidance scale
+            source_wav_path: Path to source audio (for VC/SE/TSE tasks)
+
+        Returns:
+            Tuple of (sample_rate, audio_data)
+        """
+        self.load_metis(model_type)
+
+        logger.info(f"Running Metis {model_type} inference...")
+
+        metis = self.metis_pipeline['model']
+
+        # Run inference based on model type
+        if model_type == "tts":
+            gen_speech = metis(
+                prompt_speech_path=prompt_wav_path,
+                text=target_text,
+                prompt_text=prompt_text,
+                target_len=target_len,
+                n_timesteps=n_timesteps,
+                cfg=cfg_scale,
+                model_type=model_type,
+            )
+        elif model_type in ["vc", "tse"]:
+            # Voice conversion or target speaker extraction
+            gen_speech = metis(
+                prompt_speech_path=prompt_wav_path,
+                source_speech_path=source_wav_path,
+                n_timesteps=n_timesteps,
+                cfg=cfg_scale,
+                model_type=model_type,
+            )
+        elif model_type == "se":
+            # Speech enhancement (no prompt needed)
+            gen_speech = metis(
+                source_speech_path=source_wav_path,
+                n_timesteps=n_timesteps,
+                cfg=cfg_scale,
+                model_type=model_type,
+            )
+        else:
+            raise ValueError(f"Unsupported model type: {model_type}")
+
+        return 24000, gen_speech
+
+    def load_vevosing(self, mode: str = "fm"):
+        """
+        Load VevoSing (Vevo1.5) model for singing voice conversion.
+
+        Args:
+            mode: 'fm' for flow-matching only, 'ar' for AR+FM
+        """
+        if self._vevosing_loaded:
+            return
+
+        logger.info("Loading VevoSing model...")
+
+        try:
+            import sys
+            sys.path.insert(0, AMPHION_ROOT)
+
+            from huggingface_hub import snapshot_download
+            from models.svc.vevosing.vevosing_utils import VevosingInferencePipeline
+
+            # Download Content-Style Tokenizer
+            local_dir = snapshot_download(
+                repo_id="amphion/Vevo1.5",
+                repo_type="model",
+                cache_dir="./ckpts/Vevo1.5",
+                allow_patterns=["tokenizer/contentstyle_fvq16384_12.5hz/*"],
+            )
+            contentstyle_tokenizer_path = os.path.join(
+                local_dir, "tokenizer/contentstyle_fvq16384_12.5hz"
+            )
+
+            # Download Flow Matching Transformer
+            model_name = "fm_emilia101k_singnet7k"
+            local_dir = snapshot_download(
+                repo_id="amphion/Vevo1.5",
+                repo_type="model",
+                cache_dir="./ckpts/Vevo1.5",
+                allow_patterns=[f"acoustic_modeling/{model_name}/*"],
+            )
+            fmt_cfg_path = f"{AMPHION_ROOT}/models/svc/vevosing/config/{model_name}.json"
+            fmt_ckpt_path = os.path.join(local_dir, f"acoustic_modeling/{model_name}")
+
+            # Download Vocoder
+            local_dir = snapshot_download(
+                repo_id="amphion/Vevo1.5",
+                repo_type="model",
+                cache_dir="./ckpts/Vevo1.5",
+                allow_patterns=["acoustic_modeling/Vocoder/*"],
+            )
+            vocoder_cfg_path = f"{AMPHION_ROOT}/models/svc/vevosing/config/vocoder.json"
+            vocoder_ckpt_path = os.path.join(local_dir, "acoustic_modeling/Vocoder")
+
+            # For AR mode, also download prosody tokenizer and AR model
+            prosody_tokenizer_path = None
+            ar_cfg_path = None
+            ar_ckpt_path = None
+
+            if mode == "ar":
+                # Download Prosody Tokenizer
+                local_dir = snapshot_download(
+                    repo_id="amphion/Vevo1.5",
+                    repo_type="model",
+                    cache_dir="./ckpts/Vevo1.5",
+                    allow_patterns=["tokenizer/prosody_fvq512_6.25hz/*"],
+                )
+                prosody_tokenizer_path = os.path.join(
+                    local_dir, "tokenizer/prosody_fvq512_6.25hz"
+                )
+
+                # Download AR model
+                ar_model_name = "ar_emilia101k_singnet7k"
+                local_dir = snapshot_download(
+                    repo_id="amphion/Vevo1.5",
+                    repo_type="model",
+                    cache_dir="./ckpts/Vevo1.5",
+                    allow_patterns=[f"contentstyle_modeling/{ar_model_name}/*"],
+                )
+                ar_cfg_path = f"{AMPHION_ROOT}/models/svc/vevosing/config/{ar_model_name}.json"
+                ar_ckpt_path = os.path.join(local_dir, f"contentstyle_modeling/{ar_model_name}")
+
+            # Create inference pipeline
+            self.vevosing_pipeline = {
+                'inference': VevosingInferencePipeline(
+                    content_style_tokenizer_ckpt_path=contentstyle_tokenizer_path,
+                    fmt_cfg_path=fmt_cfg_path,
+                    fmt_ckpt_path=fmt_ckpt_path,
+                    vocoder_cfg_path=vocoder_cfg_path,
+                    vocoder_ckpt_path=vocoder_ckpt_path,
+                    prosody_tokenizer_ckpt_path=prosody_tokenizer_path,
+                    ar_cfg_path=ar_cfg_path,
+                    ar_ckpt_path=ar_ckpt_path,
+                    device=self.device,
+                ),
+                'mode': mode,
+            }
+
+            self._vevosing_loaded = True
+            logger.info("VevoSing model loaded successfully")
+
+        except Exception as e:
+            logger.error(f"Failed to load VevoSing model: {e}")
+            import traceback
+            traceback.print_exc()
+            raise
+
+    def vevosing_inference(
+        self,
+        content_wav_path: str,
+        reference_wav_path: str,
+        mode: str = "fm",
+        use_shifted_src: bool = True,
+        flow_matching_steps: int = 32,
+    ) -> Tuple[int, np.ndarray]:
+        """
+        Run VevoSing singing voice conversion inference.
+
+        Args:
+            content_wav_path: Path to source audio (content/melody)
+            reference_wav_path: Path to reference audio (timbre)
+            mode: 'fm' for flow-matching only (timbre), 'ar' for AR+FM (full control)
+            use_shifted_src: Use pitch-shifted source for prosody extraction
+            flow_matching_steps: Number of flow matching steps
+
+        Returns:
+            Tuple of (sample_rate, audio_data)
+        """
+        self.load_vevosing(mode)
+
+        logger.info(f"Running VevoSing {mode} inference...")
+
+        inference_pipeline = self.vevosing_pipeline['inference']
+
+        if mode == "fm":
+            gen_audio = inference_pipeline.inference_fm(
+                src_wav_path=content_wav_path,
+                timbre_ref_wav_path=reference_wav_path,
+                use_shifted_src_to_extract_prosody=use_shifted_src,
+                flow_matching_steps=flow_matching_steps,
+            )
+        else:
+            # AR+FM mode with full control
+            gen_audio = inference_pipeline.inference_ar(
+                src_wav_path=content_wav_path,
+                timbre_ref_wav_path=reference_wav_path,
+                flow_matching_steps=flow_matching_steps,
+            )
+
+        return 24000, gen_audio

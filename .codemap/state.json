@@ -1,0 +1,3177 @@
+{
+  "updated_at": "2026-02-02T02:26:22.021292361-06:00",
+  "file_count": 976,
+  "hubs": [
+    "models/codec/kmeans/repcodec_model.py",
+    "models/codec/dualcodec/dualcodec/utils/utils_infer.py",
+    "models/codec/dualcodec/dualcodec/utils/__init__.py",
+    "preprocessors/__init__.py",
+    "models/tta/picoaudio/picoaudio/audioldm/latent_diffusion/util.py",
+    "models/codec/coco/coco_dataset.py",
+    "modules/wenet_extractor/utils/mask.py",
+    "models/svc/vevosing/vevosing_utils.py",
+    "processors/acoustic_extractor.py",
+    "modules/wenet_extractor/transformer/subsampling.py",
+    "models/svc/transformer/conformer.py",
+    "processors/content_extractor.py",
+    "modules/general/utils.py",
+    "models/tta/autoencoder/autoencoder.py",
+    "modules/wenet_extractor/transformer/decoder.py",
+    "models/tta/picoaudio/picoaudio/audioldm/clap/open_clip/__init__.py",
+    "models/vocoders/gan/discriminator/mpd.py",
+    "modules/wenet_extractor/transformer/attention.py",
+    "preprocessors/metadata.py",
+    "models/codec/dualcodec/dualcodec/infer/valle/utils_valle_infer.py",
+    "models/codec/amphion_codec/codec.py",
+    "modules/wenet_extractor/transformer/asr_model.py",
+    "utils/ssim.py",
+    "text/text_token_collation.py",
+    "models/tts/maskgct/g2p/g2p_generation.py",
+    "utils/util.py",
+    "modules/wenet_extractor/transformer/embedding.py",
+    "models/codec/coco/rep_coco_model.py",
+    "models/tts/maskgct/maskgct_t2s.py",
+    "utils/audio_slicer.py",
+    "models/tts/maskgct/maskgct_utils.py",
+    "modules/vocoder_blocks/__init__.py",
+    "utils/data_utils.py",
+    "utils/io.py",
+    "models/base/base_trainer.py",
+    "modules/base/base_module.py",
+    "modules/wenet_extractor/utils/common.py",
+    "processors/__init__.py",
+    "models/vc/vevo/vevo_utils.py",
+    "models/vocoders/vocoder_inference.py",
+    "models/vc/base/vc_emilia_dataset.py",
+    "models/codec/vevo/vevo_repcodec.py",
+    "models/codec/melvqgan/melspec.py",
+    "models/base/base_dataset.py",
+    "modules/dac/model/encodec.py",
+    "models/tts/metis/metis.py",
+    "text/numbers.py",
+    "utils/mel.py",
+    "processors/phone_extractor.py",
+    "models/codec/amphion_codec/quantize/__init__.py",
+    "models/svc/base/__init__.py",
+    "models/svc/transformer/transformer.py",
+    "models/base/new_trainer.py",
+    "modules/encoder/condition_encoder.py",
+    "models/codec/amphion_codec/vocos.py",
+    "models/tta/picoaudio/picoaudio/audioldm/clap/training/params.py",
+    "models/vocoders/gan/generator/hifigan.py",
+    "models/tts/base/__init__.py",
+    "models/tta/picoaudio/picoaudio/audioldm/utils.py",
+    "modules/naturalpseech2/transformers.py",
+    "models/tts/vits/vits.py",
+    "models/base/base_sampler.py",
+    "utils/tokenizer.py",
+    "models/tta/picoaudio/picoaudio/audioldm/clap/training/data.py",
+    "models/tts/base/tts_inferece.py",
+    "models/vocoders/gan/generator/bigvgan.py",
+    "models/svc/base/svc_dataset.py",
+    "optimizer/optimizers.py",
+    "models/vocoders/vocoder_dataset.py",
+    "models/codec/dualcodec/dualcodec.png",
+    "models/tts/maskgct/maskgct_s2a.py",
+    "modules/wenet_extractor/transformer/encoder.py",
+    "models/tta/picoaudio/picoaudio/audioldm/clap/open_clip/utils.py",
+    "models/vc/Noro/noro_model.py",
+    "modules/wenet_extractor/transformer/positionwise_feed_forward.py",
+    "utils/f0.py",
+    "modules/wenet_extractor/transformer/ctc.py",
+    "text/__init__.py",
+    "models/tts/naturalspeech2/wavenet.py",
+    "preprocessors/processor.py"
+  ],
+  "importers": {
+    "evaluation/metrics/energy/energy_pearson_coefficients.py": [
+      "models/web/api/routes/evaluation.py",
+      "bins/calc_metrics.py"
+    ],
+    "evaluation/metrics/energy/energy_rmse.py": [
+      "models/web/api/routes/evaluation.py",
+      "bins/calc_metrics.py"
+    ],
+    "evaluation/metrics/f0/f0_corr.py": [
+      "models/svc/vevosing/vevosing_utils.py"
+    ],
+    "evaluation/metrics/f0/f0_pearson_coefficients.py": [
+      "models/web/api/routes/evaluation.py",
+      "bins/calc_metrics.py"
+    ],
+    "evaluation/metrics/f0/f0_periodicity_rmse.py": [
+      "bins/calc_metrics.py"
+    ],
+    "evaluation/metrics/f0/f0_rmse.py": [
+      "models/web/api/routes/evaluation.py",
+      "bins/calc_metrics.py"
+    ],
+    "evaluation/metrics/f0/v_uv_f1.py": [
+      "models/web/api/routes/evaluation.py",
+      "bins/calc_metrics.py"
+    ],
+    "evaluation/metrics/intelligibility/character_error_rate.py": [
+      "models/web/api/routes/evaluation.py",
+      "bins/calc_metrics.py"
+    ],
+    "evaluation/metrics/intelligibility/word_error_rate.py": [
+      "models/web/api/routes/evaluation.py",
+      "bins/calc_metrics.py"
+    ],
+    "evaluation/metrics/similarity/models/RawNetBasicBlock.py": [
+      "evaluation/metrics/similarity/speaker_similarity.py"
+    ],
+    "evaluation/metrics/similarity/models/RawNetModel.py": [
+      "evaluation/metrics/similarity/speaker_similarity.py"
+    ],
+    "evaluation/metrics/similarity/speaker_similarity.py": [
+      "bins/calc_metrics.py"
+    ],
+    "evaluation/metrics/spectrogram/frechet_distance.py": [
+      "bins/calc_metrics.py"
+    ],
+    "evaluation/metrics/spectrogram/mel_cepstral_distortion.py": [
+      "models/web/api/routes/evaluation.py",
+      "bins/calc_metrics.py"
+    ],
+    "evaluation/metrics/spectrogram/multi_resolution_stft_distance.py": [
+      "models/web/api/routes/evaluation.py",
+      "bins/calc_metrics.py"
+    ],
+    "evaluation/metrics/spectrogram/pesq.py": [
+      "models/web/api/routes/evaluation.py",
+      "bins/calc_metrics.py"
+    ],
+    "evaluation/metrics/spectrogram/scale_invariant_signal_to_distortion_ratio.py": [
+      "models/web/api/routes/evaluation.py",
+      "bins/calc_metrics.py"
+    ],
+    "evaluation/metrics/spectrogram/scale_invariant_signal_to_noise_ratio.py": [
+      "bins/calc_metrics.py"
+    ],
+    "evaluation/metrics/spectrogram/short_time_objective_intelligibility.py": [
+      "models/web/api/routes/evaluation.py",
+      "bins/calc_metrics.py"
+    ],
+    "models/__init__.py": [
+      "preprocessors/Emilia/main.py"
+    ],
+    "models/base/base_dataset.py": [
+      "models/tts/jets/jets_dataset.py",
+      "models/tts/fastspeech2/fs2_dataset.py",
+      "models/tta/autoencoder/autoencoder_dataset.py",
+      "models/svc/base/svc_dataset.py",
+      "models/tta/ldm/audioldm_dataset.py",
+      "models/tts/naturalspeech2/ns2_dataset.py",
+      "models/tts/base/tts_dataset.py"
+    ],
+    "models/base/base_sampler.py": [
+      "models/vc/Noro/noro_trainer.py",
+      "models/base/new_trainer.py",
+      "models/base/base_trainer.py",
+      "models/tts/base/tts_trainer.py",
+      "models/tts/naturalspeech2/ns2_trainer.py",
+      "models/tts/valle/valle_trainer.py",
+      "models/vocoders/vocos/vocos_trainer.py"
+    ],
+    "models/base/base_trainer.py": [
+      "models/vc/flow_matching_transformer/fmt_trainer.py",
+      "models/tta/autoencoder/autoencoder_trainer.py",
+      "models/codec/vevo/vqvae_trainer.py",
+      "models/codec/coco/rep_coco_trainer.py",
+      "models/svc/autoregressive_transformer/ar_trainer.py",
+      "models/vc/autoregressive_transformer/ar_trainer.py",
+      "models/tts/naturalspeech2/ns2_trainer.py",
+      "models/tta/ldm/audioldm_trainer.py",
+      "models/svc/flow_matching_transformer/fmt_trainer.py",
+      "models/vocoders/vocos/vocos_trainer.py"
+    ],
+    "models/base/emilia_dataset.py": [
+      "models/vc/base/vc_emilia_dataset.py"
+    ],
+    "models/base/new_dataset.py": [
+      "models/svc/base/svc_dataset.py"
+    ],
+    "models/base/new_inference.py": [
+      "models/svc/base/svc_inference.py"
+    ],
+    "models/base/new_trainer.py": [
+      "models/tts/base/tts_trainer.py",
+      "models/vc/Noro/noro_base_trainer.py",
+      "models/svc/base/svc_trainer.py"
+    ],
+    "models/codec/amphion_codec/codec.py": [
+      "models/web/api/models/manager.py",
+      "models/tts/maskgct/gradio_demo.py",
+      "models/tts/debatts/try_inference_small_samples.py",
+      "models/tts/maskgct/maskgct_utils.py",
+      "models/web/amphion_unified.py"
+    ],
+    "models/codec/amphion_codec/loss.py": [
+      "models/vocoders/vocos/vocos_trainer.py"
+    ],
+    "models/codec/amphion_codec/quantize/__init__.py": [
+      "models/codec/amphion_codec/codec.py",
+      "models/codec/kmeans/repcodec_model.py",
+      "models/codec/coco/rep_coco_model.py"
+    ],
+    "models/codec/amphion_codec/quantize/factorized_vector_quantize.py": [
+      "models/codec/amphion_codec/quantize/__init__.py",
+      "models/codec/amphion_codec/quantize/residual_vq.py"
+    ],
+    "models/codec/amphion_codec/quantize/lookup_free_quantize.py": [
+      "models/codec/amphion_codec/quantize/__init__.py",
+      "models/codec/amphion_codec/quantize/residual_vq.py"
+    ],
+    "models/codec/amphion_codec/quantize/residual_vq.py": [
+      "models/codec/amphion_codec/quantize/__init__.py"
+    ],
+    "models/codec/amphion_codec/quantize/vector_quantize.py": [
+      "models/codec/amphion_codec/quantize/__init__.py",
+      "models/codec/amphion_codec/quantize/residual_vq.py"
+    ],
+    "models/codec/amphion_codec/vocos.py": [
+      "models/svc/vevosing/vevosing_utils.py",
+      "models/codec/amphion_codec/codec.py",
+      "models/vc/vevo/vevo_utils.py",
+      "models/vocoders/vocos/vocos_trainer.py",
+      "models/codec/coco/rep_coco_model.py"
+    ],
+    "models/codec/coco/coco_dataset.py": [
+      "models/codec/coco/rep_coco_trainer.py",
+      "models/svc/autoregressive_transformer/ar_trainer.py",
+      "models/vocoders/vocos/vocos_dataset.py",
+      "models/svc/flow_matching_transformer/fmt_trainer.py",
+      "models/vocoders/vocos/vocos_trainer.py"
+    ],
+    "models/codec/coco/rep_coco_model.py": [
+      "models/svc/vevosing/vevosing_utils.py",
+      "models/codec/coco/rep_coco_trainer.py",
+      "models/svc/autoregressive_transformer/ar_trainer.py",
+      "models/svc/flow_matching_transformer/fmt_trainer.py"
+    ],
+    "models/codec/coco/rep_coco_trainer.py": [
+      "bins/codec/train.py"
+    ],
+    "models/codec/codec_dataset.py": [
+      "models/codec/facodec/facodec_dataset.py"
+    ],
+    "models/codec/codec_sampler.py": [
+      "models/codec/facodec/facodec_trainer.py",
+      "models/codec/codec_trainer.py"
+    ],
+    "models/codec/codec_trainer.py": [
+      "models/codec/facodec/facodec_trainer.py"
+    ],
+    "models/codec/discriminator/hifigan_disriminator.py": [
+      "models/vocoders/vocos/vocos_trainer.py"
+    ],
+    "models/codec/discriminator/layers.py": [
+      "models/codec/discriminator/hifigan_disriminator.py"
+    ],
+    "models/codec/dualcodec/dualcodec.png": [
+      "models/web/api/models/manager.py",
+      "models/codec/dualcodec/dualcodec/app.py",
+      "models/codec/dualcodec/dualcodec/infer/flattened_ar/trainer.py",
+      "models/codec/dualcodec/dualcodec/infer/valle/cli_valle_infer.py",
+      "models/codec/dualcodec/dualcodec/infer/voicebox/utils_voicebox_infer.py",
+      "models/codec/dualcodec/dualcodec/infer/valle/gradio_valle_demo.py",
+      "models/web/amphion_unified.py",
+      "models/codec/dualcodec/dualcodec/model_codec/trainer.py"
+    ],
+    "models/codec/dualcodec/dualcodec/dataset/processor.py": [
+      "models/codec/dualcodec/dualcodec/infer/flattened_ar/inference_flattened.py"
+    ],
+    "models/codec/dualcodec/dualcodec/infer/flattened_ar/inference_flattened.py": [
+      "models/codec/dualcodec/dualcodec/infer/flattened_ar/utils_flattened_ar_infer.py"
+    ],
+    "models/codec/dualcodec/dualcodec/infer/valle/utils_valle_infer.py": [
+      "models/web/api/models/manager.py",
+      "models/codec/dualcodec/dualcodec/infer/valle/cli_valle_infer.py",
+      "models/codec/dualcodec/dualcodec/infer/valle/gradio_valle_demo.py",
+      "models/web/amphion_unified.py",
+      "models/codec/dualcodec/dualcodec/infer/flattened_ar/utils_flattened_ar_infer.py"
+    ],
+    "models/codec/dualcodec/dualcodec/infer/voicebox/utils_voicebox_infer.py": [
+      "models/codec/dualcodec/dualcodec/infer/voicebox/cli_voicebox_infer.py"
+    ],
+    "models/codec/dualcodec/dualcodec/model_tts/voicebox/vocoder_model.py": [
+      "models/codec/dualcodec/dualcodec/infer/voicebox/utils_voicebox_infer.py"
+    ],
+    "models/codec/dualcodec/dualcodec/model_tts/voicebox/voicebox_models.py": [
+      "models/codec/dualcodec/dualcodec/infer/voicebox/cli_voicebox_infer.py",
+      "models/codec/dualcodec/dualcodec/infer/voicebox/utils_voicebox_infer.py"
+    ],
+    "models/codec/dualcodec/dualcodec/utils/__init__.py": [
+      "models/web/api/models/manager.py",
+      "models/codec/dualcodec/dualcodec/utils/utils_infer.py",
+      "models/codec/dualcodec/dualcodec/infer/valle/utils_valle_infer.py",
+      "models/codec/dualcodec/dualcodec/infer/valle/cli_valle_infer.py",
+      "models/codec/dualcodec/dualcodec/infer/voicebox/utils_voicebox_infer.py",
+      "models/codec/dualcodec/dualcodec/infer/valle/gradio_valle_demo.py",
+      "models/web/amphion_unified.py"
+    ],
+    "models/codec/dualcodec/dualcodec/utils/frontend_utils.py": [
+      "models/codec/dualcodec/dualcodec/infer/flattened_ar/inference_flattened.py"
+    ],
+    "models/codec/dualcodec/dualcodec/utils/melspec.py": [
+      "models/codec/dualcodec/dualcodec/model_tts/voicebox/vocoder_model.py",
+      "models/codec/dualcodec/dualcodec/model_tts/voicebox/voicebox_models.py"
+    ],
+    "models/codec/dualcodec/dualcodec/utils/utils.py": [
+      "models/codec/dualcodec/dualcodec/infer/flattened_ar/utils_flattened_ar_infer.py"
+    ],
+    "models/codec/dualcodec/dualcodec/utils/utils_infer.py": [
+      "models/codec/dualcodec/dualcodec/infer/voicebox/cli_voicebox_infer.py",
+      "models/web/api/models/manager.py",
+      "models/codec/dualcodec/dualcodec/infer/valle/infer_valle_gradio_editing.py",
+      "models/codec/dualcodec/dualcodec/infer/valle/utils_valle_infer.py",
+      "models/codec/dualcodec/dualcodec/infer/valle/cli_valle_infer.py",
+      "models/codec/dualcodec/dualcodec/infer/valle/gradio_valle_demo.py",
+      "models/web/amphion_unified.py"
+    ],
+    "models/codec/facodec/facodec_dataset.py": [
+      "models/codec/facodec/facodec_trainer.py"
+    ],
+    "models/codec/facodec/facodec_inference.py": [
+      "bins/codec/inference.py"
+    ],
+    "models/codec/facodec/facodec_trainer.py": [
+      "bins/codec/train.py"
+    ],
+    "models/codec/facodec/modules/commons.py": [
+      "models/codec/facodec/facodec_trainer.py"
+    ],
+    "models/codec/facodec/optimizer.py": [
+      "models/codec/facodec/facodec_trainer.py"
+    ],
+    "models/codec/kmeans/repcodec_model.py": [
+      "models/vc/flow_matching_transformer/fmt_trainer.py",
+      "models/web/api/models/manager.py",
+      "models/codec/vevo/vqvae_trainer.py",
+      "models/vc/autoregressive_transformer/ar_trainer.py",
+      "models/tts/maskgct/gradio_demo.py",
+      "models/tts/debatts/try_inference_small_samples.py",
+      "models/tts/maskgct/maskgct_utils.py",
+      "models/vc/vevo/vevo_utils.py",
+      "models/web/amphion_unified.py"
+    ],
+    "models/codec/kmeans/vocos.py": [
+      "models/codec/kmeans/repcodec_model.py"
+    ],
+    "models/codec/melvqgan/melspec.py": [
+      "models/vc/flow_matching_transformer/fmt_trainer.py",
+      "models/svc/vevosing/vevosing_utils.py",
+      "models/vc/autoregressive_transformer/ar_trainer.py",
+      "models/svc/flow_matching_transformer/fmt_trainer.py",
+      "models/vc/vevo/vevo_utils.py",
+      "models/vocoders/vocos/vocos_trainer.py"
+    ],
+    "models/codec/speechtokenizer/modules/__init__.py": [
+      "models/codec/speechtokenizer/modules/seanet.py"
+    ],
+    "models/codec/vevo/vevo_repcodec.py": [
+      "models/codec/vevo/vqvae_trainer.py",
+      "models/vc/autoregressive_transformer/ar_trainer.py",
+      "models/vc/vevo/vevo_utils.py"
+    ],
+    "models/codec/vevo/vqvae_trainer.py": [
+      "bins/codec/train.py"
+    ],
+    "models/svc/autoregressive_transformer/ar_model.py": [
+      "models/svc/vevosing/vevosing_utils.py",
+      "models/svc/autoregressive_transformer/ar_trainer.py"
+    ],
+    "models/svc/autoregressive_transformer/ar_trainer.py": [
+      "bins/svc/train.py"
+    ],
+    "models/svc/base/__init__.py": [
+      "models/svc/diffusion/diffusion_inference.py",
+      "models/svc/comosvc/comosvc_inference.py",
+      "models/svc/diffusion/diffusion_trainer.py",
+      "models/svc/vits/vits_trainer.py",
+      "models/svc/vits/vits_inference.py",
+      "models/svc/transformer/transformer_trainer.py",
+      "models/svc/comosvc/comosvc_trainer.py",
+      "models/svc/transformer/transformer_inference.py"
+    ],
+    "models/svc/base/svc_dataset.py": [
+      "models/svc/vits/vits_trainer.py",
+      "models/svc/base/svc_inference.py",
+      "models/svc/vits/vits_inference.py",
+      "models/svc/base/svc_trainer.py"
+    ],
+    "models/svc/comosvc/comosvc.py": [
+      "models/svc/comosvc/comosvc_inference.py",
+      "models/svc/comosvc/comosvc_trainer.py"
+    ],
+    "models/svc/comosvc/comosvc_inference.py": [
+      "bins/svc/inference.py"
+    ],
+    "models/svc/comosvc/comosvc_trainer.py": [
+      "bins/svc/train.py"
+    ],
+    "models/svc/diffusion/diffusion_inference.py": [
+      "bins/svc/inference.py"
+    ],
+    "models/svc/diffusion/diffusion_inference_pipeline.py": [
+      "models/svc/diffusion/diffusion_inference.py"
+    ],
+    "models/svc/diffusion/diffusion_trainer.py": [
+      "bins/svc/train.py"
+    ],
+    "models/svc/diffusion/diffusion_wrapper.py": [
+      "models/svc/diffusion/diffusion_inference.py",
+      "models/svc/comosvc/comosvc.py"
+    ],
+    "models/svc/flow_matching_transformer/fmt_model.py": [
+      "models/svc/vevosing/vevosing_utils.py",
+      "models/svc/flow_matching_transformer/fmt_trainer.py"
+    ],
+    "models/svc/flow_matching_transformer/fmt_trainer.py": [
+      "bins/svc/train.py"
+    ],
+    "models/svc/transformer/conformer.py": [
+      "models/svc/transformer/transformer_trainer.py",
+      "models/svc/comosvc/comosvc.py",
+      "models/svc/transformer/transformer_inference.py"
+    ],
+    "models/svc/transformer/transformer.py": [
+      "models/svc/transformer/transformer_trainer.py",
+      "modules/encoder/condition_encoder.py",
+      "models/svc/transformer/transformer_inference.py"
+    ],
+    "models/svc/transformer/transformer_inference.py": [
+      "bins/svc/inference.py"
+    ],
+    "models/svc/transformer/transformer_trainer.py": [
+      "bins/svc/train.py"
+    ],
+    "models/svc/vevosing/vevosing_utils.py": [
+      "models/svc/vevosing/infer_vevosing_fm.py",
+      "models/svc/vevosing/infer_vevosing_ar.py",
+      "models/web/api/models/manager.py"
+    ],
+    "models/svc/vits/vits.py": [
+      "models/svc/vits/vits_trainer.py",
+      "models/svc/vits/vits_inference.py"
+    ],
+    "models/svc/vits/vits_inference.py": [
+      "bins/svc/inference.py"
+    ],
+    "models/svc/vits/vits_trainer.py": [
+      "bins/svc/train.py"
+    ],
+    "models/tta/autoencoder/autoencoder.py": [
+      "models/tta/autoencoder/autoencoder_trainer.py",
+      "models/tta/ldm/audioldm_inference.py",
+      "models/tta/ldm/audioldm_trainer.py"
+    ],
+    "models/tta/autoencoder/autoencoder_dataset.py": [
+      "models/tta/autoencoder/autoencoder_trainer.py"
+    ],
+    "models/tta/autoencoder/autoencoder_loss.py": [
+      "models/tta/autoencoder/autoencoder_trainer.py"
+    ],
+    "models/tta/autoencoder/autoencoder_trainer.py": [
+      "bins/tta/train_tta.py"
+    ],
+    "models/tta/ldm/attention.py": [
+      "models/tta/ldm/audioldm.py"
+    ],
+    "models/tta/ldm/audioldm.py": [
+      "models/tta/ldm/audioldm_inference.py",
+      "models/tta/ldm/audioldm_trainer.py"
+    ],
+    "models/tta/ldm/audioldm_dataset.py": [
+      "models/tta/ldm/audioldm_trainer.py"
+    ],
+    "models/tta/ldm/audioldm_inference.py": [
+      "bins/tta/inference.py"
+    ],
+    "models/tta/ldm/audioldm_trainer.py": [
+      "bins/tta/train_tta.py"
+    ],
+    "models/tta/ldm/inference_utils/utils.py": [
+      "models/tta/ldm/inference_utils/vocoder.py"
+    ],
+    "models/tta/ldm/inference_utils/vocoder.py": [
+      "models/tta/ldm/audioldm_inference.py"
+    ],
+    "models/tta/picoaudio/picoaudio/audioldm/audio/__init__.py": [
+      "models/tta/picoaudio/picoaudio/audioldm/pipeline.py"
+    ],
+    "models/tta/picoaudio/picoaudio/audioldm/audio/audio_processing.py": [
+      "models/tta/picoaudio/picoaudio/audioldm/audio/stft.py"
+    ],
+    "models/tta/picoaudio/picoaudio/audioldm/audio/stft.py": [
+      "models/tta/picoaudio/picoaudio/models/controllable_diffusion.py"
+    ],
+    "models/tta/picoaudio/picoaudio/audioldm/clap/open_clip/__init__.py": [
+      "models/tta/picoaudio/picoaudio/audioldm/clap/training/lp_train.py",
+      "models/tta/picoaudio/picoaudio/audioldm/clap/training/infer_demo.py",
+      "models/tta/picoaudio/picoaudio/audioldm/clap/training/main.py",
+      "models/tta/picoaudio/picoaudio/audioldm/clap/encoders.py",
+      "models/tta/picoaudio/picoaudio/audioldm/clap/training/train.py",
+      "models/tta/picoaudio/picoaudio/audioldm/clap/training/data.py",
+      "models/tta/picoaudio/picoaudio/audioldm/clap/training/lp_main.py",
+      "models/tta/picoaudio/picoaudio/audioldm/clap/training/zero_shot.py"
+    ],
+    "models/tta/picoaudio/picoaudio/audioldm/clap/open_clip/linear_probe.py": [
+      "models/tta/picoaudio/picoaudio/audioldm/clap/training/lp_main.py"
+    ],
+    "models/tta/picoaudio/picoaudio/audioldm/clap/open_clip/utils.py": [
+      "models/tta/picoaudio/picoaudio/audioldm/clap/training/lp_train.py",
+      "models/tta/picoaudio/picoaudio/audioldm/clap/training/main.py",
+      "models/tta/picoaudio/picoaudio/audioldm/clap/training/data.py",
+      "models/tta/picoaudio/picoaudio/audioldm/clap/training/lp_main.py"
+    ],
+    "models/tta/picoaudio/picoaudio/audioldm/clap/training/data.py": [
+      "models/tta/picoaudio/picoaudio/audioldm/clap/training/infer_demo.py",
+      "models/tta/picoaudio/picoaudio/audioldm/clap/training/main.py",
+      "models/tta/picoaudio/picoaudio/audioldm/clap/encoders.py",
+      "models/tta/picoaudio/picoaudio/audioldm/clap/training/lp_main.py"
+    ],
+    "models/tta/picoaudio/picoaudio/audioldm/clap/training/distributed.py": [
+      "models/tta/picoaudio/picoaudio/audioldm/clap/training/main.py",
+      "models/tta/picoaudio/picoaudio/audioldm/clap/training/lp_main.py"
+    ],
+    "models/tta/picoaudio/picoaudio/audioldm/clap/training/logger.py": [
+      "models/tta/picoaudio/picoaudio/audioldm/clap/training/main.py",
+      "models/tta/picoaudio/picoaudio/audioldm/clap/training/lp_main.py"
+    ],
+    "models/tta/picoaudio/picoaudio/audioldm/clap/training/lp_train.py": [
+      "models/tta/picoaudio/picoaudio/audioldm/clap/training/lp_main.py"
+    ],
+    "models/tta/picoaudio/picoaudio/audioldm/clap/training/params.py": [
+      "models/tta/picoaudio/picoaudio/audioldm/clap/training/main.py",
+      "models/tta/picoaudio/picoaudio/audioldm/clap/training/data.py",
+      "models/tta/picoaudio/picoaudio/audioldm/clap/training/lp_main.py"
+    ],
+    "models/tta/picoaudio/picoaudio/audioldm/clap/training/scheduler.py": [
+      "models/tta/picoaudio/picoaudio/audioldm/clap/training/main.py",
+      "models/tta/picoaudio/picoaudio/audioldm/clap/training/lp_main.py"
+    ],
+    "models/tta/picoaudio/picoaudio/audioldm/clap/training/train.py": [
+      "models/tta/picoaudio/picoaudio/audioldm/clap/training/main.py"
+    ],
+    "models/tta/picoaudio/picoaudio/audioldm/hifigan/utilities.py": [
+      "models/tta/picoaudio/picoaudio/audioldm/variational_autoencoder/autoencoder.py"
+    ],
+    "models/tta/picoaudio/picoaudio/audioldm/latent_diffusion/attention.py": [
+      "models/tta/picoaudio/picoaudio/audioldm/latent_diffusion/openaimodel.py",
+      "models/tta/picoaudio/picoaudio/audioldm/variational_autoencoder/modules.py"
+    ],
+    "models/tta/picoaudio/picoaudio/audioldm/latent_diffusion/ddim.py": [
+      "models/tta/picoaudio/picoaudio/audioldm/pipeline.py",
+      "models/tta/picoaudio/picoaudio/audioldm/ldm.py"
+    ],
+    "models/tta/picoaudio/picoaudio/audioldm/latent_diffusion/ddpm.py": [
+      "models/tta/picoaudio/picoaudio/audioldm/ldm.py"
+    ],
+    "models/tta/picoaudio/picoaudio/audioldm/latent_diffusion/ema.py": [
+      "models/tta/picoaudio/picoaudio/audioldm/variational_autoencoder/autoencoder.py",
+      "models/tta/picoaudio/picoaudio/audioldm/latent_diffusion/ddpm.py"
+    ],
+    "models/tta/picoaudio/picoaudio/audioldm/latent_diffusion/util.py": [
+      "models/tta/picoaudio/picoaudio/audioldm/latent_diffusion/openaimodel.py",
+      "models/tta/picoaudio/picoaudio/audioldm/latent_diffusion/attention.py",
+      "models/tta/picoaudio/picoaudio/audioldm/latent_diffusion/ddim.py",
+      "models/tta/picoaudio/picoaudio/audioldm/latent_diffusion/ddpm.py",
+      "models/tta/picoaudio/picoaudio/audioldm/ldm.py"
+    ],
+    "models/tta/picoaudio/picoaudio/audioldm/utils.py": [
+      "models/tta/picoaudio/picoaudio/audioldm/pipeline.py",
+      "models/tta/picoaudio/picoaudio/audioldm/latent_diffusion/util.py",
+      "models/tta/picoaudio/picoaudio/models/controllable_diffusion.py",
+      "models/tta/picoaudio/picoaudio/audioldm/latent_diffusion/ddpm.py",
+      "models/tta/picoaudio/picoaudio/audioldm/ldm.py",
+      "models/tta/picoaudio/picoaudio/audioldm/variational_autoencoder/modules.py"
+    ],
+    "models/tta/picoaudio/picoaudio/audioldm/variational_autoencoder/autoencoder.py": [
+      "models/tta/picoaudio/picoaudio/models/controllable_diffusion.py"
+    ],
+    "models/tta/picoaudio/picoaudio/audioldm/variational_autoencoder/distributions.py": [
+      "models/tta/picoaudio/picoaudio/audioldm/variational_autoencoder/autoencoder.py",
+      "models/tta/picoaudio/picoaudio/audioldm/ldm.py"
+    ],
+    "models/tta/picoaudio/picoaudio/audioldm/variational_autoencoder/modules.py": [
+      "models/tta/picoaudio/picoaudio/audioldm/variational_autoencoder/autoencoder.py"
+    ],
+    "models/tta/picoaudio/picoaudio/utils/torch_tools.py": [
+      "models/tta/picoaudio/picoaudio/models/controllable_diffusion.py"
+    ],
+    "models/tts/base/__init__.py": [
+      "models/tts/fastspeech2/fs2_trainer.py",
+      "models/tts/jets/jets_trainer.py",
+      "models/tts/vits/vits_trainer.py",
+      "models/tts/valle/valle_trainer.py"
+    ],
+    "models/tts/base/tts_dataset.py": [
+      "models/tts/vits/vits_dataset.py",
+      "models/tts/valle/valle_dataset.py"
+    ],
+    "models/tts/base/tts_inferece.py": [
+      "models/tts/valle/valle_inference.py",
+      "models/tts/jets/jets_inference.py",
+      "models/tts/vits/vits_inference.py",
+      "models/tts/fastspeech2/fs2_inference.py"
+    ],
+    "models/tts/base/tts_trainer.py": [
+      "models/tts/naturalspeech2/ns2_trainer.py",
+      "models/vocoders/vocos/vocos_trainer.py"
+    ],
+    "models/tts/debatts/utils/g2p/cleaners.py": [
+      "models/tts/debatts/utils/g2p/__init__.py"
+    ],
+    "models/tts/debatts/utils/g2p/english.py": [
+      "models/tts/debatts/utils/g2p/cleaners.py"
+    ],
+    "models/tts/debatts/utils/g2p/french.py": [
+      "models/tts/debatts/utils/g2p/cleaners.py"
+    ],
+    "models/tts/debatts/utils/g2p/german.py": [
+      "models/tts/debatts/utils/g2p/cleaners.py"
+    ],
+    "models/tts/debatts/utils/g2p/japanese.py": [
+      "models/tts/debatts/utils/g2p/cleaners.py"
+    ],
+    "models/tts/debatts/utils/g2p/korean.py": [
+      "models/tts/debatts/utils/g2p/cleaners.py"
+    ],
+    "models/tts/debatts/utils/g2p/mandarin.py": [
+      "models/tts/debatts/utils/g2p/cleaners.py"
+    ],
+    "models/tts/debatts/utils/g2p_new/__init__.py": [
+      "models/tts/debatts/utils/g2p_new/g2p_new.py",
+      "models/tts/debatts/utils/g2p_new/__init__.py"
+    ],
+    "models/tts/debatts/utils/g2p_new/g2p_new.py": [
+      "models/tts/debatts/t2s_sft_dataset.py",
+      "models/tts/debatts/try_inference_small_samples.py"
+    ],
+    "models/tts/debatts/utils/g2p_new/mandarin.py": [
+      "models/tts/debatts/utils/g2p_new/cleaners.py"
+    ],
+    "models/tts/debatts/utils/g2p_new/text_tokenizers.py": [
+      "models/tts/debatts/utils/g2p_new/__init__.py"
+    ],
+    "models/tts/fastspeech2/fs2.py": [
+      "models/tts/fastspeech2/fs2_trainer.py",
+      "models/tts/fastspeech2/fs2_inference.py"
+    ],
+    "models/tts/fastspeech2/fs2_dataset.py": [
+      "models/tts/fastspeech2/fs2_trainer.py",
+      "models/tts/fastspeech2/fs2_inference.py"
+    ],
+    "models/tts/fastspeech2/fs2_inference.py": [
+      "bins/tts/inference.py"
+    ],
+    "models/tts/fastspeech2/fs2_trainer.py": [
+      "bins/tts/train.py"
+    ],
+    "models/tts/jets/alignments.py": [
+      "models/tts/jets/jets.py",
+      "models/tts/jets/jets_loss.py"
+    ],
+    "models/tts/jets/jets.py": [
+      "models/tts/jets/jets_inference.py",
+      "models/tts/jets/jets_trainer.py"
+    ],
+    "models/tts/jets/jets_dataset.py": [
+      "models/tts/jets/jets_inference.py",
+      "models/tts/jets/jets_trainer.py"
+    ],
+    "models/tts/jets/jets_inference.py": [
+      "bins/tts/inference.py"
+    ],
+    "models/tts/jets/jets_loss.py": [
+      "models/tts/jets/jets_trainer.py"
+    ],
+    "models/tts/jets/jets_trainer.py": [
+      "bins/tts/train.py"
+    ],
+    "models/tts/jets/length_regulator.py": [
+      "models/tts/jets/jets.py"
+    ],
+    "models/tts/maskgct/g2p/g2p/__init__.py": [
+      "models/tts/maskgct/g2p/g2p_generation.py",
+      "models/tts/maskgct/g2p/g2p/__init__.py"
+    ],
+    "models/tts/maskgct/g2p/g2p/chinese_model_g2p.py": [
+      "models/tts/maskgct/g2p/g2p/mandarin.py"
+    ],
+    "models/tts/maskgct/g2p/g2p/english.py": [
+      "models/tts/maskgct/g2p/g2p/cleaners.py"
+    ],
+    "models/tts/maskgct/g2p/g2p/french.py": [
+      "models/tts/maskgct/g2p/g2p/cleaners.py"
+    ],
+    "models/tts/maskgct/g2p/g2p/german.py": [
+      "models/tts/maskgct/g2p/g2p/cleaners.py"
+    ],
+    "models/tts/maskgct/g2p/g2p/japanese.py": [
+      "models/tts/maskgct/g2p/g2p/cleaners.py"
+    ],
+    "models/tts/maskgct/g2p/g2p/korean.py": [
+      "models/tts/maskgct/g2p/g2p/cleaners.py"
+    ],
+    "models/tts/maskgct/g2p/g2p/mandarin.py": [
+      "models/tts/maskgct/g2p/g2p/cleaners.py"
+    ],
+    "models/tts/maskgct/g2p/g2p/text_tokenizers.py": [
+      "models/tts/maskgct/g2p/g2p/__init__.py"
+    ],
+    "models/tts/maskgct/g2p/g2p_generation.py": [
+      "models/svc/vevosing/vevosing_utils.py",
+      "models/web/api/models/manager.py",
+      "models/tts/maskgct/gradio_demo.py",
+      "models/vc/base/vc_emilia_dataset.py",
+      "models/tts/maskgct/maskgct_utils.py",
+      "models/vc/vevo/vevo_utils.py",
+      "models/web/amphion_unified.py"
+    ],
+    "models/tts/maskgct/g2p/utils/front_utils.py": [
+      "models/tts/maskgct/g2p/g2p/mandarin.py"
+    ],
+    "models/tts/maskgct/g2p/utils/g2p.py": [
+      "models/tts/maskgct/g2p/g2p_generation.py"
+    ],
+    "models/tts/maskgct/llama_nar.py": [
+      "models/tts/maskgct/maskgct_t2s.py",
+      "models/tts/maskgct/maskgct_s2a.py"
+    ],
+    "models/tts/maskgct/maskgct_s2a.py": [
+      "models/web/api/models/manager.py",
+      "models/tts/maskgct/gradio_demo.py",
+      "models/tts/maskgct/maskgct_utils.py",
+      "models/web/amphion_unified.py"
+    ],
+    "models/tts/maskgct/maskgct_t2s.py": [
+      "models/web/api/models/manager.py",
+      "models/tts/maskgct/gradio_demo.py",
+      "models/tts/metis/metis_model.py",
+      "models/tts/maskgct/maskgct_utils.py",
+      "models/web/amphion_unified.py"
+    ],
+    "models/tts/maskgct/maskgct_utils.py": [
+      "models/tts/maskgct/maskgct_inference.py",
+      "models/tts/metis/audio_tokenizer.py",
+      "models/tts/metis/metis.py"
+    ],
+    "models/tts/metis/audio_tokenizer.py": [
+      "models/tts/metis/metis.py"
+    ],
+    "models/tts/metis/metis.py": [
+      "models/tts/metis/metis_infer_tts.py",
+      "models/web/api/models/manager.py",
+      "models/tts/metis/metis_infer_tse.py",
+      "models/tts/metis/metis_infer_se.py",
+      "models/tts/metis/metis_infer_vc.py",
+      "models/tts/metis/metis_infer_omni.py"
+    ],
+    "models/tts/metis/metis_model.py": [
+      "models/tts/metis/metis.py"
+    ],
+    "models/tts/naturalspeech2/diffusion.py": [
+      "models/tts/naturalspeech2/ns2.py"
+    ],
+    "models/tts/naturalspeech2/diffusion_flow.py": [
+      "models/tts/naturalspeech2/ns2.py"
+    ],
+    "models/tts/naturalspeech2/ns2.py": [
+      "models/tts/naturalspeech2/ns2_inference.py",
+      "models/tts/naturalspeech2/ns2_trainer.py"
+    ],
+    "models/tts/naturalspeech2/ns2_dataset.py": [
+      "models/tts/naturalspeech2/ns2_trainer.py"
+    ],
+    "models/tts/naturalspeech2/ns2_inference.py": [
+      "bins/tts/inference.py"
+    ],
+    "models/tts/naturalspeech2/ns2_loss.py": [
+      "models/tts/naturalspeech2/ns2_trainer.py"
+    ],
+    "models/tts/naturalspeech2/ns2_trainer.py": [
+      "bins/tts/train.py"
+    ],
+    "models/tts/naturalspeech2/prior_encoder.py": [
+      "models/tts/naturalspeech2/ns2.py"
+    ],
+    "models/tts/naturalspeech2/wavenet.py": [
+      "models/tts/naturalspeech2/diffusion.py",
+      "models/tts/naturalspeech2/ns2.py",
+      "models/tts/naturalspeech2/diffusion_flow.py"
+    ],
+    "models/tts/valle/valle.py": [
+      "models/tts/valle/valle_inference.py",
+      "models/tts/valle/valle_trainer.py"
+    ],
+    "models/tts/valle/valle_dataset.py": [
+      "models/tts/valle/valle_inference.py",
+      "models/tts/valle/valle_trainer.py"
+    ],
+    "models/tts/valle/valle_inference.py": [
+      "bins/tts/inference.py"
+    ],
+    "models/tts/valle/valle_trainer.py": [
+      "bins/tts/train.py"
+    ],
+    "models/tts/vits/vits.py": [
+      "models/tts/vits/vits_inference.py",
+      "models/svc/vits/vits.py",
+      "models/tts/vits/vits_trainer.py"
+    ],
+    "models/tts/vits/vits_dataset.py": [
+      "models/tts/vits/vits_inference.py",
+      "models/tts/vits/vits_trainer.py"
+    ],
+    "models/tts/vits/vits_inference.py": [
+      "bins/tts/inference.py"
+    ],
+    "models/tts/vits/vits_trainer.py": [
+      "bins/tts/train.py"
+    ],
+    "models/vc/Noro/noro_base_trainer.py": [
+      "models/vc/Noro/noro_trainer.py"
+    ],
+    "models/vc/Noro/noro_dataset.py": [
+      "models/vc/Noro/noro_trainer.py"
+    ],
+    "models/vc/Noro/noro_loss.py": [
+      "models/vc/Noro/noro_trainer.py"
+    ],
+    "models/vc/Noro/noro_model.py": [
+      "models/vc/Noro/noro_trainer.py",
+      "models/web/api/models/manager.py",
+      "models/vc/Noro/noro_inference.py"
+    ],
+    "models/vc/Noro/noro_trainer.py": [
+      "models/vc/Noro/noro_inference.py",
+      "bins/vc/Noro/train.py"
+    ],
+    "models/vc/autoregressive_transformer/ar_model.py": [
+      "models/vc/autoregressive_transformer/ar_trainer.py",
+      "models/vc/vevo/vevo_utils.py"
+    ],
+    "models/vc/autoregressive_transformer/ar_trainer.py": [
+      "bins/vc/train.py"
+    ],
+    "models/vc/autoregressive_transformer/global_encoder.py": [
+      "models/vc/autoregressive_transformer/ar_model.py"
+    ],
+    "models/vc/base/vc_emilia_dataset.py": [
+      "models/vc/flow_matching_transformer/fmt_trainer.py",
+      "models/codec/vevo/vqvae_trainer.py",
+      "models/vc/autoregressive_transformer/ar_trainer.py",
+      "models/codec/coco/coco_dataset.py"
+    ],
+    "models/vc/flow_matching_transformer/fmt_model.py": [
+      "models/vc/flow_matching_transformer/fmt_trainer.py",
+      "models/vc/vevo/vevo_utils.py"
+    ],
+    "models/vc/flow_matching_transformer/fmt_trainer.py": [
+      "bins/vc/train.py"
+    ],
+    "models/vc/flow_matching_transformer/llama_nar.py": [
+      "models/vc/flow_matching_transformer/fmt_model.py",
+      "models/svc/flow_matching_transformer/fmt_model.py"
+    ],
+    "models/vc/vevo/vevo_utils.py": [
+      "models/vc/vevo/infer_vevotts.py",
+      "models/vc/vevo/infer_vevostyle.py",
+      "models/svc/autoregressive_transformer/ar_model.py",
+      "models/web/api/models/manager.py",
+      "models/vc/vevo/infer_vevovoice.py",
+      "models/vc/vevo/infer_vevotimbre.py",
+      "models/vc/autoregressive_transformer/global_encoder.py",
+      "models/vc/autoregressive_transformer/ar_model.py",
+      "models/web/amphion_unified.py"
+    ],
+    "models/vocoders/diffusion/diffusion_vocoder_dataset.py": [
+      "models/vocoders/diffusion/diffusion_vocoder_trainer.py"
+    ],
+    "models/vocoders/diffusion/diffusion_vocoder_inference.py": [
+      "models/vocoders/diffusion/diffusion_vocoder_trainer.py"
+    ],
+    "models/vocoders/diffusion/diffusion_vocoder_trainer.py": [
+      "bins/vocoder/train.py"
+    ],
+    "models/vocoders/diffusion/diffwave/diffwave.py": [
+      "models/vocoders/diffusion/diffusion_vocoder_trainer.py"
+    ],
+    "models/vocoders/gan/discriminator/mpd.py": [
+      "models/svc/vits/vits_trainer.py",
+      "models/tts/jets/jets_trainer.py",
+      "models/tts/vits/vits_trainer.py",
+      "models/vocoders/gan/gan_vocoder_trainer.py",
+      "models/tts/jets/jets_loss.py"
+    ],
+    "models/vocoders/gan/discriminator/mrd.py": [
+      "models/vocoders/gan/gan_vocoder_trainer.py"
+    ],
+    "models/vocoders/gan/discriminator/msd.py": [
+      "models/vocoders/gan/discriminator/mpd.py",
+      "models/vocoders/gan/gan_vocoder_trainer.py"
+    ],
+    "models/vocoders/gan/discriminator/mssbcqtd.py": [
+      "models/vocoders/gan/gan_vocoder_trainer.py"
+    ],
+    "models/vocoders/gan/discriminator/msstftd.py": [
+      "models/vocoders/gan/gan_vocoder_trainer.py"
+    ],
+    "models/vocoders/gan/gan_vocoder_dataset.py": [
+      "models/vocoders/gan/gan_vocoder_trainer.py"
+    ],
+    "models/vocoders/gan/gan_vocoder_inference.py": [
+      "models/vocoders/gan/gan_vocoder_trainer.py"
+    ],
+    "models/vocoders/gan/gan_vocoder_trainer.py": [
+      "bins/vocoder/train.py"
+    ],
+    "models/vocoders/gan/generator/__init__.py": [
+      "models/vocoders/vocoder_inference.py",
+      "models/codec/codec_inference.py"
+    ],
+    "models/vocoders/gan/generator/apnet.py": [
+      "models/svc/vits/vits.py",
+      "models/vocoders/gan/gan_vocoder_trainer.py"
+    ],
+    "models/vocoders/gan/generator/bigvgan.py": [
+      "models/svc/vits/vits.py",
+      "models/web/api/models/bigvgan_loader.py",
+      "models/vocoders/gan/gan_vocoder_trainer.py"
+    ],
+    "models/vocoders/gan/generator/hifigan.py": [
+      "models/tts/jets/jets.py",
+      "models/svc/vits/vits.py",
+      "models/vocoders/gan/gan_vocoder_trainer.py",
+      "models/tts/vits/vits.py"
+    ],
+    "models/vocoders/gan/generator/melgan.py": [
+      "models/svc/vits/vits.py",
+      "models/vocoders/gan/gan_vocoder_trainer.py"
+    ],
+    "models/vocoders/gan/generator/nsfhifigan.py": [
+      "models/svc/vits/vits.py",
+      "models/vocoders/gan/gan_vocoder_trainer.py"
+    ],
+    "models/vocoders/vocoder_dataset.py": [
+      "models/vocoders/vocoder_inference.py",
+      "models/vocoders/vocoder_trainer.py",
+      "models/vocoders/diffusion/diffusion_vocoder_dataset.py",
+      "models/vocoders/gan/gan_vocoder_dataset.py",
+      "models/codec/codec_inference.py"
+    ],
+    "models/vocoders/vocoder_inference.py": [
+      "models/tts/jets/jets_inference.py",
+      "models/base/new_inference.py",
+      "models/tts/base/tts_inferece.py",
+      "models/base/base_inference.py",
+      "bins/vocoder/inference.py",
+      "models/tts/fastspeech2/fs2_inference.py"
+    ],
+    "models/vocoders/vocoder_sampler.py": [
+      "models/vocoders/vocoder_trainer.py"
+    ],
+    "models/vocoders/vocoder_trainer.py": [
+      "models/vocoders/diffusion/diffusion_vocoder_trainer.py",
+      "models/vocoders/gan/gan_vocoder_trainer.py"
+    ],
+    "models/vocoders/vocos/vocos_dataset.py": [
+      "models/vocoders/vocos/vocos_trainer.py"
+    ],
+    "models/vocoders/vocos/vocos_trainer.py": [
+      "bins/vocoder/train.py"
+    ],
+    "models/web/api/routes/__init__.py": [
+      "models/web/api/routes/__init__.py"
+    ],
+    "modules/__init__.py": [
+      "models/tts/vits/vits.py"
+    ],
+    "modules/activation_functions/__init__.py": [
+      "modules/diffusion/bidilconv/residual_block.py",
+      "models/vocoders/gan/generator/bigvgan.py"
+    ],
+    "modules/anti_aliasing/__init__.py": [
+      "models/vocoders/gan/generator/bigvgan.py"
+    ],
+    "modules/base/base_module.py": [
+      "modules/transformer/attentions.py",
+      "modules/duration_predictor/standard_duration_predictor.py",
+      "modules/flow/modules.py",
+      "models/tts/vits/vits.py"
+    ],
+    "modules/dac/__init__.py": [
+      "modules/dac/__init__.py"
+    ],
+    "modules/dac/model/dac.py": [
+      "models/codec/facodec/modules/commons.py"
+    ],
+    "modules/dac/model/discriminator.py": [
+      "models/codec/facodec/modules/commons.py"
+    ],
+    "modules/dac/model/encodec.py": [
+      "models/tts/naturalspeech2/ns2_inference.py",
+      "models/tts/naturalspeech2/ns2.py",
+      "models/codec/facodec/modules/quantize.py",
+      "utils/tokenizer.py",
+      "models/codec/facodec/modules/wavenet.py",
+      "models/tts/debatts/utils/tokenizer.py"
+    ],
+    "modules/dac/nn/__init__.py": [
+      "modules/dac/nn/__init__.py"
+    ],
+    "modules/dac/nn/loss.py": [
+      "models/codec/facodec/facodec_trainer.py"
+    ],
+    "modules/dac/nn/quantize.py": [
+      "models/codec/facodec/modules/quantize.py"
+    ],
+    "modules/diffusion/__init__.py": [
+      "models/svc/diffusion/diffusion_wrapper.py"
+    ],
+    "modules/diffusion/karras/random_utils.py": [
+      "modules/diffusion/karras/karras_diffusion.py"
+    ],
+    "modules/distributions/distributions.py": [
+      "models/tta/autoencoder/autoencoder.py"
+    ],
+    "modules/duration_predictor/standard_duration_predictor.py": [
+      "models/tts/vits/vits.py"
+    ],
+    "modules/duration_predictor/stochastic_duration_predictor.py": [
+      "models/tts/vits/vits.py"
+    ],
+    "modules/encoder/__init__.py": [
+      "models/tts/valle/valle.py"
+    ],
+    "modules/encoder/condition_encoder.py": [
+      "models/svc/diffusion/diffusion_inference.py",
+      "models/svc/comosvc/comosvc_inference.py",
+      "models/svc/diffusion/diffusion_trainer.py",
+      "models/svc/transformer/transformer_trainer.py",
+      "models/svc/comosvc/comosvc_trainer.py",
+      "models/svc/vits/vits.py",
+      "models/svc/transformer/transformer_inference.py"
+    ],
+    "modules/encoder/position_encoder.py": [
+      "modules/diffusion/unet/unet.py",
+      "models/svc/diffusion/diffusion_wrapper.py"
+    ],
+    "modules/flow/modules.py": [
+      "modules/duration_predictor/stochastic_duration_predictor.py",
+      "models/tts/vits/vits.py"
+    ],
+    "modules/general/__init__.py": [
+      "models/tts/valle/valle.py"
+    ],
+    "modules/general/scaling.py": [
+      "modules/norms/norm.py",
+      "modules/transformer/transformer.py"
+    ],
+    "modules/general/utils.py": [
+      "modules/diffusion/bidilconv/residual_block.py",
+      "modules/diffusion/unet/attention.py",
+      "modules/encoder/position_encoder.py",
+      "modules/diffusion/bidilconv/bidilated_conv.py",
+      "modules/diffusion/unet/resblock.py",
+      "modules/diffusion/unet/unet.py",
+      "modules/activation_functions/gated_activation_unit.py"
+    ],
+    "modules/naturalpseech2/transformers.py": [
+      "evaluation/metrics/similarity/speaker_similarity.py",
+      "models/base/base_trainer.py",
+      "models/codec/dualcodec/dualcodec/model_tts/valle_nar/valle_nar_model.py",
+      "models/codec/facodec/facodec_trainer.py",
+      "models/svc/autoregressive_transformer/ar_model.py",
+      "models/tta/picoaudio/picoaudio/runner/controllable_train.py",
+      "models/web/api/models/manager.py",
+      "models/tts/naturalspeech2/ns2.py",
+      "models/codec/dualcodec/dualcodec/infer/valle/f5tts_gradio.py",
+      "models/codec/dualcodec/dualcodec/model_tts/voicebox/llama_nar.py",
+      "models/vc/flow_matching_transformer/llama_nar.py",
+      "utils/mert.py",
+      "models/tta/picoaudio/picoaudio/audioldm/clap/training/infer_demo.py",
+      "models/tta/ldm/audioldm_inference.py",
+      "models/codec/dualcodec/dualcodec/dataset/processor.py",
+      "models/codec/dualcodec/dualcodec/infer/dualcodec/inference_with_semantic.py",
+      "models/tts/debatts/t2s_sft_dataset.py",
+      "models/tts/maskgct/gradio_demo.py",
+      "models/tta/picoaudio/picoaudio/audioldm/clap/open_clip/bert.py",
+      "models/tta/ldm/audioldm_trainer.py",
+      "models/tts/debatts/t2s_model.py",
+      "models/codec/dualcodec/dualcodec/utils/utils_infer.py",
+      "models/tts/debatts/try_inference_small_samples.py",
+      "models/tts/maskgct/llama_nar.py",
+      "models/vc/base/vc_emilia_dataset.py",
+      "models/tta/picoaudio/picoaudio/audioldm/clap/encoders.py",
+      "models/vc/autoregressive_transformer/global_encoder.py",
+      "utils/whisper_transcription.py",
+      "models/tts/metis/audio_tokenizer.py",
+      "processors/content_extractor.py",
+      "models/tts/maskgct/g2p/g2p/chinese_model_g2p.py",
+      "models/vc/autoregressive_transformer/ar_model.py",
+      "models/tta/picoaudio/picoaudio/models/controllable_diffusion.py",
+      "models/tts/naturalspeech2/prior_encoder.py",
+      "models/tta/ldm/audioldm_dataset.py",
+      "models/svc/flow_matching_transformer/fmt_trainer.py",
+      "models/tta/picoaudio/picoaudio/audioldm/clap/training/data.py",
+      "models/tts/maskgct/maskgct_utils.py",
+      "models/web/amphion_unified.py",
+      "models/tta/picoaudio/picoaudio/audioldm/clap/open_clip/model.py",
+      "models/vocoders/vocos/vocos_trainer.py"
+    ],
+    "modules/neural_source_filter/__init__.py": [
+      "models/vocoders/gan/generator/nsfhifigan.py"
+    ],
+    "modules/norms/__init__.py": [
+      "models/tts/valle/valle.py",
+      "modules/transformer/transformer.py"
+    ],
+    "modules/transformer/Layers.py": [
+      "models/tts/jets/jets.py",
+      "models/tts/fastspeech2/fs2.py"
+    ],
+    "modules/transformer/Models.py": [
+      "models/tts/jets/jets.py",
+      "models/tts/fastspeech2/fs2.py"
+    ],
+    "modules/transformer/__init__.py": [
+      "models/tts/valle/valle.py",
+      "modules/transformer/transformer.py"
+    ],
+    "modules/transformer/attentions.py": [
+      "models/svc/vits/vits.py",
+      "models/tts/vits/vits.py"
+    ],
+    "modules/transformer/transformer.py": [
+      "models/tts/valle/valle.py"
+    ],
+    "modules/transformer/transforms.py": [
+      "modules/flow/modules.py"
+    ],
+    "modules/vocoder_blocks/__init__.py": [
+      "models/vocoders/gan/generator/apnet.py",
+      "models/vocoders/gan/discriminator/mpd.py",
+      "models/vocoders/gan/generator/bigvgan.py",
+      "models/vocoders/gan/discriminator/msstftd.py",
+      "models/vocoders/gan/generator/nsfhifigan.py",
+      "models/vocoders/gan/discriminator/msd.py",
+      "models/vocoders/gan/discriminator/mssbcqtd.py",
+      "models/vocoders/gan/generator/hifigan.py"
+    ],
+    "modules/wenet_extractor/cif/predictor.py": [
+      "modules/wenet_extractor/utils/init_model.py",
+      "modules/wenet_extractor/paraformer/paraformer.py"
+    ],
+    "modules/wenet_extractor/efficient_conformer/attention.py": [
+      "modules/wenet_extractor/efficient_conformer/encoder.py"
+    ],
+    "modules/wenet_extractor/efficient_conformer/convolution.py": [
+      "modules/wenet_extractor/efficient_conformer/encoder.py"
+    ],
+    "modules/wenet_extractor/efficient_conformer/encoder.py": [
+      "modules/wenet_extractor/utils/init_model.py"
+    ],
+    "modules/wenet_extractor/efficient_conformer/encoder_layer.py": [
+      "modules/wenet_extractor/efficient_conformer/encoder.py"
+    ],
+    "modules/wenet_extractor/efficient_conformer/subsampling.py": [
+      "modules/wenet_extractor/efficient_conformer/encoder.py"
+    ],
+    "modules/wenet_extractor/paraformer/paraformer.py": [
+      "modules/wenet_extractor/utils/init_model.py"
+    ],
+    "modules/wenet_extractor/paraformer/search/beam_search.py": [
+      "modules/wenet_extractor/paraformer/paraformer.py"
+    ],
+    "modules/wenet_extractor/paraformer/search/ctc.py": [
+      "modules/wenet_extractor/paraformer/search/beam_search.py"
+    ],
+    "modules/wenet_extractor/paraformer/search/ctc_prefix_score.py": [
+      "modules/wenet_extractor/paraformer/search/ctc.py"
+    ],
+    "modules/wenet_extractor/paraformer/search/scorer_interface.py": [
+      "modules/wenet_extractor/paraformer/search/beam_search.py",
+      "modules/wenet_extractor/paraformer/search/ctc.py"
+    ],
+    "modules/wenet_extractor/paraformer/utils.py": [
+      "modules/wenet_extractor/paraformer/search/beam_search.py"
+    ],
+    "modules/wenet_extractor/squeezeformer/attention.py": [
+      "modules/wenet_extractor/squeezeformer/encoder.py"
+    ],
+    "modules/wenet_extractor/squeezeformer/conv2d.py": [
+      "modules/wenet_extractor/squeezeformer/subsampling.py"
+    ],
+    "modules/wenet_extractor/squeezeformer/convolution.py": [
+      "modules/wenet_extractor/squeezeformer/encoder.py"
+    ],
+    "modules/wenet_extractor/squeezeformer/encoder.py": [
+      "modules/wenet_extractor/utils/init_model.py"
+    ],
+    "modules/wenet_extractor/squeezeformer/encoder_layer.py": [
+      "modules/wenet_extractor/squeezeformer/encoder.py"
+    ],
+    "modules/wenet_extractor/squeezeformer/positionwise_feed_forward.py": [
+      "modules/wenet_extractor/squeezeformer/encoder.py"
+    ],
+    "modules/wenet_extractor/squeezeformer/subsampling.py": [
+      "modules/wenet_extractor/squeezeformer/encoder.py"
+    ],
+    "modules/wenet_extractor/transducer/joint.py": [
+      "modules/wenet_extractor/utils/init_model.py"
+    ],
+    "modules/wenet_extractor/transducer/predictor.py": [
+      "modules/wenet_extractor/transducer/transducer.py",
+      "modules/wenet_extractor/utils/init_model.py"
+    ],
+    "modules/wenet_extractor/transducer/search/greedy_search.py": [
+      "modules/wenet_extractor/transducer/transducer.py"
+    ],
+    "modules/wenet_extractor/transducer/search/prefix_beam_search.py": [
+      "modules/wenet_extractor/transducer/transducer.py"
+    ],
+    "modules/wenet_extractor/transducer/transducer.py": [
+      "modules/wenet_extractor/utils/init_model.py"
+    ],
+    "modules/wenet_extractor/transformer/asr_model.py": [
+      "modules/wenet_extractor/transducer/transducer.py",
+      "modules/wenet_extractor/utils/init_model.py",
+      "modules/wenet_extractor/paraformer/paraformer.py"
+    ],
+    "modules/wenet_extractor/transformer/attention.py": [
+      "modules/wenet_extractor/squeezeformer/attention.py",
+      "modules/wenet_extractor/efficient_conformer/attention.py",
+      "modules/wenet_extractor/squeezeformer/encoder.py",
+      "modules/wenet_extractor/transformer/encoder.py",
+      "modules/wenet_extractor/transformer/decoder.py",
+      "modules/wenet_extractor/efficient_conformer/encoder.py"
+    ],
+    "modules/wenet_extractor/transformer/cmvn.py": [
+      "modules/wenet_extractor/utils/init_model.py"
+    ],
+    "modules/wenet_extractor/transformer/convolution.py": [
+      "modules/wenet_extractor/transformer/encoder.py"
+    ],
+    "modules/wenet_extractor/transformer/ctc.py": [
+      "modules/wenet_extractor/transducer/transducer.py",
+      "modules/wenet_extractor/transformer/asr_model.py",
+      "modules/wenet_extractor/utils/init_model.py",
+      "modules/wenet_extractor/paraformer/paraformer.py"
+    ],
+    "modules/wenet_extractor/transformer/decoder.py": [
+      "modules/wenet_extractor/transducer/transducer.py",
+      "modules/wenet_extractor/transformer/asr_model.py",
+      "modules/wenet_extractor/utils/init_model.py",
+      "modules/wenet_extractor/paraformer/paraformer.py"
+    ],
+    "modules/wenet_extractor/transformer/decoder_layer.py": [
+      "modules/wenet_extractor/transformer/decoder.py"
+    ],
+    "modules/wenet_extractor/transformer/embedding.py": [
+      "modules/wenet_extractor/squeezeformer/encoder.py",
+      "modules/wenet_extractor/transformer/encoder.py",
+      "modules/wenet_extractor/transformer/decoder.py",
+      "modules/wenet_extractor/efficient_conformer/encoder.py"
+    ],
+    "modules/wenet_extractor/transformer/encoder.py": [
+      "modules/wenet_extractor/transformer/asr_model.py",
+      "modules/wenet_extractor/utils/init_model.py",
+      "modules/wenet_extractor/paraformer/paraformer.py"
+    ],
+    "modules/wenet_extractor/transformer/encoder_layer.py": [
+      "modules/wenet_extractor/transformer/encoder.py",
+      "modules/wenet_extractor/efficient_conformer/encoder.py"
+    ],
+    "modules/wenet_extractor/transformer/label_smoothing_loss.py": [
+      "modules/wenet_extractor/transducer/transducer.py",
+      "modules/wenet_extractor/transformer/asr_model.py"
+    ],
+    "modules/wenet_extractor/transformer/positionwise_feed_forward.py": [
+      "modules/wenet_extractor/transformer/encoder.py",
+      "modules/wenet_extractor/transformer/decoder.py",
+      "modules/wenet_extractor/efficient_conformer/encoder.py"
+    ],
+    "modules/wenet_extractor/transformer/subsampling.py": [
+      "modules/wenet_extractor/transformer/encoder.py",
+      "modules/wenet_extractor/efficient_conformer/subsampling.py",
+      "modules/wenet_extractor/efficient_conformer/encoder.py",
+      "modules/wenet_extractor/squeezeformer/subsampling.py"
+    ],
+    "modules/wenet_extractor/transformer/swish.py": [
+      "modules/wenet_extractor/utils/common.py"
+    ],
+    "modules/wenet_extractor/utils/checkpoint.py": [
+      "processors/content_extractor.py"
+    ],
+    "modules/wenet_extractor/utils/cmvn.py": [
+      "modules/wenet_extractor/utils/init_model.py"
+    ],
+    "modules/wenet_extractor/utils/common.py": [
+      "modules/wenet_extractor/transducer/predictor.py",
+      "modules/wenet_extractor/transducer/search/prefix_beam_search.py",
+      "modules/wenet_extractor/squeezeformer/encoder.py",
+      "modules/wenet_extractor/transducer/transducer.py",
+      "modules/wenet_extractor/transformer/asr_model.py",
+      "modules/wenet_extractor/transformer/encoder.py",
+      "modules/wenet_extractor/transducer/joint.py",
+      "modules/wenet_extractor/efficient_conformer/encoder.py",
+      "modules/wenet_extractor/paraformer/paraformer.py"
+    ],
+    "modules/wenet_extractor/utils/init_model.py": [
+      "processors/content_extractor.py"
+    ],
+    "modules/wenet_extractor/utils/mask.py": [
+      "modules/wenet_extractor/squeezeformer/encoder.py",
+      "modules/wenet_extractor/transformer/asr_model.py",
+      "modules/wenet_extractor/transformer/encoder.py",
+      "modules/wenet_extractor/transformer/decoder.py",
+      "modules/wenet_extractor/efficient_conformer/encoder.py",
+      "modules/wenet_extractor/paraformer/paraformer.py",
+      "modules/wenet_extractor/cif/predictor.py"
+    ],
+    "optimizer/optimizers.py": [
+      "models/base/new_trainer.py",
+      "models/tts/fastspeech2/fs2_trainer.py",
+      "models/tts/jets/jets_trainer.py",
+      "models/tts/valle/valle_trainer.py"
+    ],
+    "preprocessors/Emilia/utils/tool.py": [
+      "preprocessors/Emilia/main.py",
+      "preprocessors/Emilia/main_multi.py"
+    ],
+    "preprocessors/__init__.py": [
+      "preprocessors/svcc.py",
+      "preprocessors/cocoeval.py",
+      "preprocessors/popcs.py",
+      "preprocessors/lijian.py",
+      "preprocessors/vctksample.py",
+      "preprocessors/nus48e.py",
+      "preprocessors/popbutfy.py",
+      "preprocessors/opera.py",
+      "preprocessors/opensinger.py",
+      "preprocessors/m4singer.py",
+      "preprocessors/coco.py",
+      "preprocessors/kising.py",
+      "preprocessors/csd.py",
+      "preprocessors/processor.py"
+    ],
+    "preprocessors/metadata.py": [
+      "bins/svc/preprocess.py",
+      "bins/tta/preprocess.py",
+      "bins/tts/preprocess.py",
+      "processors/acoustic_extractor.py",
+      "bins/vocoder/preprocess.py"
+    ],
+    "preprocessors/processor.py": [
+      "bins/svc/preprocess.py",
+      "bins/tta/preprocess.py",
+      "bins/tts/preprocess.py",
+      "bins/vocoder/preprocess.py"
+    ],
+    "processors/__init__.py": [
+      "models/vocoders/vocoder_inference.py",
+      "bins/svc/preprocess.py",
+      "models/codec/codec_inference.py",
+      "bins/tta/preprocess.py",
+      "bins/svc/inference.py",
+      "bins/tts/preprocess.py",
+      "bins/vocoder/preprocess.py"
+    ],
+    "processors/acoustic_extractor.py": [
+      "models/base/base_dataset.py",
+      "models/svc/base/svc_dataset.py",
+      "models/tts/naturalspeech2/ns2_dataset.py",
+      "models/tts/base/tts_dataset.py",
+      "models/svc/base/svc_trainer.py"
+    ],
+    "processors/audio_features_extractor.py": [
+      "models/svc/base/svc_trainer.py"
+    ],
+    "processors/content_extractor.py": [
+      "models/vc/Noro/noro_trainer.py",
+      "models/svc/base/svc_dataset.py",
+      "models/vc/Noro/noro_inference.py",
+      "models/tts/base/tts_dataset.py",
+      "processors/audio_features_extractor.py"
+    ],
+    "processors/phone_extractor.py": [
+      "models/tts/valle/valle_inference.py",
+      "models/tts/jets/jets_inference.py",
+      "models/tts/vits/vits_inference.py",
+      "models/tts/fastspeech2/fs2_inference.py"
+    ],
+    "schedulers/scheduler.py": [
+      "models/tts/base/tts_trainer.py",
+      "models/tts/valle/valle_trainer.py"
+    ],
+    "text/__init__.py": [
+      "models/tts/naturalspeech2/ns2_inference.py",
+      "text/text_token_collation.py",
+      "models/base/base_dataset.py",
+      "text/symbols.py",
+      "models/tts/jets/jets_dataset.py",
+      "text/__init__.py",
+      "models/tts/vits/vits_dataset.py",
+      "preprocessors/ljspeech.py",
+      "models/tts/fastspeech2/fs2_dataset.py",
+      "models/tts/naturalspeech2/ns2_dataset.py",
+      "models/tts/base/tts_dataset.py"
+    ],
+    "text/cmudict.py": [
+      "models/tts/naturalspeech2/ns2_inference.py",
+      "models/tts/naturalspeech2/ns2_dataset.py"
+    ],
+    "text/g2p.py": [
+      "models/tts/naturalspeech2/ns2_inference.py"
+    ],
+    "text/g2p_module.py": [
+      "models/tts/valle/valle_inference.py",
+      "processors/phone_extractor.py"
+    ],
+    "text/numbers.py": [
+      "utils/hparam.py",
+      "modules/norms/norm.py",
+      "models/tts/debatts/utils/hparam.py"
+    ],
+    "text/symbol_table.py": [
+      "text/text_token_collation.py",
+      "processors/phone_extractor.py"
+    ],
+    "text/symbols.py": [
+      "text/__init__.py",
+      "modules/transformer/Models.py"
+    ],
+    "text/text_token_collation.py": [
+      "models/tts/valle/valle_inference.py",
+      "models/base/base_dataset.py",
+      "models/tts/jets/jets_inference.py",
+      "models/tts/vits/vits_dataset.py",
+      "models/tts/vits/vits_inference.py",
+      "models/tts/base/tts_dataset.py",
+      "models/tts/fastspeech2/fs2_inference.py"
+    ],
+    "utils/__init__.py": [
+      "preprocessors/ljspeech.py",
+      "processors/acoustic_extractor.py"
+    ],
+    "utils/audio.py": [
+      "utils/audio_slicer.py"
+    ],
+    "utils/audio_slicer.py": [
+      "preprocessors/cocoeval.py",
+      "preprocessors/lijian.py",
+      "models/svc/vits/vits_inference.py",
+      "preprocessors/nus48e.py",
+      "preprocessors/opera.py",
+      "models/base/new_inference.py",
+      "bins/svc/inference.py",
+      "preprocessors/cdmusiceval.py"
+    ],
+    "utils/cut_by_vad.py": [
+      "preprocessors/librilight.py"
+    ],
+    "utils/data_utils.py": [
+      "models/codec/facodec/facodec_dataset.py",
+      "models/codec/codec_dataset.py",
+      "models/vocoders/diffusion/diffusion_vocoder_trainer.py",
+      "models/base/base_dataset.py",
+      "models/tts/jets/jets_dataset.py",
+      "models/vocoders/diffusion/diffusion_vocoder_dataset.py",
+      "models/vocoders/gan/gan_vocoder_dataset.py",
+      "models/vc/Noro/noro_dataset.py",
+      "models/tts/vits/vits_inference.py",
+      "models/tts/fastspeech2/fs2_dataset.py",
+      "models/tta/autoencoder/autoencoder_dataset.py",
+      "models/svc/base/svc_dataset.py",
+      "models/vocoders/gan/gan_vocoder_trainer.py",
+      "models/tta/ldm/audioldm_dataset.py",
+      "models/tts/naturalspeech2/ns2_dataset.py",
+      "models/tts/base/tts_dataset.py",
+      "models/vocoders/vocoder_dataset.py",
+      "processors/acoustic_extractor.py",
+      "models/tts/valle/valle_dataset.py"
+    ],
+    "utils/dsp.py": [
+      "processors/acoustic_extractor.py"
+    ],
+    "utils/f0.py": [
+      "models/vc/Noro/noro_trainer.py",
+      "evaluation/metrics/f0/f0_rmse.py",
+      "models/web/api/models/manager.py",
+      "evaluation/metrics/f0/f0_corr.py",
+      "evaluation/metrics/f0/f0_pearson_coefficients.py",
+      "evaluation/metrics/f0/v_uv_f1.py",
+      "evaluation/features/singing_power_ratio.py",
+      "models/codec/coco/coco_dataset.py",
+      "modules/encoder/condition_encoder.py",
+      "models/vc/Noro/noro_inference.py",
+      "processors/audio_features_extractor.py"
+    ],
+    "utils/hparam.py": [
+      "utils/util.py",
+      "models/tts/debatts/utils/util.py"
+    ],
+    "utils/io.py": [
+      "models/codec/speechtokenizer/modules/quantization/ac.py",
+      "models/vocoders/vocoder_inference.py",
+      "models/vocoders/diffusion/diffusion_vocoder_trainer.py",
+      "models/vocoders/dsp/world/world.py",
+      "preprocessors/lijian.py",
+      "models/codec/dualcodec/dualcodec/dataset/processor.py",
+      "models/tts/jets/jets_inference.py",
+      "models/svc/vits/vits_inference.py",
+      "preprocessors/nus48e.py",
+      "models/tts/debatts/t2s_sft_dataset.py",
+      "models/codec/codec_inference.py",
+      "preprocessors/opera.py",
+      "models/base/new_inference.py",
+      "models/tts/jets/jets_trainer.py",
+      "models/codec/dualcodec/dualcodec/app.py",
+      "preprocessors/pjs.py",
+      "models/vocoders/gan/gan_vocoder_trainer.py",
+      "models/tts/base/tts_inferece.py",
+      "utils/audio_slicer.py",
+      "models/tta/picoaudio/picoaudio/audioldm/clap/training/data.py",
+      "models/tts/maskgct/g2p/g2p/japanese.py",
+      "preprocessors/csd.py",
+      "models/tts/fastspeech2/fs2_inference.py",
+      "processors/acoustic_extractor.py"
+    ],
+    "utils/io_optim.py": [
+      "processors/content_extractor.py"
+    ],
+    "utils/mel.py": [
+      "models/vc/Noro/noro_trainer.py",
+      "models/vocoders/diffusion/diffusion_vocoder_trainer.py",
+      "models/web/api/models/manager.py",
+      "models/svc/vits/vits_trainer.py",
+      "evaluation/features/singing_power_ratio.py",
+      "models/tts/vits/vits_trainer.py",
+      "models/vocoders/gan/gan_vocoder_trainer.py",
+      "models/vc/Noro/noro_inference.py",
+      "processors/audio_features_extractor.py",
+      "processors/acoustic_extractor.py"
+    ],
+    "utils/mfa_prepare.py": [
+      "preprocessors/librilight.py"
+    ],
+    "utils/ssim.py": [
+      "models/svc/transformer/transformer_trainer.py",
+      "modules/diffusion/karras/karras_diffusion.py",
+      "models/svc/comosvc/comosvc.py"
+    ],
+    "utils/stft.py": [
+      "processors/acoustic_extractor.py"
+    ],
+    "utils/tokenizer.py": [
+      "models/tts/valle/valle_inference.py",
+      "processors/acoustic_extractor.py",
+      "models/tts/valle/valle_dataset.py"
+    ],
+    "utils/topk_sampling.py": [
+      "models/tts/valle/valle.py",
+      "models/tts/debatts/t2s_model.py"
+    ],
+    "utils/util.py": [
+      "models/tts/naturalspeech2/ns2_inference.py",
+      "models/tts/jets/jets.py",
+      "models/vc/Noro/noro_trainer.py",
+      "models/base/base_trainer.py",
+      "preprocessors/svcceval.py",
+      "preprocessors/svcc.py",
+      "preprocessors/cocoeval.py",
+      "models/vocoders/diffusion/diffusion_vocoder_trainer.py",
+      "processors/data_augment.py",
+      "models/vocoders/gan/gan_vocoder_inference.py",
+      "preprocessors/vocalist.py",
+      "models/svc/vevosing/vevosing_utils.py",
+      "models/tts/metis/metis_infer_tts.py",
+      "evaluation/metrics/f0/f0_rmse.py",
+      "models/web/api/models/manager.py",
+      "preprocessors/popcs.py",
+      "preprocessors/lijian.py",
+      "preprocessors/hifitts.py",
+      "modules/transformer/attentions.py",
+      "bins/tta/inference.py",
+      "models/tts/valle/valle.py",
+      "models/tts/metis/metis_infer_tse.py",
+      "models/tts/jets/jets_inference.py",
+      "preprocessors/librilight.py",
+      "evaluation/metrics/f0/f0_pearson_coefficients.py",
+      "bins/svc/preprocess.py",
+      "bins/svc/train.py",
+      "preprocessors/nus48e.py",
+      "bins/vocoder/train.py",
+      "bins/vc/train.py",
+      "preprocessors/popbutfy.py",
+      "bins/tta/preprocess.py",
+      "bins/tts/inference.py",
+      "preprocessors/opera.py",
+      "models/tts/maskgct/gradio_demo.py",
+      "bins/tta/train_tta.py",
+      "preprocessors/ljspeech.py",
+      "preprocessors/vctk.py",
+      "modules/flow/modules.py",
+      "models/base/new_inference.py",
+      "models/tts/naturalspeech2/ns2_trainer.py",
+      "preprocessors/ljspeech_vocoder.py",
+      "preprocessors/opensinger.py",
+      "models/tts/metis/metis_infer_se.py",
+      "evaluation/metrics/f0/v_uv_f1.py",
+      "models/tts/debatts/try_inference_small_samples.py",
+      "models/svc/vits/vits.py",
+      "evaluation/features/singing_power_ratio.py",
+      "preprocessors/pjs.py",
+      "preprocessors/libritts.py",
+      "bins/codec/inference.py",
+      "bins/svc/inference.py",
+      "models/tts/metis/audio_tokenizer.py",
+      "preprocessors/m4singer.py",
+      "bins/codec/train.py",
+      "models/tts/metis/metis_infer_vc.py",
+      "models/tts/vits/vits_trainer.py",
+      "models/vocoders/gan/gan_vocoder_trainer.py",
+      "models/vocoders/diffusion/diffusion_vocoder_inference.py",
+      "preprocessors/coco.py",
+      "models/tts/base/tts_inferece.py",
+      "models/tts/metis/metis_infer_omni.py",
+      "preprocessors/opencpop.py",
+      "models/vc/Noro/noro_inference.py",
+      "models/base/base_inference.py",
+      "preprocessors/kising.py",
+      "bins/vocoder/inference.py",
+      "bins/vc/Noro/train.py",
+      "models/svc/transformer/conformer.py",
+      "bins/tts/preprocess.py",
+      "bins/tts/train.py",
+      "preprocessors/cdmusiceval.py",
+      "models/tts/vits/vits.py",
+      "preprocessors/csd.py",
+      "models/tts/maskgct/maskgct_utils.py",
+      "models/vc/vevo/vevo_utils.py",
+      "models/web/amphion_unified.py",
+      "preprocessors/customsvcdataset.py",
+      "models/vocoders/vocos/vocos_trainer.py",
+      "models/tts/fastspeech2/fs2_inference.py",
+      "processors/acoustic_extractor.py",
+      "bins/vocoder/preprocess.py"
+    ],
+    "utils/whisper_transcription.py": [
+      "preprocessors/librilight.py"
+    ],
+    "visualization/SingVisio/webpage/tailwind.config.js": [
+      "visualization/SingVisio/webpage/index.html"
+    ]
+  },
+  "imports": {
+    "bins/calc_metrics.py": [
+      "evaluation/metrics/energy/energy_rmse.py",
+      "evaluation/metrics/energy/energy_pearson_coefficients.py",
+      "evaluation/metrics/f0/f0_pearson_coefficients.py",
+      "evaluation/metrics/f0/f0_periodicity_rmse.py",
+      "evaluation/metrics/f0/f0_rmse.py",
+      "evaluation/metrics/f0/v_uv_f1.py",
+      "evaluation/metrics/intelligibility/character_error_rate.py",
+      "evaluation/metrics/intelligibility/word_error_rate.py",
+      "evaluation/metrics/similarity/speaker_similarity.py",
+      "evaluation/metrics/spectrogram/frechet_distance.py",
+      "evaluation/metrics/spectrogram/mel_cepstral_distortion.py",
+      "evaluation/metrics/spectrogram/multi_resolution_stft_distance.py",
+      "evaluation/metrics/spectrogram/pesq.py",
+      "evaluation/metrics/spectrogram/scale_invariant_signal_to_distortion_ratio.py",
+      "evaluation/metrics/spectrogram/scale_invariant_signal_to_noise_ratio.py",
+      "evaluation/metrics/spectrogram/short_time_objective_intelligibility.py"
+    ],
+    "bins/codec/inference.py": [
+      "models/codec/facodec/facodec_inference.py",
+      "utils/util.py"
+    ],
+    "bins/codec/train.py": [
+      "models/codec/facodec/facodec_trainer.py",
+      "models/codec/vevo/vqvae_trainer.py",
+      "models/codec/coco/rep_coco_trainer.py",
+      "utils/util.py"
+    ],
+    "bins/svc/inference.py": [
+      "models/svc/diffusion/diffusion_inference.py",
+      "models/svc/comosvc/comosvc_inference.py",
+      "models/svc/transformer/transformer_inference.py",
+      "models/svc/vits/vits_inference.py",
+      "utils/util.py",
+      "utils/audio_slicer.py",
+      "processors/__init__.py"
+    ],
+    "bins/svc/preprocess.py": [
+      "utils/util.py",
+      "preprocessors/processor.py",
+      "preprocessors/metadata.py",
+      "processors/__init__.py"
+    ],
+    "bins/svc/train.py": [
+      "models/svc/diffusion/diffusion_trainer.py",
+      "models/svc/comosvc/comosvc_trainer.py",
+      "models/svc/transformer/transformer_trainer.py",
+      "models/svc/vits/vits_trainer.py",
+      "models/svc/flow_matching_transformer/fmt_trainer.py",
+      "models/svc/autoregressive_transformer/ar_trainer.py",
+      "utils/util.py"
+    ],
+    "bins/tta/inference.py": [
+      "models/tta/ldm/audioldm_inference.py",
+      "utils/util.py"
+    ],
+    "bins/tta/preprocess.py": [
+      "utils/util.py",
+      "preprocessors/processor.py",
+      "preprocessors/metadata.py",
+      "processors/__init__.py"
+    ],
+    "bins/tta/train_tta.py": [
+      "models/tta/autoencoder/autoencoder_trainer.py",
+      "models/tta/ldm/audioldm_trainer.py",
+      "utils/util.py"
+    ],
+    "bins/tts/inference.py": [
+      "models/tts/fastspeech2/fs2_inference.py",
+      "models/tts/vits/vits_inference.py",
+      "models/tts/valle/valle_inference.py",
+      "models/tts/naturalspeech2/ns2_inference.py",
+      "models/tts/jets/jets_inference.py",
+      "utils/util.py"
+    ],
+    "bins/tts/preprocess.py": [
+      "utils/util.py",
+      "preprocessors/processor.py",
+      "preprocessors/metadata.py",
+      "processors/__init__.py"
+    ],
+    "bins/tts/train.py": [
+      "models/tts/fastspeech2/fs2_trainer.py",
+      "models/tts/vits/vits_trainer.py",
+      "models/tts/valle/valle_trainer.py",
+      "models/tts/naturalspeech2/ns2_trainer.py",
+      "models/tts/jets/jets_trainer.py",
+      "utils/util.py"
+    ],
+    "bins/vc/Noro/train.py": [
+      "models/vc/Noro/noro_trainer.py",
+      "utils/util.py"
+    ],
+    "bins/vc/train.py": [
+      "models/vc/flow_matching_transformer/fmt_trainer.py",
+      "models/vc/autoregressive_transformer/ar_trainer.py",
+      "utils/util.py"
+    ],
+    "bins/vocoder/inference.py": [
+      "models/vocoders/vocoder_inference.py",
+      "utils/util.py"
+    ],
+    "bins/vocoder/preprocess.py": [
+      "utils/util.py",
+      "preprocessors/processor.py",
+      "preprocessors/metadata.py",
+      "processors/__init__.py"
+    ],
+    "bins/vocoder/train.py": [
+      "models/vocoders/gan/gan_vocoder_trainer.py",
+      "models/vocoders/diffusion/diffusion_vocoder_trainer.py",
+      "models/vocoders/vocos/vocos_trainer.py",
+      "utils/util.py"
+    ],
+    "evaluation/features/singing_power_ratio.py": [
+      "utils/util.py",
+      "utils/f0.py",
+      "utils/mel.py"
+    ],
+    "evaluation/metrics/f0/f0_corr.py": [
+      "utils/f0.py"
+    ],
+    "evaluation/metrics/f0/f0_pearson_coefficients.py": [
+      "utils/util.py",
+      "utils/f0.py"
+    ],
+    "evaluation/metrics/f0/f0_rmse.py": [
+      "utils/util.py",
+      "utils/f0.py"
+    ],
+    "evaluation/metrics/f0/v_uv_f1.py": [
+      "utils/util.py",
+      "utils/f0.py"
+    ],
+    "evaluation/metrics/similarity/speaker_similarity.py": [
+      "evaluation/metrics/similarity/models/RawNetModel.py",
+      "evaluation/metrics/similarity/models/RawNetBasicBlock.py",
+      "modules/naturalpseech2/transformers.py"
+    ],
+    "models/base/base_dataset.py": [
+      "utils/data_utils.py",
+      "processors/acoustic_extractor.py",
+      "text/__init__.py",
+      "text/text_token_collation.py"
+    ],
+    "models/base/base_inference.py": [
+      "models/vocoders/vocoder_inference.py",
+      "utils/util.py"
+    ],
+    "models/base/base_trainer.py": [
+      "utils/util.py",
+      "modules/naturalpseech2/transformers.py",
+      "models/base/base_sampler.py"
+    ],
+    "models/base/new_inference.py": [
+      "models/vocoders/vocoder_inference.py",
+      "utils/io.py",
+      "utils/util.py",
+      "utils/audio_slicer.py"
+    ],
+    "models/base/new_trainer.py": [
+      "models/base/base_sampler.py",
+      "optimizer/optimizers.py"
+    ],
+    "models/codec/amphion_codec/codec.py": [
+      "models/codec/amphion_codec/quantize/__init__.py",
+      "models/codec/amphion_codec/vocos.py"
+    ],
+    "models/codec/amphion_codec/quantize/__init__.py": [
+      "models/codec/amphion_codec/quantize/factorized_vector_quantize.py",
+      "models/codec/amphion_codec/quantize/vector_quantize.py",
+      "models/codec/amphion_codec/quantize/lookup_free_quantize.py",
+      "models/codec/amphion_codec/quantize/residual_vq.py"
+    ],
+    "models/codec/amphion_codec/quantize/residual_vq.py": [
+      "models/codec/amphion_codec/quantize/factorized_vector_quantize.py",
+      "models/codec/amphion_codec/quantize/vector_quantize.py",
+      "models/codec/amphion_codec/quantize/lookup_free_quantize.py"
+    ],
+    "models/codec/coco/coco_dataset.py": [
+      "utils/f0.py",
+      "models/vc/base/vc_emilia_dataset.py"
+    ],
+    "models/codec/coco/rep_coco_model.py": [
+      "models/codec/amphion_codec/quantize/__init__.py",
+      "models/codec/amphion_codec/vocos.py"
+    ],
+    "models/codec/coco/rep_coco_trainer.py": [
+      "models/base/base_trainer.py",
+      "models/codec/coco/coco_dataset.py",
+      "models/codec/coco/rep_coco_model.py"
+    ],
+    "models/codec/codec_dataset.py": [
+      "utils/data_utils.py"
+    ],
+    "models/codec/codec_inference.py": [
+      "models/vocoders/vocoder_dataset.py",
+      "models/vocoders/gan/generator/__init__.py",
+      "utils/io.py",
+      "processors/__init__.py"
+    ],
+    "models/codec/codec_trainer.py": [
+      "models/codec/codec_sampler.py"
+    ],
+    "models/codec/discriminator/hifigan_disriminator.py": [
+      "models/codec/discriminator/layers.py"
+    ],
+    "models/codec/dualcodec/dualcodec/app.py": [
+      "models/codec/dualcodec/dualcodec.png",
+      "utils/io.py"
+    ],
+    "models/codec/dualcodec/dualcodec/dataset/processor.py": [
+      "utils/io.py",
+      "modules/naturalpseech2/transformers.py"
+    ],
+    "models/codec/dualcodec/dualcodec/infer/dualcodec/inference_with_semantic.py": [
+      "modules/naturalpseech2/transformers.py"
+    ],
+    "models/codec/dualcodec/dualcodec/infer/flattened_ar/inference_flattened.py": [
+      "models/codec/dualcodec/dualcodec/utils/frontend_utils.py",
+      "models/codec/dualcodec/dualcodec/dataset/processor.py"
+    ],
+    "models/codec/dualcodec/dualcodec/infer/flattened_ar/trainer.py": [
+      "models/codec/dualcodec/dualcodec.png"
+    ],
+    "models/codec/dualcodec/dualcodec/infer/flattened_ar/utils_flattened_ar_infer.py": [
+      "models/codec/dualcodec/dualcodec/infer/valle/utils_valle_infer.py",
+      "models/codec/dualcodec/dualcodec/infer/flattened_ar/inference_flattened.py",
+      "models/codec/dualcodec/dualcodec/utils/utils.py"
+    ],
+    "models/codec/dualcodec/dualcodec/infer/valle/cli_valle_infer.py": [
+      "models/codec/dualcodec/dualcodec/utils/utils_infer.py",
+      "models/codec/dualcodec/dualcodec/infer/valle/utils_valle_infer.py",
+      "models/codec/dualcodec/dualcodec/utils/__init__.py",
+      "models/codec/dualcodec/dualcodec.png"
+    ],
+    "models/codec/dualcodec/dualcodec/infer/valle/f5tts_gradio.py": [
+      "modules/naturalpseech2/transformers.py"
+    ],
+    "models/codec/dualcodec/dualcodec/infer/valle/gradio_valle_demo.py": [
+      "models/codec/dualcodec/dualcodec/utils/utils_infer.py",
+      "models/codec/dualcodec/dualcodec/infer/valle/utils_valle_infer.py",
+      "models/codec/dualcodec/dualcodec/utils/__init__.py",
+      "models/codec/dualcodec/dualcodec.png"
+    ],
+    "models/codec/dualcodec/dualcodec/infer/valle/infer_valle_gradio_editing.py": [
+      "models/codec/dualcodec/dualcodec/utils/utils_infer.py"
+    ],
+    "models/codec/dualcodec/dualcodec/infer/valle/utils_valle_infer.py": [
+      "models/codec/dualcodec/dualcodec/utils/utils_infer.py",
+      "models/codec/dualcodec/dualcodec/utils/__init__.py"
+    ],
+    "models/codec/dualcodec/dualcodec/infer/voicebox/cli_voicebox_infer.py": [
+      "models/codec/dualcodec/dualcodec/utils/utils_infer.py",
+      "models/codec/dualcodec/dualcodec/model_tts/voicebox/voicebox_models.py",
+      "models/codec/dualcodec/dualcodec/infer/voicebox/utils_voicebox_infer.py"
+    ],
+    "models/codec/dualcodec/dualcodec/infer/voicebox/utils_voicebox_infer.py": [
+      "models/codec/dualcodec/dualcodec/utils/__init__.py",
+      "models/codec/dualcodec/dualcodec/model_tts/voicebox/voicebox_models.py",
+      "models/codec/dualcodec/dualcodec.png",
+      "models/codec/dualcodec/dualcodec/model_tts/voicebox/vocoder_model.py"
+    ],
+    "models/codec/dualcodec/dualcodec/model_codec/trainer.py": [
+      "models/codec/dualcodec/dualcodec.png"
+    ],
+    "models/codec/dualcodec/dualcodec/model_tts/valle_nar/valle_nar_model.py": [
+      "modules/naturalpseech2/transformers.py"
+    ],
+    "models/codec/dualcodec/dualcodec/model_tts/voicebox/llama_nar.py": [
+      "modules/naturalpseech2/transformers.py"
+    ],
+    "models/codec/dualcodec/dualcodec/model_tts/voicebox/vocoder_model.py": [
+      "models/codec/dualcodec/dualcodec/utils/melspec.py"
+    ],
+    "models/codec/dualcodec/dualcodec/model_tts/voicebox/voicebox_models.py": [
+      "models/codec/dualcodec/dualcodec/utils/melspec.py"
+    ],
+    "models/codec/dualcodec/dualcodec/utils/utils_infer.py": [
+      "models/codec/dualcodec/dualcodec/utils/__init__.py",
+      "modules/naturalpseech2/transformers.py"
+    ],
+    "models/codec/facodec/facodec_dataset.py": [
+      "utils/data_utils.py",
+      "models/codec/codec_dataset.py"
+    ],
+    "models/codec/facodec/facodec_trainer.py": [
+      "models/codec/facodec/facodec_dataset.py",
+      "models/codec/codec_sampler.py",
+      "models/codec/codec_trainer.py",
+      "modules/dac/nn/loss.py",
+      "modules/naturalpseech2/transformers.py",
+      "models/codec/facodec/modules/commons.py",
+      "models/codec/facodec/optimizer.py"
+    ],
+    "models/codec/facodec/modules/commons.py": [
+      "modules/dac/model/dac.py",
+      "modules/dac/model/discriminator.py"
+    ],
+    "models/codec/facodec/modules/quantize.py": [
+      "modules/dac/nn/quantize.py",
+      "modules/dac/model/encodec.py"
+    ],
+    "models/codec/facodec/modules/wavenet.py": [
+      "modules/dac/model/encodec.py"
+    ],
+    "models/codec/kmeans/repcodec_model.py": [
+      "models/codec/amphion_codec/quantize/__init__.py",
+      "models/codec/kmeans/vocos.py"
+    ],
+    "models/codec/speechtokenizer/modules/quantization/ac.py": [
+      "utils/io.py"
+    ],
+    "models/codec/speechtokenizer/modules/seanet.py": [
+      "models/codec/speechtokenizer/modules/__init__.py"
+    ],
+    "models/codec/vevo/vqvae_trainer.py": [
+      "models/vc/base/vc_emilia_dataset.py",
+      "models/codec/kmeans/repcodec_model.py",
+      "models/codec/vevo/vevo_repcodec.py",
+      "models/base/base_trainer.py"
+    ],
+    "models/svc/autoregressive_transformer/ar_model.py": [
+      "modules/naturalpseech2/transformers.py",
+      "models/vc/vevo/vevo_utils.py"
+    ],
+    "models/svc/autoregressive_transformer/ar_trainer.py": [
+      "models/base/base_trainer.py",
+      "models/codec/coco/coco_dataset.py",
+      "models/svc/autoregressive_transformer/ar_model.py",
+      "models/codec/coco/rep_coco_model.py"
+    ],
+    "models/svc/base/svc_dataset.py": [
+      "utils/data_utils.py",
+      "processors/acoustic_extractor.py",
+      "processors/content_extractor.py",
+      "models/base/base_dataset.py",
+      "models/base/new_dataset.py"
+    ],
+    "models/svc/base/svc_inference.py": [
+      "models/base/new_inference.py",
+      "models/svc/base/svc_dataset.py"
+    ],
+    "models/svc/base/svc_trainer.py": [
+      "models/base/new_trainer.py",
+      "models/svc/base/svc_dataset.py",
+      "processors/audio_features_extractor.py",
+      "processors/acoustic_extractor.py"
+    ],
+    "models/svc/comosvc/comosvc.py": [
+      "utils/ssim.py",
+      "models/svc/transformer/conformer.py",
+      "models/svc/diffusion/diffusion_wrapper.py"
+    ],
+    "models/svc/comosvc/comosvc_inference.py": [
+      "models/svc/base/__init__.py",
+      "modules/encoder/condition_encoder.py",
+      "models/svc/comosvc/comosvc.py"
+    ],
+    "models/svc/comosvc/comosvc_trainer.py": [
+      "models/svc/base/__init__.py",
+      "modules/encoder/condition_encoder.py",
+      "models/svc/comosvc/comosvc.py"
+    ],
+    "models/svc/diffusion/diffusion_inference.py": [
+      "models/svc/base/__init__.py",
+      "models/svc/diffusion/diffusion_inference_pipeline.py",
+      "models/svc/diffusion/diffusion_wrapper.py",
+      "modules/encoder/condition_encoder.py"
+    ],
+    "models/svc/diffusion/diffusion_trainer.py": [
+      "models/svc/base/__init__.py",
+      "modules/encoder/condition_encoder.py"
+    ],
+    "models/svc/diffusion/diffusion_wrapper.py": [
+      "modules/diffusion/__init__.py",
+      "modules/encoder/position_encoder.py"
+    ],
+    "models/svc/flow_matching_transformer/fmt_model.py": [
+      "models/vc/flow_matching_transformer/llama_nar.py"
+    ],
+    "models/svc/flow_matching_transformer/fmt_trainer.py": [
+      "models/base/base_trainer.py",
+      "models/codec/coco/coco_dataset.py",
+      "models/svc/flow_matching_transformer/fmt_model.py",
+      "models/codec/melvqgan/melspec.py",
+      "models/codec/coco/rep_coco_model.py",
+      "modules/naturalpseech2/transformers.py"
+    ],
+    "models/svc/transformer/conformer.py": [
+      "utils/util.py"
+    ],
+    "models/svc/transformer/transformer_inference.py": [
+      "models/svc/base/__init__.py",
+      "modules/encoder/condition_encoder.py",
+      "models/svc/transformer/transformer.py",
+      "models/svc/transformer/conformer.py"
+    ],
+    "models/svc/transformer/transformer_trainer.py": [
+      "models/svc/base/__init__.py",
+      "modules/encoder/condition_encoder.py",
+      "models/svc/transformer/transformer.py",
+      "models/svc/transformer/conformer.py",
+      "utils/ssim.py"
+    ],
+    "models/svc/vevosing/infer_vevosing_ar.py": [
+      "models/svc/vevosing/vevosing_utils.py"
+    ],
+    "models/svc/vevosing/infer_vevosing_fm.py": [
+      "models/svc/vevosing/vevosing_utils.py"
+    ],
+    "models/svc/vevosing/vevosing_utils.py": [
+      "models/codec/coco/rep_coco_model.py",
+      "models/svc/flow_matching_transformer/fmt_model.py",
+      "models/svc/autoregressive_transformer/ar_model.py",
+      "models/codec/melvqgan/melspec.py",
+      "models/codec/amphion_codec/vocos.py",
+      "utils/util.py",
+      "evaluation/metrics/f0/f0_corr.py",
+      "models/tts/maskgct/g2p/g2p_generation.py"
+    ],
+    "models/svc/vits/vits.py": [
+      "utils/util.py",
+      "modules/transformer/attentions.py",
+      "models/tts/vits/vits.py",
+      "models/vocoders/gan/generator/bigvgan.py",
+      "models/vocoders/gan/generator/hifigan.py",
+      "models/vocoders/gan/generator/nsfhifigan.py",
+      "models/vocoders/gan/generator/melgan.py",
+      "models/vocoders/gan/generator/apnet.py",
+      "modules/encoder/condition_encoder.py"
+    ],
+    "models/svc/vits/vits_inference.py": [
+      "models/svc/base/__init__.py",
+      "models/svc/vits/vits.py",
+      "models/svc/base/svc_dataset.py",
+      "utils/io.py",
+      "utils/audio_slicer.py"
+    ],
+    "models/svc/vits/vits_trainer.py": [
+      "models/svc/base/svc_dataset.py",
+      "models/svc/vits/vits.py",
+      "models/svc/base/__init__.py",
+      "utils/mel.py",
+      "models/vocoders/gan/discriminator/mpd.py"
+    ],
+    "models/tta/autoencoder/autoencoder.py": [
+      "modules/distributions/distributions.py"
+    ],
+    "models/tta/autoencoder/autoencoder_dataset.py": [
+      "utils/data_utils.py",
+      "models/base/base_dataset.py"
+    ],
+    "models/tta/autoencoder/autoencoder_trainer.py": [
+      "models/base/base_trainer.py",
+      "models/tta/autoencoder/autoencoder_dataset.py",
+      "models/tta/autoencoder/autoencoder.py",
+      "models/tta/autoencoder/autoencoder_loss.py"
+    ],
+    "models/tta/ldm/audioldm.py": [
+      "models/tta/ldm/attention.py"
+    ],
+    "models/tta/ldm/audioldm_dataset.py": [
+      "utils/data_utils.py",
+      "models/base/base_dataset.py",
+      "modules/naturalpseech2/transformers.py"
+    ],
+    "models/tta/ldm/audioldm_inference.py": [
+      "models/tta/autoencoder/autoencoder.py",
+      "models/tta/ldm/inference_utils/vocoder.py",
+      "models/tta/ldm/audioldm.py",
+      "modules/naturalpseech2/transformers.py"
+    ],
+    "models/tta/ldm/audioldm_trainer.py": [
+      "models/base/base_trainer.py",
+      "models/tta/ldm/audioldm_dataset.py",
+      "models/tta/autoencoder/autoencoder.py",
+      "models/tta/ldm/audioldm.py",
+      "modules/naturalpseech2/transformers.py"
+    ],
+    "models/tta/ldm/inference_utils/vocoder.py": [
+      "models/tta/ldm/inference_utils/utils.py"
+    ],
+    "models/tta/picoaudio/picoaudio/audioldm/audio/stft.py": [
+      "models/tta/picoaudio/picoaudio/audioldm/audio/audio_processing.py"
+    ],
+    "models/tta/picoaudio/picoaudio/audioldm/clap/encoders.py": [
+      "models/tta/picoaudio/picoaudio/audioldm/clap/open_clip/__init__.py",
+      "models/tta/picoaudio/picoaudio/audioldm/clap/training/data.py",
+      "modules/naturalpseech2/transformers.py"
+    ],
+    "models/tta/picoaudio/picoaudio/audioldm/clap/open_clip/bert.py": [
+      "modules/naturalpseech2/transformers.py"
+    ],
+    "models/tta/picoaudio/picoaudio/audioldm/clap/open_clip/model.py": [
+      "modules/naturalpseech2/transformers.py"
+    ],
+    "models/tta/picoaudio/picoaudio/audioldm/clap/training/data.py": [
+      "models/tta/picoaudio/picoaudio/audioldm/clap/training/params.py",
+      "utils/io.py",
+      "models/tta/picoaudio/picoaudio/audioldm/clap/open_clip/utils.py",
+      "models/tta/picoaudio/picoaudio/audioldm/clap/open_clip/__init__.py",
+      "modules/naturalpseech2/transformers.py"
+    ],
+    "models/tta/picoaudio/picoaudio/audioldm/clap/training/infer_demo.py": [
+      "models/tta/picoaudio/picoaudio/audioldm/clap/open_clip/__init__.py",
+      "models/tta/picoaudio/picoaudio/audioldm/clap/training/data.py",
+      "modules/naturalpseech2/transformers.py"
+    ],
+    "models/tta/picoaudio/picoaudio/audioldm/clap/training/lp_main.py": [
+      "models/tta/picoaudio/picoaudio/audioldm/clap/open_clip/__init__.py",
+      "models/tta/picoaudio/picoaudio/audioldm/clap/training/data.py",
+      "models/tta/picoaudio/picoaudio/audioldm/clap/training/params.py",
+      "models/tta/picoaudio/picoaudio/audioldm/clap/training/distributed.py",
+      "models/tta/picoaudio/picoaudio/audioldm/clap/training/logger.py",
+      "models/tta/picoaudio/picoaudio/audioldm/clap/training/scheduler.py",
+      "models/tta/picoaudio/picoaudio/audioldm/clap/training/lp_train.py",
+      "models/tta/picoaudio/picoaudio/audioldm/clap/open_clip/utils.py",
+      "models/tta/picoaudio/picoaudio/audioldm/clap/open_clip/linear_probe.py"
+    ],
+    "models/tta/picoaudio/picoaudio/audioldm/clap/training/lp_train.py": [
+      "models/tta/picoaudio/picoaudio/audioldm/clap/open_clip/__init__.py",
+      "models/tta/picoaudio/picoaudio/audioldm/clap/open_clip/utils.py"
+    ],
+    "models/tta/picoaudio/picoaudio/audioldm/clap/training/main.py": [
+      "models/tta/picoaudio/picoaudio/audioldm/clap/open_clip/__init__.py",
+      "models/tta/picoaudio/picoaudio/audioldm/clap/training/data.py",
+      "models/tta/picoaudio/picoaudio/audioldm/clap/training/distributed.py",
+      "models/tta/picoaudio/picoaudio/audioldm/clap/training/logger.py",
+      "models/tta/picoaudio/picoaudio/audioldm/clap/training/params.py",
+      "models/tta/picoaudio/picoaudio/audioldm/clap/training/scheduler.py",
+      "models/tta/picoaudio/picoaudio/audioldm/clap/training/train.py",
+      "models/tta/picoaudio/picoaudio/audioldm/clap/open_clip/utils.py"
+    ],
+    "models/tta/picoaudio/picoaudio/audioldm/clap/training/train.py": [
+      "models/tta/picoaudio/picoaudio/audioldm/clap/open_clip/__init__.py"
+    ],
+    "models/tta/picoaudio/picoaudio/audioldm/clap/training/zero_shot.py": [
+      "models/tta/picoaudio/picoaudio/audioldm/clap/open_clip/__init__.py"
+    ],
+    "models/tta/picoaudio/picoaudio/audioldm/latent_diffusion/attention.py": [
+      "models/tta/picoaudio/picoaudio/audioldm/latent_diffusion/util.py"
+    ],
+    "models/tta/picoaudio/picoaudio/audioldm/latent_diffusion/ddim.py": [
+      "models/tta/picoaudio/picoaudio/audioldm/latent_diffusion/util.py"
+    ],
+    "models/tta/picoaudio/picoaudio/audioldm/latent_diffusion/ddpm.py": [
+      "models/tta/picoaudio/picoaudio/audioldm/utils.py",
+      "models/tta/picoaudio/picoaudio/audioldm/latent_diffusion/ema.py",
+      "models/tta/picoaudio/picoaudio/audioldm/latent_diffusion/util.py"
+    ],
+    "models/tta/picoaudio/picoaudio/audioldm/latent_diffusion/openaimodel.py": [
+      "models/tta/picoaudio/picoaudio/audioldm/latent_diffusion/util.py",
+      "models/tta/picoaudio/picoaudio/audioldm/latent_diffusion/attention.py"
+    ],
+    "models/tta/picoaudio/picoaudio/audioldm/latent_diffusion/util.py": [
+      "models/tta/picoaudio/picoaudio/audioldm/utils.py"
+    ],
+    "models/tta/picoaudio/picoaudio/audioldm/ldm.py": [
+      "models/tta/picoaudio/picoaudio/audioldm/utils.py",
+      "models/tta/picoaudio/picoaudio/audioldm/latent_diffusion/ddpm.py",
+      "models/tta/picoaudio/picoaudio/audioldm/variational_autoencoder/distributions.py",
+      "models/tta/picoaudio/picoaudio/audioldm/latent_diffusion/util.py",
+      "models/tta/picoaudio/picoaudio/audioldm/latent_diffusion/ddim.py"
+    ],
+    "models/tta/picoaudio/picoaudio/audioldm/pipeline.py": [
+      "models/tta/picoaudio/picoaudio/audioldm/utils.py",
+      "models/tta/picoaudio/picoaudio/audioldm/audio/__init__.py",
+      "models/tta/picoaudio/picoaudio/audioldm/latent_diffusion/ddim.py"
+    ],
+    "models/tta/picoaudio/picoaudio/audioldm/variational_autoencoder/autoencoder.py": [
+      "models/tta/picoaudio/picoaudio/audioldm/latent_diffusion/ema.py",
+      "models/tta/picoaudio/picoaudio/audioldm/variational_autoencoder/modules.py",
+      "models/tta/picoaudio/picoaudio/audioldm/variational_autoencoder/distributions.py",
+      "models/tta/picoaudio/picoaudio/audioldm/hifigan/utilities.py"
+    ],
+    "models/tta/picoaudio/picoaudio/audioldm/variational_autoencoder/modules.py": [
+      "models/tta/picoaudio/picoaudio/audioldm/utils.py",
+      "models/tta/picoaudio/picoaudio/audioldm/latent_diffusion/attention.py"
+    ],
+    "models/tta/picoaudio/picoaudio/models/controllable_diffusion.py": [
+      "modules/naturalpseech2/transformers.py",
+      "models/tta/picoaudio/picoaudio/utils/torch_tools.py",
+      "models/tta/picoaudio/picoaudio/audioldm/audio/stft.py",
+      "models/tta/picoaudio/picoaudio/audioldm/variational_autoencoder/autoencoder.py",
+      "models/tta/picoaudio/picoaudio/audioldm/utils.py"
+    ],
+    "models/tta/picoaudio/picoaudio/runner/controllable_train.py": [
+      "modules/naturalpseech2/transformers.py"
+    ],
+    "models/tts/base/tts_dataset.py": [
+      "utils/data_utils.py",
+      "text/__init__.py",
+      "text/text_token_collation.py",
+      "processors/acoustic_extractor.py",
+      "models/base/base_dataset.py",
+      "processors/content_extractor.py"
+    ],
+    "models/tts/base/tts_inferece.py": [
+      "utils/io.py",
+      "utils/util.py",
+      "models/vocoders/vocoder_inference.py"
+    ],
+    "models/tts/base/tts_trainer.py": [
+      "schedulers/scheduler.py",
+      "models/base/base_sampler.py",
+      "models/base/new_trainer.py"
+    ],
+    "models/tts/debatts/t2s_model.py": [
+      "modules/naturalpseech2/transformers.py",
+      "utils/topk_sampling.py"
+    ],
+    "models/tts/debatts/t2s_sft_dataset.py": [
+      "utils/io.py",
+      "modules/naturalpseech2/transformers.py",
+      "models/tts/debatts/utils/g2p_new/g2p_new.py"
+    ],
+    "models/tts/debatts/try_inference_small_samples.py": [
+      "models/tts/debatts/utils/g2p_new/g2p_new.py",
+      "modules/naturalpseech2/transformers.py",
+      "models/codec/kmeans/repcodec_model.py",
+      "models/codec/amphion_codec/codec.py",
+      "utils/util.py"
+    ],
+    "models/tts/debatts/utils/g2p/__init__.py": [
+      "models/tts/debatts/utils/g2p/cleaners.py"
+    ],
+    "models/tts/debatts/utils/g2p/cleaners.py": [
+      "models/tts/debatts/utils/g2p/japanese.py",
+      "models/tts/debatts/utils/g2p/mandarin.py",
+      "models/tts/debatts/utils/g2p/english.py",
+      "models/tts/debatts/utils/g2p/french.py",
+      "models/tts/debatts/utils/g2p/korean.py",
+      "models/tts/debatts/utils/g2p/german.py"
+    ],
+    "models/tts/debatts/utils/g2p_new/__init__.py": [
+      "models/tts/debatts/utils/g2p_new/__init__.py",
+      "models/tts/debatts/utils/g2p_new/text_tokenizers.py"
+    ],
+    "models/tts/debatts/utils/g2p_new/cleaners.py": [
+      "models/tts/debatts/utils/g2p_new/mandarin.py"
+    ],
+    "models/tts/debatts/utils/g2p_new/g2p_new.py": [
+      "models/tts/debatts/utils/g2p_new/__init__.py"
+    ],
+    "models/tts/debatts/utils/hparam.py": [
+      "text/numbers.py"
+    ],
+    "models/tts/debatts/utils/tokenizer.py": [
+      "modules/dac/model/encodec.py"
+    ],
+    "models/tts/debatts/utils/util.py": [
+      "utils/hparam.py"
+    ],
+    "models/tts/fastspeech2/fs2.py": [
+      "modules/transformer/Models.py",
+      "modules/transformer/Layers.py"
+    ],
+    "models/tts/fastspeech2/fs2_dataset.py": [
+      "utils/data_utils.py",
+      "models/base/base_dataset.py",
+      "text/__init__.py"
+    ],
+    "models/tts/fastspeech2/fs2_inference.py": [
+      "models/tts/base/tts_inferece.py",
+      "models/tts/fastspeech2/fs2_dataset.py",
+      "utils/util.py",
+      "utils/io.py",
+      "models/tts/fastspeech2/fs2.py",
+      "models/vocoders/vocoder_inference.py",
+      "processors/phone_extractor.py",
+      "text/text_token_collation.py"
+    ],
+    "models/tts/fastspeech2/fs2_trainer.py": [
+      "models/tts/base/__init__.py",
+      "models/tts/fastspeech2/fs2.py",
+      "models/tts/fastspeech2/fs2_dataset.py",
+      "optimizer/optimizers.py"
+    ],
+    "models/tts/jets/jets.py": [
+      "modules/transformer/Models.py",
+      "modules/transformer/Layers.py",
+      "models/tts/jets/alignments.py",
+      "models/tts/jets/length_regulator.py",
+      "models/vocoders/gan/generator/hifigan.py",
+      "utils/util.py"
+    ],
+    "models/tts/jets/jets_dataset.py": [
+      "utils/data_utils.py",
+      "models/base/base_dataset.py",
+      "text/__init__.py"
+    ],
+    "models/tts/jets/jets_inference.py": [
+      "models/tts/base/tts_inferece.py",
+      "models/tts/jets/jets_dataset.py",
+      "utils/util.py",
+      "utils/io.py",
+      "models/tts/jets/jets.py",
+      "models/vocoders/vocoder_inference.py",
+      "processors/phone_extractor.py",
+      "text/text_token_collation.py"
+    ],
+    "models/tts/jets/jets_loss.py": [
+      "models/vocoders/gan/discriminator/mpd.py",
+      "models/tts/jets/alignments.py"
+    ],
+    "models/tts/jets/jets_trainer.py": [
+      "utils/io.py",
+      "models/tts/base/__init__.py",
+      "models/tts/jets/jets.py",
+      "models/tts/jets/jets_loss.py",
+      "models/tts/jets/jets_dataset.py",
+      "optimizer/optimizers.py",
+      "models/vocoders/gan/discriminator/mpd.py"
+    ],
+    "models/tts/maskgct/g2p/g2p/__init__.py": [
+      "models/tts/maskgct/g2p/g2p/__init__.py",
+      "models/tts/maskgct/g2p/g2p/text_tokenizers.py"
+    ],
+    "models/tts/maskgct/g2p/g2p/chinese_model_g2p.py": [
+      "modules/naturalpseech2/transformers.py"
+    ],
+    "models/tts/maskgct/g2p/g2p/cleaners.py": [
+      "models/tts/maskgct/g2p/g2p/japanese.py",
+      "models/tts/maskgct/g2p/g2p/mandarin.py",
+      "models/tts/maskgct/g2p/g2p/english.py",
+      "models/tts/maskgct/g2p/g2p/french.py",
+      "models/tts/maskgct/g2p/g2p/korean.py",
+      "models/tts/maskgct/g2p/g2p/german.py"
+    ],
+    "models/tts/maskgct/g2p/g2p/japanese.py": [
+      "utils/io.py"
+    ],
+    "models/tts/maskgct/g2p/g2p/mandarin.py": [
+      "models/tts/maskgct/g2p/g2p/chinese_model_g2p.py",
+      "models/tts/maskgct/g2p/utils/front_utils.py"
+    ],
+    "models/tts/maskgct/g2p/g2p_generation.py": [
+      "models/tts/maskgct/g2p/g2p/__init__.py",
+      "models/tts/maskgct/g2p/utils/g2p.py"
+    ],
+    "models/tts/maskgct/gradio_demo.py": [
+      "models/codec/kmeans/repcodec_model.py",
+      "models/tts/maskgct/maskgct_s2a.py",
+      "models/tts/maskgct/maskgct_t2s.py",
+      "models/codec/amphion_codec/codec.py",
+      "modules/naturalpseech2/transformers.py",
+      "utils/util.py",
+      "models/tts/maskgct/g2p/g2p_generation.py"
+    ],
+    "models/tts/maskgct/llama_nar.py": [
+      "modules/naturalpseech2/transformers.py"
+    ],
+    "models/tts/maskgct/maskgct_inference.py": [
+      "models/tts/maskgct/maskgct_utils.py"
+    ],
+    "models/tts/maskgct/maskgct_s2a.py": [
+      "models/tts/maskgct/llama_nar.py"
+    ],
+    "models/tts/maskgct/maskgct_t2s.py": [
+      "models/tts/maskgct/llama_nar.py"
+    ],
+    "models/tts/maskgct/maskgct_utils.py": [
+      "utils/util.py",
+      "models/codec/kmeans/repcodec_model.py",
+      "models/tts/maskgct/maskgct_s2a.py",
+      "models/tts/maskgct/maskgct_t2s.py",
+      "models/codec/amphion_codec/codec.py",
+      "modules/naturalpseech2/transformers.py",
+      "models/tts/maskgct/g2p/g2p_generation.py"
+    ],
+    "models/tts/metis/audio_tokenizer.py": [
+      "utils/util.py",
+      "modules/naturalpseech2/transformers.py",
+      "models/tts/maskgct/maskgct_utils.py"
+    ],
+    "models/tts/metis/metis.py": [
+      "models/tts/metis/audio_tokenizer.py",
+      "models/tts/maskgct/maskgct_utils.py",
+      "models/tts/metis/metis_model.py"
+    ],
+    "models/tts/metis/metis_infer_omni.py": [
+      "models/tts/metis/metis.py",
+      "utils/util.py"
+    ],
+    "models/tts/metis/metis_infer_se.py": [
+      "models/tts/metis/metis.py",
+      "utils/util.py"
+    ],
+    "models/tts/metis/metis_infer_tse.py": [
+      "models/tts/metis/metis.py",
+      "utils/util.py"
+    ],
+    "models/tts/metis/metis_infer_tts.py": [
+      "models/tts/metis/metis.py",
+      "utils/util.py"
+    ],
+    "models/tts/metis/metis_infer_vc.py": [
+      "models/tts/metis/metis.py",
+      "utils/util.py"
+    ],
+    "models/tts/metis/metis_model.py": [
+      "models/tts/maskgct/maskgct_t2s.py"
+    ],
+    "models/tts/naturalspeech2/diffusion.py": [
+      "models/tts/naturalspeech2/wavenet.py"
+    ],
+    "models/tts/naturalspeech2/diffusion_flow.py": [
+      "models/tts/naturalspeech2/wavenet.py"
+    ],
+    "models/tts/naturalspeech2/ns2.py": [
+      "models/tts/naturalspeech2/diffusion.py",
+      "models/tts/naturalspeech2/diffusion_flow.py",
+      "models/tts/naturalspeech2/wavenet.py",
+      "models/tts/naturalspeech2/prior_encoder.py",
+      "modules/naturalpseech2/transformers.py",
+      "modules/dac/model/encodec.py"
+    ],
+    "models/tts/naturalspeech2/ns2_dataset.py": [
+      "utils/data_utils.py",
+      "processors/acoustic_extractor.py",
+      "models/base/base_dataset.py",
+      "text/__init__.py",
+      "text/cmudict.py"
+    ],
+    "models/tts/naturalspeech2/ns2_inference.py": [
+      "models/tts/naturalspeech2/ns2.py",
+      "modules/dac/model/encodec.py",
+      "utils/util.py",
+      "text/__init__.py",
+      "text/cmudict.py",
+      "text/g2p.py"
+    ],
+    "models/tts/naturalspeech2/ns2_trainer.py": [
+      "utils/util.py",
+      "models/tts/base/tts_trainer.py",
+      "models/base/base_trainer.py",
+      "models/base/base_sampler.py",
+      "models/tts/naturalspeech2/ns2_dataset.py",
+      "models/tts/naturalspeech2/ns2_loss.py",
+      "models/tts/naturalspeech2/ns2.py"
+    ],
+    "models/tts/naturalspeech2/prior_encoder.py": [
+      "modules/naturalpseech2/transformers.py"
+    ],
+    "models/tts/valle/valle.py": [
+      "utils/util.py",
+      "utils/topk_sampling.py",
+      "modules/general/__init__.py",
+      "modules/encoder/__init__.py",
+      "modules/transformer/__init__.py",
+      "modules/norms/__init__.py",
+      "modules/transformer/transformer.py"
+    ],
+    "models/tts/valle/valle_dataset.py": [
+      "utils/data_utils.py",
+      "models/tts/base/tts_dataset.py",
+      "utils/tokenizer.py"
+    ],
+    "models/tts/valle/valle_inference.py": [
+      "text/g2p_module.py",
+      "utils/tokenizer.py",
+      "models/tts/valle/valle.py",
+      "models/tts/base/tts_inferece.py",
+      "models/tts/valle/valle_dataset.py",
+      "processors/phone_extractor.py",
+      "text/text_token_collation.py"
+    ],
+    "models/tts/valle/valle_trainer.py": [
+      "optimizer/optimizers.py",
+      "schedulers/scheduler.py",
+      "models/tts/valle/valle_dataset.py",
+      "models/base/base_sampler.py",
+      "models/tts/base/__init__.py",
+      "models/tts/valle/valle.py"
+    ],
+    "models/tts/vits/vits.py": [
+      "utils/util.py",
+      "modules/flow/modules.py",
+      "modules/base/base_module.py",
+      "modules/transformer/attentions.py",
+      "modules/duration_predictor/standard_duration_predictor.py",
+      "modules/duration_predictor/stochastic_duration_predictor.py",
+      "models/vocoders/gan/generator/hifigan.py",
+      "modules/__init__.py"
+    ],
+    "models/tts/vits/vits_dataset.py": [
+      "text/__init__.py",
+      "text/text_token_collation.py",
+      "models/tts/base/tts_dataset.py"
+    ],
+    "models/tts/vits/vits_inference.py": [
+      "models/tts/base/tts_inferece.py",
+      "models/tts/vits/vits_dataset.py",
+      "models/tts/vits/vits.py",
+      "processors/phone_extractor.py",
+      "text/text_token_collation.py",
+      "utils/data_utils.py"
+    ],
+    "models/tts/vits/vits_trainer.py": [
+      "utils/util.py",
+      "utils/mel.py",
+      "models/tts/base/__init__.py",
+      "models/tts/vits/vits.py",
+      "models/tts/vits/vits_dataset.py",
+      "models/vocoders/gan/discriminator/mpd.py"
+    ],
+    "models/vc/Noro/noro_base_trainer.py": [
+      "models/base/new_trainer.py"
+    ],
+    "models/vc/Noro/noro_dataset.py": [
+      "utils/data_utils.py"
+    ],
+    "models/vc/Noro/noro_inference.py": [
+      "utils/util.py",
+      "models/vc/Noro/noro_trainer.py",
+      "models/vc/Noro/noro_model.py",
+      "processors/content_extractor.py",
+      "utils/mel.py",
+      "utils/f0.py"
+    ],
+    "models/vc/Noro/noro_trainer.py": [
+      "utils/util.py",
+      "models/vc/Noro/noro_base_trainer.py",
+      "models/base/base_sampler.py",
+      "models/vc/Noro/noro_model.py",
+      "models/vc/Noro/noro_dataset.py",
+      "processors/content_extractor.py",
+      "models/vc/Noro/noro_loss.py",
+      "utils/mel.py",
+      "utils/f0.py"
+    ],
+    "models/vc/autoregressive_transformer/ar_model.py": [
+      "modules/naturalpseech2/transformers.py",
+      "models/vc/autoregressive_transformer/global_encoder.py",
+      "models/vc/vevo/vevo_utils.py"
+    ],
+    "models/vc/autoregressive_transformer/ar_trainer.py": [
+      "models/base/base_trainer.py",
+      "models/codec/melvqgan/melspec.py",
+      "models/vc/autoregressive_transformer/ar_model.py",
+      "models/codec/kmeans/repcodec_model.py",
+      "models/codec/vevo/vevo_repcodec.py",
+      "models/vc/base/vc_emilia_dataset.py"
+    ],
+    "models/vc/autoregressive_transformer/global_encoder.py": [
+      "modules/naturalpseech2/transformers.py",
+      "models/vc/vevo/vevo_utils.py"
+    ],
+    "models/vc/base/vc_emilia_dataset.py": [
+      "models/base/emilia_dataset.py",
+      "modules/naturalpseech2/transformers.py",
+      "models/tts/maskgct/g2p/g2p_generation.py"
+    ],
+    "models/vc/flow_matching_transformer/fmt_model.py": [
+      "models/vc/flow_matching_transformer/llama_nar.py"
+    ],
+    "models/vc/flow_matching_transformer/fmt_trainer.py": [
+      "models/base/base_trainer.py",
+      "models/vc/base/vc_emilia_dataset.py",
+      "models/codec/melvqgan/melspec.py",
+      "models/vc/flow_matching_transformer/fmt_model.py",
+      "models/codec/kmeans/repcodec_model.py"
+    ],
+    "models/vc/flow_matching_transformer/llama_nar.py": [
+      "modules/naturalpseech2/transformers.py"
+    ],
+    "models/vc/vevo/infer_vevostyle.py": [
+      "models/vc/vevo/vevo_utils.py"
+    ],
+    "models/vc/vevo/infer_vevotimbre.py": [
+      "models/vc/vevo/vevo_utils.py"
+    ],
+    "models/vc/vevo/infer_vevotts.py": [
+      "models/vc/vevo/vevo_utils.py"
+    ],
+    "models/vc/vevo/infer_vevovoice.py": [
+      "models/vc/vevo/vevo_utils.py"
+    ],
+    "models/vc/vevo/vevo_utils.py": [
+      "models/vc/flow_matching_transformer/fmt_model.py",
+      "models/vc/autoregressive_transformer/ar_model.py",
+      "models/codec/kmeans/repcodec_model.py",
+      "models/codec/vevo/vevo_repcodec.py",
+      "models/codec/melvqgan/melspec.py",
+      "models/codec/amphion_codec/vocos.py",
+      "utils/util.py",
+      "models/tts/maskgct/g2p/g2p_generation.py"
+    ],
+    "models/vocoders/diffusion/diffusion_vocoder_dataset.py": [
+      "utils/data_utils.py",
+      "models/vocoders/vocoder_dataset.py"
+    ],
+    "models/vocoders/diffusion/diffusion_vocoder_inference.py": [
+      "utils/util.py"
+    ],
+    "models/vocoders/diffusion/diffusion_vocoder_trainer.py": [
+      "utils/io.py",
+      "utils/data_utils.py",
+      "utils/util.py",
+      "utils/mel.py",
+      "models/vocoders/vocoder_trainer.py",
+      "models/vocoders/diffusion/diffusion_vocoder_dataset.py",
+      "models/vocoders/diffusion/diffwave/diffwave.py",
+      "models/vocoders/diffusion/diffusion_vocoder_inference.py"
+    ],
+    "models/vocoders/dsp/world/world.py": [
+      "utils/io.py"
+    ],
+    "models/vocoders/gan/discriminator/mpd.py": [
+      "modules/vocoder_blocks/__init__.py",
+      "models/vocoders/gan/discriminator/msd.py"
+    ],
+    "models/vocoders/gan/discriminator/msd.py": [
+      "modules/vocoder_blocks/__init__.py"
+    ],
+    "models/vocoders/gan/discriminator/mssbcqtd.py": [
+      "modules/vocoder_blocks/__init__.py"
+    ],
+    "models/vocoders/gan/discriminator/msstftd.py": [
+      "modules/vocoder_blocks/__init__.py"
+    ],
+    "models/vocoders/gan/gan_vocoder_dataset.py": [
+      "utils/data_utils.py",
+      "models/vocoders/vocoder_dataset.py"
+    ],
+    "models/vocoders/gan/gan_vocoder_inference.py": [
+      "utils/util.py"
+    ],
+    "models/vocoders/gan/gan_vocoder_trainer.py": [
+      "utils/io.py",
+      "utils/data_utils.py",
+      "utils/util.py",
+      "utils/mel.py",
+      "models/vocoders/vocoder_trainer.py",
+      "models/vocoders/gan/gan_vocoder_dataset.py",
+      "models/vocoders/gan/generator/bigvgan.py",
+      "models/vocoders/gan/generator/hifigan.py",
+      "models/vocoders/gan/generator/melgan.py",
+      "models/vocoders/gan/generator/nsfhifigan.py",
+      "models/vocoders/gan/generator/apnet.py",
+      "models/vocoders/gan/discriminator/mpd.py",
+      "models/vocoders/gan/discriminator/mrd.py",
+      "models/vocoders/gan/discriminator/mssbcqtd.py",
+      "models/vocoders/gan/discriminator/msd.py",
+      "models/vocoders/gan/discriminator/msstftd.py",
+      "models/vocoders/gan/gan_vocoder_inference.py"
+    ],
+    "models/vocoders/gan/generator/apnet.py": [
+      "modules/vocoder_blocks/__init__.py"
+    ],
+    "models/vocoders/gan/generator/bigvgan.py": [
+      "modules/vocoder_blocks/__init__.py",
+      "modules/activation_functions/__init__.py",
+      "modules/anti_aliasing/__init__.py"
+    ],
+    "models/vocoders/gan/generator/hifigan.py": [
+      "modules/vocoder_blocks/__init__.py"
+    ],
+    "models/vocoders/gan/generator/nsfhifigan.py": [
+      "modules/neural_source_filter/__init__.py",
+      "modules/vocoder_blocks/__init__.py"
+    ],
+    "models/vocoders/vocoder_dataset.py": [
+      "utils/data_utils.py"
+    ],
+    "models/vocoders/vocoder_inference.py": [
+      "models/vocoders/vocoder_dataset.py",
+      "models/vocoders/gan/generator/__init__.py",
+      "utils/io.py",
+      "processors/__init__.py"
+    ],
+    "models/vocoders/vocoder_trainer.py": [
+      "models/vocoders/vocoder_dataset.py",
+      "models/vocoders/vocoder_sampler.py"
+    ],
+    "models/vocoders/vocos/vocos_dataset.py": [
+      "models/codec/coco/coco_dataset.py"
+    ],
+    "models/vocoders/vocos/vocos_trainer.py": [
+      "utils/util.py",
+      "models/tts/base/tts_trainer.py",
+      "models/base/base_trainer.py",
+      "models/base/base_sampler.py",
+      "models/codec/melvqgan/melspec.py",
+      "modules/naturalpseech2/transformers.py",
+      "models/codec/amphion_codec/vocos.py",
+      "models/codec/amphion_codec/loss.py",
+      "models/codec/discriminator/hifigan_disriminator.py",
+      "models/codec/coco/coco_dataset.py",
+      "models/vocoders/vocos/vocos_dataset.py"
+    ],
+    "models/web/amphion_unified.py": [
+      "modules/naturalpseech2/transformers.py",
+      "models/codec/kmeans/repcodec_model.py",
+      "models/tts/maskgct/maskgct_s2a.py",
+      "models/tts/maskgct/maskgct_t2s.py",
+      "models/codec/amphion_codec/codec.py",
+      "utils/util.py",
+      "models/codec/dualcodec/dualcodec.png",
+      "models/codec/dualcodec/dualcodec/infer/valle/utils_valle_infer.py",
+      "models/codec/dualcodec/dualcodec/utils/__init__.py",
+      "models/vc/vevo/vevo_utils.py",
+      "models/tts/maskgct/g2p/g2p_generation.py",
+      "models/codec/dualcodec/dualcodec/utils/utils_infer.py"
+    ],
+    "models/web/api/models/bigvgan_loader.py": [
+      "models/vocoders/gan/generator/bigvgan.py"
+    ],
+    "models/web/api/models/manager.py": [
+      "modules/naturalpseech2/transformers.py",
+      "models/codec/kmeans/repcodec_model.py",
+      "models/tts/maskgct/maskgct_s2a.py",
+      "models/tts/maskgct/maskgct_t2s.py",
+      "models/codec/amphion_codec/codec.py",
+      "utils/util.py",
+      "models/codec/dualcodec/dualcodec.png",
+      "models/codec/dualcodec/dualcodec/infer/valle/utils_valle_infer.py",
+      "models/codec/dualcodec/dualcodec/utils/__init__.py",
+      "models/vc/vevo/vevo_utils.py",
+      "models/tts/maskgct/g2p/g2p_generation.py",
+      "models/codec/dualcodec/dualcodec/utils/utils_infer.py",
+      "models/vc/Noro/noro_model.py",
+      "utils/mel.py",
+      "utils/f0.py",
+      "models/tts/metis/metis.py",
+      "models/svc/vevosing/vevosing_utils.py"
+    ],
+    "models/web/api/routes/__init__.py": [
+      "models/web/api/routes/__init__.py"
+    ],
+    "models/web/api/routes/evaluation.py": [
+      "evaluation/metrics/f0/f0_rmse.py",
+      "evaluation/metrics/f0/f0_pearson_coefficients.py",
+      "evaluation/metrics/f0/v_uv_f1.py",
+      "evaluation/metrics/spectrogram/pesq.py",
+      "evaluation/metrics/spectrogram/short_time_objective_intelligibility.py",
+      "evaluation/metrics/spectrogram/mel_cepstral_distortion.py",
+      "evaluation/metrics/spectrogram/scale_invariant_signal_to_distortion_ratio.py",
+      "evaluation/metrics/spectrogram/multi_resolution_stft_distance.py",
+      "evaluation/metrics/energy/energy_rmse.py",
+      "evaluation/metrics/energy/energy_pearson_coefficients.py",
+      "evaluation/metrics/intelligibility/character_error_rate.py",
+      "evaluation/metrics/intelligibility/word_error_rate.py"
+    ],
+    "modules/activation_functions/gated_activation_unit.py": [
+      "modules/general/utils.py"
+    ],
+    "modules/dac/__init__.py": [
+      "modules/dac/__init__.py"
+    ],
+    "modules/dac/nn/__init__.py": [
+      "modules/dac/nn/__init__.py"
+    ],
+    "modules/diffusion/bidilconv/bidilated_conv.py": [
+      "modules/general/utils.py"
+    ],
+    "modules/diffusion/bidilconv/residual_block.py": [
+      "modules/activation_functions/__init__.py",
+      "modules/general/utils.py"
+    ],
+    "modules/diffusion/karras/karras_diffusion.py": [
+      "utils/ssim.py",
+      "modules/diffusion/karras/random_utils.py"
+    ],
+    "modules/diffusion/unet/attention.py": [
+      "modules/general/utils.py"
+    ],
+    "modules/diffusion/unet/resblock.py": [
+      "modules/general/utils.py"
+    ],
+    "modules/diffusion/unet/unet.py": [
+      "modules/encoder/position_encoder.py",
+      "modules/general/utils.py"
+    ],
+    "modules/duration_predictor/standard_duration_predictor.py": [
+      "modules/base/base_module.py"
+    ],
+    "modules/duration_predictor/stochastic_duration_predictor.py": [
+      "modules/flow/modules.py"
+    ],
+    "modules/encoder/condition_encoder.py": [
+      "models/svc/transformer/transformer.py",
+      "utils/f0.py"
+    ],
+    "modules/encoder/position_encoder.py": [
+      "modules/general/utils.py"
+    ],
+    "modules/flow/modules.py": [
+      "utils/util.py",
+      "modules/transformer/transforms.py",
+      "modules/base/base_module.py"
+    ],
+    "modules/norms/norm.py": [
+      "text/numbers.py",
+      "modules/general/scaling.py"
+    ],
+    "modules/transformer/Models.py": [
+      "text/symbols.py"
+    ],
+    "modules/transformer/attentions.py": [
+      "utils/util.py",
+      "modules/base/base_module.py"
+    ],
+    "modules/transformer/transformer.py": [
+      "modules/norms/__init__.py",
+      "modules/transformer/__init__.py",
+      "modules/general/scaling.py"
+    ],
+    "modules/wenet_extractor/cif/predictor.py": [
+      "modules/wenet_extractor/utils/mask.py"
+    ],
+    "modules/wenet_extractor/efficient_conformer/attention.py": [
+      "modules/wenet_extractor/transformer/attention.py"
+    ],
+    "modules/wenet_extractor/efficient_conformer/encoder.py": [
+      "modules/wenet_extractor/transformer/positionwise_feed_forward.py",
+      "modules/wenet_extractor/transformer/embedding.py",
+      "modules/wenet_extractor/transformer/subsampling.py",
+      "modules/wenet_extractor/transformer/attention.py",
+      "modules/wenet_extractor/transformer/encoder_layer.py",
+      "modules/wenet_extractor/efficient_conformer/subsampling.py",
+      "modules/wenet_extractor/efficient_conformer/convolution.py",
+      "modules/wenet_extractor/efficient_conformer/attention.py",
+      "modules/wenet_extractor/efficient_conformer/encoder_layer.py",
+      "modules/wenet_extractor/utils/common.py",
+      "modules/wenet_extractor/utils/mask.py"
+    ],
+    "modules/wenet_extractor/efficient_conformer/subsampling.py": [
+      "modules/wenet_extractor/transformer/subsampling.py"
+    ],
+    "modules/wenet_extractor/paraformer/paraformer.py": [
+      "modules/wenet_extractor/cif/predictor.py",
+      "modules/wenet_extractor/paraformer/search/beam_search.py",
+      "modules/wenet_extractor/transformer/asr_model.py",
+      "modules/wenet_extractor/transformer/ctc.py",
+      "modules/wenet_extractor/transformer/decoder.py",
+      "modules/wenet_extractor/transformer/encoder.py",
+      "modules/wenet_extractor/utils/common.py",
+      "modules/wenet_extractor/utils/mask.py"
+    ],
+    "modules/wenet_extractor/paraformer/search/beam_search.py": [
+      "modules/wenet_extractor/paraformer/utils.py",
+      "modules/wenet_extractor/paraformer/search/ctc.py",
+      "modules/wenet_extractor/paraformer/search/scorer_interface.py"
+    ],
+    "modules/wenet_extractor/paraformer/search/ctc.py": [
+      "modules/wenet_extractor/paraformer/search/ctc_prefix_score.py",
+      "modules/wenet_extractor/paraformer/search/scorer_interface.py"
+    ],
+    "modules/wenet_extractor/squeezeformer/attention.py": [
+      "modules/wenet_extractor/transformer/attention.py"
+    ],
+    "modules/wenet_extractor/squeezeformer/encoder.py": [
+      "modules/wenet_extractor/squeezeformer/subsampling.py",
+      "modules/wenet_extractor/squeezeformer/encoder_layer.py",
+      "modules/wenet_extractor/transformer/embedding.py",
+      "modules/wenet_extractor/transformer/attention.py",
+      "modules/wenet_extractor/squeezeformer/attention.py",
+      "modules/wenet_extractor/squeezeformer/positionwise_feed_forward.py",
+      "modules/wenet_extractor/squeezeformer/convolution.py",
+      "modules/wenet_extractor/utils/mask.py",
+      "modules/wenet_extractor/utils/common.py"
+    ],
+    "modules/wenet_extractor/squeezeformer/subsampling.py": [
+      "modules/wenet_extractor/transformer/subsampling.py",
+      "modules/wenet_extractor/squeezeformer/conv2d.py"
+    ],
+    "modules/wenet_extractor/transducer/joint.py": [
+      "modules/wenet_extractor/utils/common.py"
+    ],
+    "modules/wenet_extractor/transducer/predictor.py": [
+      "modules/wenet_extractor/utils/common.py"
+    ],
+    "modules/wenet_extractor/transducer/search/prefix_beam_search.py": [
+      "modules/wenet_extractor/utils/common.py"
+    ],
+    "modules/wenet_extractor/transducer/transducer.py": [
+      "modules/wenet_extractor/transducer/predictor.py",
+      "modules/wenet_extractor/transducer/search/greedy_search.py",
+      "modules/wenet_extractor/transducer/search/prefix_beam_search.py",
+      "modules/wenet_extractor/transformer/asr_model.py",
+      "modules/wenet_extractor/transformer/ctc.py",
+      "modules/wenet_extractor/transformer/decoder.py",
+      "modules/wenet_extractor/transformer/label_smoothing_loss.py",
+      "modules/wenet_extractor/utils/common.py"
+    ],
+    "modules/wenet_extractor/transformer/asr_model.py": [
+      "modules/wenet_extractor/transformer/ctc.py",
+      "modules/wenet_extractor/transformer/decoder.py",
+      "modules/wenet_extractor/transformer/encoder.py",
+      "modules/wenet_extractor/transformer/label_smoothing_loss.py",
+      "modules/wenet_extractor/utils/common.py",
+      "modules/wenet_extractor/utils/mask.py"
+    ],
+    "modules/wenet_extractor/transformer/decoder.py": [
+      "modules/wenet_extractor/transformer/attention.py",
+      "modules/wenet_extractor/transformer/decoder_layer.py",
+      "modules/wenet_extractor/transformer/embedding.py",
+      "modules/wenet_extractor/transformer/positionwise_feed_forward.py",
+      "modules/wenet_extractor/utils/mask.py"
+    ],
+    "modules/wenet_extractor/transformer/encoder.py": [
+      "modules/wenet_extractor/transformer/attention.py",
+      "modules/wenet_extractor/transformer/convolution.py",
+      "modules/wenet_extractor/transformer/embedding.py",
+      "modules/wenet_extractor/transformer/encoder_layer.py",
+      "modules/wenet_extractor/transformer/positionwise_feed_forward.py",
+      "modules/wenet_extractor/transformer/subsampling.py",
+      "modules/wenet_extractor/utils/common.py",
+      "modules/wenet_extractor/utils/mask.py"
+    ],
+    "modules/wenet_extractor/utils/common.py": [
+      "modules/wenet_extractor/transformer/swish.py"
+    ],
+    "modules/wenet_extractor/utils/init_model.py": [
+      "modules/wenet_extractor/transducer/joint.py",
+      "modules/wenet_extractor/transducer/predictor.py",
+      "modules/wenet_extractor/transducer/transducer.py",
+      "modules/wenet_extractor/transformer/asr_model.py",
+      "modules/wenet_extractor/transformer/cmvn.py",
+      "modules/wenet_extractor/transformer/ctc.py",
+      "modules/wenet_extractor/transformer/decoder.py",
+      "modules/wenet_extractor/transformer/encoder.py",
+      "modules/wenet_extractor/squeezeformer/encoder.py",
+      "modules/wenet_extractor/efficient_conformer/encoder.py",
+      "modules/wenet_extractor/paraformer/paraformer.py",
+      "modules/wenet_extractor/cif/predictor.py",
+      "modules/wenet_extractor/utils/cmvn.py"
+    ],
+    "preprocessors/Emilia/main.py": [
+      "preprocessors/Emilia/utils/tool.py",
+      "models/__init__.py"
+    ],
+    "preprocessors/Emilia/main_multi.py": [
+      "preprocessors/Emilia/utils/tool.py"
+    ],
+    "preprocessors/cdmusiceval.py": [
+      "utils/util.py",
+      "utils/audio_slicer.py"
+    ],
+    "preprocessors/coco.py": [
+      "utils/util.py",
+      "preprocessors/__init__.py"
+    ],
+    "preprocessors/cocoeval.py": [
+      "utils/util.py",
+      "utils/audio_slicer.py",
+      "preprocessors/__init__.py"
+    ],
+    "preprocessors/csd.py": [
+      "utils/io.py",
+      "utils/util.py",
+      "preprocessors/__init__.py"
+    ],
+    "preprocessors/customsvcdataset.py": [
+      "utils/util.py"
+    ],
+    "preprocessors/hifitts.py": [
+      "utils/util.py"
+    ],
+    "preprocessors/kising.py": [
+      "utils/util.py",
+      "preprocessors/__init__.py"
+    ],
+    "preprocessors/librilight.py": [
+      "utils/mfa_prepare.py",
+      "utils/cut_by_vad.py",
+      "utils/whisper_transcription.py",
+      "utils/util.py"
+    ],
+    "preprocessors/libritts.py": [
+      "utils/util.py"
+    ],
+    "preprocessors/lijian.py": [
+      "utils/io.py",
+      "utils/util.py",
+      "utils/audio_slicer.py",
+      "preprocessors/__init__.py"
+    ],
+    "preprocessors/ljspeech.py": [
+      "utils/__init__.py",
+      "utils/util.py",
+      "text/__init__.py"
+    ],
+    "preprocessors/ljspeech_vocoder.py": [
+      "utils/util.py"
+    ],
+    "preprocessors/m4singer.py": [
+      "utils/util.py",
+      "preprocessors/__init__.py"
+    ],
+    "preprocessors/nus48e.py": [
+      "utils/io.py",
+      "utils/util.py",
+      "utils/audio_slicer.py",
+      "preprocessors/__init__.py"
+    ],
+    "preprocessors/opencpop.py": [
+      "utils/util.py"
+    ],
+    "preprocessors/opensinger.py": [
+      "utils/util.py",
+      "preprocessors/__init__.py"
+    ],
+    "preprocessors/opera.py": [
+      "utils/util.py",
+      "utils/io.py",
+      "utils/audio_slicer.py",
+      "preprocessors/__init__.py"
+    ],
+    "preprocessors/pjs.py": [
+      "utils/util.py",
+      "utils/io.py"
+    ],
+    "preprocessors/popbutfy.py": [
+      "utils/util.py",
+      "preprocessors/__init__.py"
+    ],
+    "preprocessors/popcs.py": [
+      "utils/util.py",
+      "preprocessors/__init__.py"
+    ],
+    "preprocessors/processor.py": [
+      "preprocessors/__init__.py"
+    ],
+    "preprocessors/svcc.py": [
+      "utils/util.py",
+      "preprocessors/__init__.py"
+    ],
+    "preprocessors/svcceval.py": [
+      "utils/util.py"
+    ],
+    "preprocessors/vctk.py": [
+      "utils/util.py"
+    ],
+    "preprocessors/vctksample.py": [
+      "preprocessors/__init__.py"
+    ],
+    "preprocessors/vocalist.py": [
+      "utils/util.py"
+    ],
+    "processors/acoustic_extractor.py": [
+      "utils/io.py",
+      "utils/util.py",
+      "utils/tokenizer.py",
+      "utils/stft.py",
+      "utils/dsp.py",
+      "utils/data_utils.py",
+      "preprocessors/metadata.py",
+      "utils/mel.py",
+      "utils/__init__.py"
+    ],
+    "processors/audio_features_extractor.py": [
+      "utils/mel.py",
+      "utils/f0.py",
+      "processors/content_extractor.py"
+    ],
+    "processors/content_extractor.py": [
+      "modules/naturalpseech2/transformers.py",
+      "utils/io_optim.py",
+      "modules/wenet_extractor/utils/init_model.py",
+      "modules/wenet_extractor/utils/checkpoint.py"
+    ],
+    "processors/data_augment.py": [
+      "utils/util.py"
+    ],
+    "processors/phone_extractor.py": [
+      "text/g2p_module.py",
+      "text/symbol_table.py"
+    ],
+    "text/__init__.py": [
+      "text/__init__.py",
+      "text/symbols.py"
+    ],
+    "text/symbols.py": [
+      "text/__init__.py"
+    ],
+    "text/text_token_collation.py": [
+      "text/symbol_table.py",
+      "text/__init__.py"
+    ],
+    "utils/audio_slicer.py": [
+      "utils/io.py",
+      "utils/audio.py"
+    ],
+    "utils/hparam.py": [
+      "text/numbers.py"
+    ],
+    "utils/mert.py": [
+      "modules/naturalpseech2/transformers.py"
+    ],
+    "utils/tokenizer.py": [
+      "modules/dac/model/encodec.py"
+    ],
+    "utils/util.py": [
+      "utils/hparam.py"
+    ],
+    "utils/whisper_transcription.py": [
+      "modules/naturalpseech2/transformers.py"
+    ],
+    "visualization/SingVisio/webpage/index.html": [
+      "visualization/SingVisio/webpage/tailwind.config.js"
+    ]
+  },
+  "recent_events": []
+}

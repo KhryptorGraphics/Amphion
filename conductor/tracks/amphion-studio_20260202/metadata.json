@@ -1,0 +1,17 @@
+{
+  "id": "amphion-studio_20260202",
+  "title": "Amphion Studio - Full-Featured Interface",
+  "type": "feature",
+  "status": "in_progress",
+  "created": "2026-02-02T05:00:00Z",
+  "updated": "2026-02-02T05:00:00Z",
+  "phases": {
+    "total": 16,
+    "completed": 0
+  },
+  "tasks": {
+    "total": 185,
+    "completed": 0
+  },
+  "notes": "Continuous development mandate - all phases must complete without stopping"
+}

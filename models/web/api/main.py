@@ -11,7 +11,7 @@ from fastapi.staticfiles import StaticFiles
 import os
 import logging
 
-from .routes import tts, vc, health
+from .routes import tts, vc, svc, health, evaluation
 from .websocket.progress import manager
 
 logging.basicConfig(
@@ -48,6 +48,8 @@ os.makedirs("/home/kp/repo2/Amphion/output/web", exist_ok=True)
 # Include routers
 app.include_router(tts.router, prefix="/api/tts", tags=["TTS"])
 app.include_router(vc.router, prefix="/api/vc", tags=["Voice Conversion"])
+app.include_router(svc.router, prefix="/api/svc", tags=["Singing Voice Conversion"])
+app.include_router(evaluation.router, prefix="/api/evaluation", tags=["Evaluation"])
 app.include_router(health.router, prefix="/api", tags=["Health"])
 
 

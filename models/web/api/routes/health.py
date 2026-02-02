@@ -65,6 +65,21 @@ async def models_status() -> Dict[str, Any]:
                 "name": "Vevo VC",
                 "description": "Voice conversion with style control"
             },
+            "noro": {
+                "loaded": manager._noro_loaded,
+                "name": "Noro",
+                "description": "Noise-robust voice conversion"
+            },
+            "metis": {
+                "loaded": manager._metis_loaded,
+                "name": "Metis",
+                "description": "Unified foundation model for TTS, VC, SE, TSE"
+            },
+            "vevosing": {
+                "loaded": manager._vevosing_loaded,
+                "name": "VevoSing",
+                "description": "Singing voice conversion with timbre/style control"
+            },
         }
     }
 
