@@ -430,4 +430,9 @@ iface = gr.Interface(
 )
 
 # Launch the interface
-iface.launch(allowed_paths=["./output"])
+iface.launch(
+    server_name="127.0.0.1",  # Localhost only - no external access
+    server_port=17860,         # Custom port
+    root_path="/gradio",       # Behind Apache reverse proxy
+    allowed_paths=["./output"]
+)
