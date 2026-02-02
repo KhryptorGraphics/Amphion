@@ -23,3 +23,117 @@
 2026-02-02 00:07:01 | CREATE | models/web/api/main.py                   |   93 |        | dirty
 2026-02-02 00:07:07 | CREATE | models/web/api/main.py                   |   94 |     +1 | dirty
 2026-02-02 00:08:24 | CREATE | models/web/api/routes/evaluation.py      |  494 |    -13 | 
+2026-02-02 03:41:40 | CREATE | models/web/react/app/vc/page.tsx         |  141 |   +141 | 
+2026-02-02 03:42:08 | CREATE | models/web/react/app/vc/vevo-voice/page.tsx |  209 |   +209 | 
+2026-02-02 03:42:38 | CREATE | models/web/react/app/vc/vevo-timbre/page.tsx |  209 |   +209 | 
+2026-02-02 03:43:19 | CREATE | models/web/react/app/vc/vevo-style/page.tsx |  209 |   +209 | 
+2026-02-02 03:44:09 | CREATE | models/web/react/app/vc/noro/page.tsx    |  272 |   +272 | 
+2026-02-02 03:44:27 | CREATE | models/web/react/app/svc/page.tsx        |   63 |    +63 | 
+2026-02-02 03:45:31 | CREATE | models/web/react/app/svc/vevosing/page.tsx |  297 |   +297 | 
+2026-02-02 03:46:03 | CREATE | models/web/react/next.config.js          |    8 |     +1 | dirty
+2026-02-02 03:46:48 | CREATE | models/web/react/next.config.js          |    7 |     -1 | 
+2026-02-02 03:48:28 | WRITE  | models/web/react/next-env.d.ts           |    0 |     -6 | dirty
+2026-02-02 03:48:36 | REMOVE | models/web/react/dist/_next/static/chunks/153-d32297c2441da6b6.js |    0 |        | 
+2026-02-02 03:48:36 | REMOVE | models/web/react/dist/_next/static/chunks/159-2aba5155f518ac48.js |    0 |        | 
+2026-02-02 03:48:36 | REMOVE | models/web/react/dist/_next/static/chunks/2-30c080b618097bb6.js |    0 |        | 
+2026-02-02 03:48:36 | REMOVE | models/web/react/dist/_next/static/chunks/160-922c12a120987a96.js |    0 |        | 
+2026-02-02 03:48:36 | REMOVE | models/web/react/dist/_next/static/chunks/255-27333e2e70592903.js |    0 |        | 
+2026-02-02 03:48:36 | REMOVE | models/web/react/dist/_next/static/chunks/306-cac643b7f636baee.js |    0 |        | 
+2026-02-02 03:48:36 | REMOVE | models/web/react/dist/_next/static/chunks/4bd1b696-d0b886d72abe9e30.js |    0 |        | 
+2026-02-02 03:48:36 | REMOVE | models/web/react/dist/_next/static/chunks/552-dd609767d92a42f7.js |    0 |        | 
+2026-02-02 03:48:36 | REMOVE | models/web/react/dist/_next/static/chunks/556-d24d180190b42997.js |    0 |        | 
+2026-02-02 03:48:36 | REMOVE | models/web/react/dist/_next/static/chunks/619-ba102abea3e3d0e4.js |    0 |        | 
+2026-02-02 03:48:36 | REMOVE | models/web/react/dist/_next/static/chunks/64-708cf4b3b9b57911.js |    0 |        | 
+2026-02-02 03:48:36 | REMOVE | models/web/react/dist/_next/static/chunks/main-647b201b894c845a.js |    0 |        | 
+2026-02-02 03:48:36 | REMOVE | models/web/react/dist/_next/static/chunks/main-app-4406fec5847054b7.js |    0 |        | 
+2026-02-02 03:48:36 | REMOVE | models/web/react/dist/_next/static/chunks/polyfills-42372ed130431b0a.js |    0 |        | 
+2026-02-02 03:48:36 | REMOVE | models/web/react/dist/_next/static/chunks/webpack-ce14f47c56ffb2a4.js |    0 |        | 
+2026-02-02 03:48:36 | REMOVE | models/web/react/dist/_next/static/p2a7XEy-u_JOOLPZMRC1-/_buildManifest.js |    0 |        | 
+2026-02-02 03:48:36 | REMOVE | models/web/react/dist/_next/static/p2a7XEy-u_JOOLPZMRC1-/_ssgManifest.js |    0 |        | 
+2026-02-02 03:48:36 | REMOVE | models/web/react/dist/_next/static/chunks/framework-e72d445b7a3bda24.js |    0 |        | 
+2026-02-02 03:48:36 | REMOVE | models/web/react/dist/_next/static/chunks/app/layout-d4d9233a80ac2e66.js |    0 |        | 
+2026-02-02 03:48:36 | REMOVE | models/web/react/dist/_next/static/chunks/app/page-4a0c99664c2f546f.js |    0 |        | 
+2026-02-02 03:48:36 | REMOVE | models/web/react/dist/_next/static/chunks/app/_not-found/page-694ac96b520aac5e.js |    0 |        | 
+2026-02-02 03:48:36 | REMOVE | models/web/react/dist/_next/static/chunks/pages/_app-7d307437aca18ad4.js |    0 |        | 
+2026-02-02 03:48:36 | REMOVE | models/web/react/dist/_next/static/chunks/pages/_error-cb2a52f75f2162e2.js |    0 |        | 
+2026-02-02 03:48:36 | REMOVE | models/web/react/dist/_next/static/chunks/app/tts/page-af9d332cde9c8323.js |    0 |        | 
+2026-02-02 03:48:36 | REMOVE | models/web/react/dist/_next/static/chunks/app/tts/compare/page-c20ca5f58140d4d0.js |    0 |        | 
+2026-02-02 03:48:36 | REMOVE | models/web/react/dist/_next/static/chunks/app/tts/debatts/page-99ec7bf4c8564614.js |    0 |        | 
+2026-02-02 03:48:36 | REMOVE | models/web/react/dist/_next/static/chunks/app/tts/dualcodec-valle/page-c6d77f3eb79820b7.js |    0 |        | 
+2026-02-02 03:48:36 | REMOVE | models/web/react/dist/_next/static/chunks/app/tts/jets/page-35a584bda3eb875d.js |    0 |        | 
+2026-02-02 03:48:36 | REMOVE | models/web/react/dist/_next/static/chunks/app/tts/fastspeech2/page-f091a299c812f7ec.js |    0 |        | 
+2026-02-02 03:48:36 | REMOVE | models/web/react/dist/_next/static/chunks/app/tts/maskgct/page-9615778147db0917.js |    0 |        | 
+2026-02-02 03:48:36 | REMOVE | models/web/react/dist/_next/static/chunks/app/tts/metis/page-df5019928cc0a408.js |    0 |        | 
+2026-02-02 03:48:36 | REMOVE | models/web/react/dist/_next/static/chunks/app/tts/naturalspeech2/page-20e2bd33336ab7fd.js |    0 |        | 
+2026-02-02 03:48:36 | REMOVE | models/web/react/dist/_next/static/chunks/app/tts/valle/page-5c285178dcc398f5.js |    0 |        | 
+2026-02-02 03:48:36 | REMOVE | models/web/react/dist/_next/static/chunks/app/tts/vevo-tts/page-df75084fd05d82eb.js |    0 |        | 
+2026-02-02 03:48:36 | REMOVE | models/web/react/dist/_next/static/chunks/app/tts/vits/page-40ce8ff7caa9450a.js |    0 |        | 
+2026-02-02 12:12:38 | REMOVE | models/web/react/next-env.d.ts           |    0 |     -5 | 
+2026-02-02 12:12:39 | CREATE | models/web/react/next-env.d.ts           |    6 |     +6 | dirty
+2026-02-02 12:12:39 | CREATE | models/web/react/dist/_next/static/chunks/webpack-ce14f47c56ffb2a4.js |    1 |     +1 | 
+2026-02-02 12:12:39 | CREATE | models/web/react/dist/_next/static/chunks/pages/_error-cb2a52f75f2162e2.js |    1 |     +1 | 
+2026-02-02 12:12:39 | CREATE | models/web/react/dist/_next/static/chunks/pages/_app-7d307437aca18ad4.js |    1 |     +1 | 
+2026-02-02 12:12:39 | CREATE | models/web/react/dist/_next/static/chunks/main-app-4406fec5847054b7.js |    1 |     +1 | 
+2026-02-02 12:12:39 | CREATE | models/web/react/dist/_next/static/chunks/main-647b201b894c845a.js |    0 |        | 
+2026-02-02 12:12:39 | CREATE | models/web/react/dist/_next/static/chunks/framework-e72d445b7a3bda24.js |    0 |        | 
+2026-02-02 12:12:39 | CREATE | models/web/react/dist/_next/static/chunks/app/tts/vits/page-40ce8ff7caa9450a.js |    1 |     +1 | 
+2026-02-02 12:12:39 | CREATE | models/web/react/dist/_next/static/chunks/app/tts/vevo-tts/page-df75084fd05d82eb.js |    1 |     +1 | 
+2026-02-02 12:12:39 | CREATE | models/web/react/dist/_next/static/chunks/app/tts/valle/page-5c285178dcc398f5.js |    1 |     +1 | 
+2026-02-02 12:12:39 | CREATE | models/web/react/dist/_next/static/chunks/app/tts/page-af9d332cde9c8323.js |    1 |     +1 | 
+2026-02-02 12:12:39 | CREATE | models/web/react/dist/_next/static/chunks/app/tts/naturalspeech2/page-20e2bd33336ab7fd.js |    1 |     +1 | 
+2026-02-02 12:12:39 | CREATE | models/web/react/dist/_next/static/chunks/app/tts/metis/page-df5019928cc0a408.js |    1 |     +1 | 
+2026-02-02 12:12:39 | CREATE | models/web/react/dist/_next/static/chunks/app/tts/maskgct/page-9615778147db0917.js |    1 |     +1 | 
+2026-02-02 12:12:39 | CREATE | models/web/react/dist/_next/static/chunks/app/tts/jets/page-35a584bda3eb875d.js |    1 |     +1 | 
+2026-02-02 12:12:39 | CREATE | models/web/react/dist/_next/static/chunks/app/tts/fastspeech2/page-f091a299c812f7ec.js |    1 |     +1 | 
+2026-02-02 12:12:39 | CREATE | models/web/react/dist/_next/static/chunks/app/tts/dualcodec-valle/page-c6d77f3eb79820b7.js |    1 |     +1 | 
+2026-02-02 12:12:39 | CREATE | models/web/react/dist/_next/static/chunks/app/tts/debatts/page-99ec7bf4c8564614.js |    1 |     +1 | 
+2026-02-02 12:12:39 | CREATE | models/web/react/dist/_next/static/chunks/app/tts/compare/page-c20ca5f58140d4d0.js |    1 |     +1 | 
+2026-02-02 12:12:39 | CREATE | models/web/react/dist/_next/static/chunks/app/page-4a0c99664c2f546f.js |    1 |     +1 | 
+2026-02-02 12:12:39 | CREATE | models/web/react/dist/_next/static/chunks/app/layout-d4d9233a80ac2e66.js |    1 |     +1 | 
+2026-02-02 12:12:39 | CREATE | models/web/react/dist/_next/static/chunks/app/_not-found/page-694ac96b520aac5e.js |    1 |     +1 | 
+2026-02-02 12:12:39 | CREATE | models/web/react/dist/_next/static/chunks/64-708cf4b3b9b57911.js |    1 |     +1 | 
+2026-02-02 12:12:39 | CREATE | models/web/react/dist/_next/static/chunks/619-ba102abea3e3d0e4.js |    1 |     +1 | 
+2026-02-02 12:12:39 | CREATE | models/web/react/dist/_next/static/chunks/556-d24d180190b42997.js |    1 |     +1 | 
+2026-02-02 12:12:39 | CREATE | models/web/react/dist/_next/static/chunks/552-dd609767d92a42f7.js |    1 |     +1 | 
+2026-02-02 12:12:39 | CREATE | models/web/react/dist/_next/static/chunks/4bd1b696-d0b886d72abe9e30.js |    0 |        | 
+2026-02-02 12:12:39 | CREATE | models/web/react/dist/_next/static/chunks/306-cac643b7f636baee.js |    1 |     +1 | 
+2026-02-02 12:12:39 | CREATE | models/web/react/dist/_next/static/chunks/255-27333e2e70592903.js |    0 |        | 
+2026-02-02 12:12:39 | CREATE | models/web/react/dist/_next/static/chunks/2-30c080b618097bb6.js |    0 |        | 
+2026-02-02 12:12:39 | CREATE | models/web/react/dist/_next/static/chunks/160-922c12a120987a96.js |    1 |     +1 | 
+2026-02-02 12:12:39 | CREATE | models/web/react/dist/_next/static/chunks/159-2aba5155f518ac48.js |    1 |     +1 | 
+2026-02-02 12:12:39 | CREATE | models/web/react/dist/_next/static/chunks/153-d32297c2441da6b6.js |    1 |     +1 | 
+2026-02-02 12:12:54 | REMOVE | models/web/react/dist/_next/static/chunks/153-d32297c2441da6b6.js |    0 |     -1 | 
+2026-02-02 12:12:54 | REMOVE | models/web/react/dist/_next/static/chunks/159-2aba5155f518ac48.js |    0 |     -1 | 
+2026-02-02 12:12:54 | REMOVE | models/web/react/dist/_next/static/chunks/160-922c12a120987a96.js |    0 |     -1 | 
+2026-02-02 12:12:54 | REMOVE | models/web/react/dist/_next/static/chunks/2-30c080b618097bb6.js |    0 |        | 
+2026-02-02 12:12:54 | REMOVE | models/web/react/dist/_next/static/chunks/255-27333e2e70592903.js |    0 |        | 
+2026-02-02 12:12:54 | REMOVE | models/web/react/dist/_next/static/chunks/306-cac643b7f636baee.js |    0 |     -1 | 
+2026-02-02 12:12:54 | REMOVE | models/web/react/dist/_next/static/chunks/4bd1b696-d0b886d72abe9e30.js |    0 |        | 
+2026-02-02 12:12:54 | REMOVE | models/web/react/dist/_next/static/chunks/552-dd609767d92a42f7.js |    0 |     -1 | 
+2026-02-02 12:12:54 | REMOVE | models/web/react/dist/_next/static/chunks/556-d24d180190b42997.js |    0 |     -1 | 
+2026-02-02 12:12:54 | REMOVE | models/web/react/dist/_next/static/chunks/619-ba102abea3e3d0e4.js |    0 |     -1 | 
+2026-02-02 12:12:54 | REMOVE | models/web/react/dist/_next/static/chunks/64-708cf4b3b9b57911.js |    0 |     -1 | 
+2026-02-02 12:12:54 | REMOVE | models/web/react/dist/_next/static/chunks/app/_not-found/page-694ac96b520aac5e.js |    0 |     -1 | 
+2026-02-02 12:12:54 | REMOVE | models/web/react/dist/_next/static/chunks/app/layout-d4d9233a80ac2e66.js |    0 |     -1 | 
+2026-02-02 12:12:54 | REMOVE | models/web/react/dist/_next/static/chunks/app/page-4a0c99664c2f546f.js |    0 |     -1 | 
+2026-02-02 12:12:54 | REMOVE | models/web/react/dist/_next/static/chunks/app/tts/compare/page-c20ca5f58140d4d0.js |    0 |     -1 | 
+2026-02-02 12:12:54 | REMOVE | models/web/react/dist/_next/static/chunks/app/tts/debatts/page-99ec7bf4c8564614.js |    0 |     -1 | 
+2026-02-02 12:12:54 | REMOVE | models/web/react/dist/_next/static/chunks/app/tts/dualcodec-valle/page-c6d77f3eb79820b7.js |    0 |     -1 | 
+2026-02-02 12:12:54 | REMOVE | models/web/react/dist/_next/static/chunks/app/tts/fastspeech2/page-f091a299c812f7ec.js |    0 |     -1 | 
+2026-02-02 12:12:54 | REMOVE | models/web/react/dist/_next/static/chunks/app/tts/jets/page-35a584bda3eb875d.js |    0 |     -1 | 
+2026-02-02 12:12:54 | REMOVE | models/web/react/dist/_next/static/chunks/app/tts/maskgct/page-9615778147db0917.js |    0 |     -1 | 
+2026-02-02 12:12:54 | REMOVE | models/web/react/dist/_next/static/chunks/app/tts/metis/page-df5019928cc0a408.js |    0 |     -1 | 
+2026-02-02 12:12:54 | REMOVE | models/web/react/dist/_next/static/chunks/app/tts/naturalspeech2/page-20e2bd33336ab7fd.js |    0 |     -1 | 
+2026-02-02 12:12:54 | REMOVE | models/web/react/dist/_next/static/chunks/app/tts/page-af9d332cde9c8323.js |    0 |     -1 | 
+2026-02-02 12:12:54 | REMOVE | models/web/react/dist/_next/static/chunks/app/tts/valle/page-5c285178dcc398f5.js |    0 |     -1 | 
+2026-02-02 12:12:54 | REMOVE | models/web/react/dist/_next/static/chunks/app/tts/vevo-tts/page-df75084fd05d82eb.js |    0 |     -1 | 
+2026-02-02 12:12:54 | REMOVE | models/web/react/dist/_next/static/chunks/app/tts/vits/page-40ce8ff7caa9450a.js |    0 |     -1 | 
+2026-02-02 12:12:54 | REMOVE | models/web/react/dist/_next/static/chunks/framework-e72d445b7a3bda24.js |    0 |        | 
+2026-02-02 12:12:54 | REMOVE | models/web/react/dist/_next/static/chunks/main-647b201b894c845a.js |    0 |        | 
+2026-02-02 12:12:54 | REMOVE | models/web/react/dist/_next/static/chunks/main-app-4406fec5847054b7.js |    0 |     -1 | 
+2026-02-02 12:12:54 | REMOVE | models/web/react/dist/_next/static/chunks/pages/_app-7d307437aca18ad4.js |    0 |     -1 | 
+2026-02-02 12:12:54 | REMOVE | models/web/react/dist/_next/static/chunks/pages/_error-cb2a52f75f2162e2.js |    0 |     -1 | 
+2026-02-02 12:12:54 | REMOVE | models/web/react/dist/_next/static/chunks/webpack-ce14f47c56ffb2a4.js |    0 |     -1 | 
+2026-02-02 12:12:54 | REMOVE | models/web/react/dist/_next/static/p2a7XEy-u_JOOLPZMRC1-/_buildManifest.js |    0 |        | 
+2026-02-02 12:12:54 | REMOVE | models/web/react/dist/_next/static/p2a7XEy-u_JOOLPZMRC1-/_ssgManifest.js |    0 |        | 
+2026-02-02 12:12:54 | REMOVE | models/web/react/next-env.d.ts           |    0 |     -6 | 

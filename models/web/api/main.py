@@ -88,7 +88,7 @@ if __name__ == "__main__":
     uvicorn.run(
         "models.web.api.main:app",
         host="127.0.0.1",
-        port=17862,
+        port=14555,
         reload=False,
         log_level="info"
     )
