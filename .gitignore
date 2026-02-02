@@ -64,3 +64,5 @@ conversion_results
 get_available_gpu.py
 
 *.safetensors.next
+node_modules/
+.next/
