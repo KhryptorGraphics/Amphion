@@ -15,6 +15,7 @@ import numpy as np
 import torch
 
 from ..models.manager import ModelManager
+from ..upload_validation import validate_audio_file
 
 logger = logging.getLogger(__name__)
 router = APIRouter()
@@ -55,6 +56,10 @@ async def vevosing_svc(
         FileResponse: Converted audio file
     """
     manager = ModelManager()
+
+    # Validate uploaded files
+    content_audio = await validate_audio_file(content_audio, "content_audio", max_size=100*1024*1024)  # 100MB for content
+    reference_audio = await validate_audio_file(reference_audio, "reference_audio", max_size=50*1024*1024)  # 50MB for reference
 
     # Save uploaded audio files to temp
     with tempfile.NamedTemporaryFile(delete=False, suffix=".wav") as tmp_content:

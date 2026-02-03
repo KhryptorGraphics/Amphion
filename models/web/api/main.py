@@ -13,6 +13,8 @@ import logging
 
 from .routes import tts, vc, svc, health, evaluation
 from .websocket.progress import manager
+from .auth import AuthMiddleware
+from .rate_limit import RateLimitMiddleware
 
 logging.basicConfig(
     level=logging.INFO,
@@ -42,6 +44,11 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+# Security middleware - Rate limiting and Auth
+# Order matters: Rate limit first, then auth
+app.add_middleware(RateLimitMiddleware)
+app.add_middleware(AuthMiddleware)
+
 # Ensure output directory exists
 os.makedirs("/home/kp/repo2/Amphion/output/web", exist_ok=True)
 
@@ -51,6 +58,15 @@ app.include_router(vc.router, prefix="/api/vc", tags=["Voice Conversion"])
 app.include_router(svc.router, prefix="/api/svc", tags=["Singing Voice Conversion"])
 app.include_router(evaluation.router, prefix="/api/evaluation", tags=["Evaluation"])
 app.include_router(health.router, prefix="/api", tags=["Health"])
+
+
+# Mount React frontend static files
+react_build_dir = os.path.join(os.path.dirname(__file__), "../react/dist")
+if os.path.exists(react_build_dir):
+    app.mount("/", StaticFiles(directory=react_build_dir, html=True), name="frontend")
+    logger.info(f"Serving React frontend from: {react_build_dir}")
+else:
+    logger.warning(f"React build directory not found: {react_build_dir}")
 
 
 @app.websocket("/ws/progress/{task_id}")

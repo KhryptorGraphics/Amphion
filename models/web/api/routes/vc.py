@@ -12,6 +12,7 @@ import logging
 import soundfile as sf
 
 from ..models.manager import ModelManager
+from ..upload_validation import validate_audio_file
 
 logger = logging.getLogger(__name__)
 router = APIRouter()
@@ -46,6 +47,10 @@ async def vevo_voice_conversion(
         FileResponse: Converted audio file
     """
     manager = ModelManager()
+
+    # Validate uploaded audio files
+    source_audio = await validate_audio_file(source_audio, "source_audio")
+    reference_audio = await validate_audio_file(reference_audio, "reference_audio")
 
     # Save uploaded files
     with tempfile.NamedTemporaryFile(delete=False, suffix=".wav") as tmp_src:
@@ -109,6 +114,10 @@ async def vevo_timbre_conversion(
     """
     manager = ModelManager()
 
+    # Validate uploaded audio files
+    source_audio = await validate_audio_file(source_audio, "source_audio")
+    reference_audio = await validate_audio_file(reference_audio, "reference_audio")
+
     # Save uploaded files
     with tempfile.NamedTemporaryFile(delete=False, suffix=".wav") as tmp_src:
         content = await source_audio.read()
@@ -169,6 +178,10 @@ async def vevo_style_conversion(
         FileResponse: Converted audio file
     """
     manager = ModelManager()
+
+    # Validate uploaded audio files
+    source_audio = await validate_audio_file(source_audio, "source_audio")
+    reference_audio = await validate_audio_file(reference_audio, "reference_audio")
 
     # Save uploaded files
     with tempfile.NamedTemporaryFile(delete=False, suffix=".wav") as tmp_src:
@@ -235,6 +248,10 @@ async def noro_voice_conversion(
         FileResponse: Converted audio file
     """
     manager = ModelManager()
+
+    # Validate uploaded audio files
+    source_audio = await validate_audio_file(source_audio, "source_audio")
+    reference_audio = await validate_audio_file(reference_audio, "reference_audio")
 
     # Save uploaded files
     with tempfile.NamedTemporaryFile(delete=False, suffix=".wav") as tmp_src:

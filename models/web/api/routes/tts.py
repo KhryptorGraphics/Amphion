@@ -13,6 +13,7 @@ from typing import Optional
 import soundfile as sf
 
 from ..models.manager import ModelManager
+from ..upload_validation import validate_audio_file
 
 logger = logging.getLogger(__name__)
 router = APIRouter()
@@ -51,6 +52,9 @@ async def maskgct_tts(
         FileResponse: Generated audio file
     """
     manager = ModelManager()
+
+    # Validate uploaded audio file
+    audio = await validate_audio_file(audio, "audio")
 
     # Save uploaded audio to temp file
     with tempfile.NamedTemporaryFile(delete=False, suffix=".wav") as tmp_audio:
@@ -111,6 +115,9 @@ async def dualcodec_valle_tts(
         FileResponse: Generated audio file
     """
     manager = ModelManager()
+
+    # Validate uploaded audio file
+    audio = await validate_audio_file(audio, "audio")
 
     # Save uploaded audio to temp file
     with tempfile.NamedTemporaryFile(delete=False, suffix=".wav") as tmp_audio:
@@ -176,6 +183,11 @@ async def vevo_tts(
         FileResponse: Generated audio file
     """
     manager = ModelManager()
+
+    # Validate uploaded audio files
+    audio = await validate_audio_file(audio, "audio")
+    if timbre_audio:
+        timbre_audio = await validate_audio_file(timbre_audio, "timbre_audio")
 
     # Save uploaded audio to temp file
     with tempfile.NamedTemporaryFile(delete=False, suffix=".wav") as tmp_audio:
@@ -254,6 +266,9 @@ async def metis_tts(
         FileResponse: Generated audio file (24kHz WAV)
     """
     manager = ModelManager()
+
+    # Validate uploaded audio file
+    audio = await validate_audio_file(audio, "audio")
 
     # Save uploaded audio to temp file
     with tempfile.NamedTemporaryFile(delete=False, suffix=".wav") as tmp_audio:
