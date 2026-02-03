@@ -11,6 +11,8 @@ import os
 import logging
 from typing import Optional
 import soundfile as sf
+import numpy as np
+import torch
 
 from ..models.manager import ModelManager
 
@@ -78,6 +80,17 @@ async def vevosing_svc(
 
         # Save output
         output_path = f"/home/kp/repo2/Amphion/output/web/vevosing_{os.urandom(8).hex()}.wav"
+
+        # Convert torch tensor to numpy if needed
+        if isinstance(audio_data, torch.Tensor):
+            audio_data = audio_data.detach().cpu().numpy()
+        # Squeeze batch dimension if present [1, T] -> [T]
+        if audio_data.ndim > 1:
+            audio_data = audio_data.squeeze()
+        # Ensure float32 format
+        if audio_data.dtype != np.float32:
+            audio_data = audio_data.astype(np.float32)
+
         sf.write(output_path, audio_data, sample_rate)
 
         # Schedule cleanup
