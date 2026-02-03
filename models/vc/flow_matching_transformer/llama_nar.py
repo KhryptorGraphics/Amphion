@@ -97,14 +97,17 @@ class LlamaNARDecoderLayer(LlamaDecoderLayer):
         )
 
         # Self Attention
-        hidden_states, self_attn_weights = self.self_attn(
+        # Transformers 4.41.2+ returns (hidden_states, attention_weights, present_key_value)
+        attn_output = self.self_attn(
             hidden_states=hidden_states,
             attention_mask=attention_mask,
             position_ids=position_ids,
             past_key_values=past_key_value,
             position_embeddings=position_embeddings,
         )
-        present_key_value = None
+        hidden_states = attn_output[0]
+        self_attn_weights = attn_output[1] if len(attn_output) > 1 else None
+        present_key_value = attn_output[2] if len(attn_output) > 2 else None
         hidden_states = residual + hidden_states
 
         # Fully Connected
@@ -193,7 +196,12 @@ class DiffLlama(LlamaModel):
         self.embed_tokens = None
 
         # Override rotary_emb with correct dimensions matching actual layer config
-        self.rotary_emb = LlamaRotaryEmbedding(config=layer_config)
+        # Updated for transformers 4.41.2+ API compatibility
+        self.rotary_emb = LlamaRotaryEmbedding(
+            dim=layer_config.hidden_size // layer_config.num_attention_heads,
+            max_position_embeddings=layer_config.max_position_embeddings,
+            base=layer_config.rope_theta if hasattr(layer_config, 'rope_theta') else 10000,
+        )
 
         self.post_init()
 

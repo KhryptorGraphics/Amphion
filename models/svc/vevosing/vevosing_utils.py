@@ -146,7 +146,11 @@ def save_audio(
     gain = target_db - current_db
     normalized_waveform = waveform * (10 ** (gain / 20))
 
-    torchaudio.save(output_path, normalized_waveform, target_sample_rate)
+    # Use soundfile instead of torchaudio.save() to avoid torchcodec dependency
+    import soundfile as sf
+    # Convert to numpy and transpose for soundfile (expects [samples, channels])
+    audio_np = normalized_waveform.squeeze(0).cpu().numpy()
+    sf.write(output_path, audio_np, target_sample_rate)
     return output_path
 
 

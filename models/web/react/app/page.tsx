@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Mic, Volume2, Music, FileAudio, BarChart3, Wand2 } from "lucide-react";
+import { Mic, Volume2, Music, FileAudio, BarChart3, Wand2, AudioWaveform, Waves } from "lucide-react";
 
 const FEATURES = [
   {
@@ -28,11 +28,25 @@ const FEATURES = [
     color: "bg-pink-500",
   },
   {
+    title: "Text to Audio",
+    description: "Generate sound effects and audio from text descriptions",
+    icon: AudioWaveform,
+    href: "/tta",
+    color: "bg-indigo-500",
+  },
+  {
     title: "Audio Codecs",
-    description: "Neural audio codec analysis and processing",
+    description: "Neural audio codec encoding and decoding",
     icon: FileAudio,
-    href: "/tools/codecs",
+    href: "/codec",
     color: "bg-green-500",
+  },
+  {
+    title: "Vocoders",
+    description: "Convert spectrograms to high-fidelity audio waveforms",
+    icon: Waves,
+    href: "/vocoder",
+    color: "bg-cyan-500",
   },
   {
     title: "Evaluation",
@@ -60,7 +74,7 @@ export default function HomePage() {
         </p>
       </div>
 
-      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
         {FEATURES.map((feature) => (
           <Link key={feature.title} href={feature.href}>
             <Card className="h-full hover:shadow-lg transition-shadow cursor-pointer">

@@ -1,0 +1,16 @@
+{
+  "id": "$track",
+  "title": "Track",
+  "type": "feature",
+  "status": "pending",
+  "created": "2026-02-03T00:00:00Z",
+  "updated": "2026-02-03T00:00:00Z",
+  "phases": {
+    "total": 3,
+    "completed": 0
+  },
+  "tasks": {
+    "total": 10,
+    "completed": 0
+  }
+}

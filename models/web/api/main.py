@@ -11,7 +11,7 @@ from fastapi.staticfiles import StaticFiles
 import os
 import logging
 
-from .routes import tts, vc, svc, health, evaluation
+from .routes import tts, vc, svc, health, evaluation, tta, codec, vocoder
 from .websocket.progress import manager
 from .auth import AuthMiddleware
 from .rate_limit import RateLimitMiddleware
@@ -56,6 +56,9 @@ os.makedirs("/home/kp/repo2/Amphion/output/web", exist_ok=True)
 app.include_router(tts.router, prefix="/api/tts", tags=["TTS"])
 app.include_router(vc.router, prefix="/api/vc", tags=["Voice Conversion"])
 app.include_router(svc.router, prefix="/api/svc", tags=["Singing Voice Conversion"])
+app.include_router(tta.router, prefix="/api/tta", tags=["Text-to-Audio"])
+app.include_router(codec.router, prefix="/api/codec", tags=["Codec"])
+app.include_router(vocoder.router, prefix="/api/vocoder", tags=["Vocoder"])
 app.include_router(evaluation.router, prefix="/api/evaluation", tags=["Evaluation"])
 app.include_router(health.router, prefix="/api", tags=["Health"])
 

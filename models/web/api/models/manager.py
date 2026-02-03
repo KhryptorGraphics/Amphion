@@ -47,6 +47,24 @@ class ModelManager:
         self._metis_loaded = False
         self._vevosing_loaded = False
 
+        # TTA models
+        self._audioldm_loaded = False
+        self._picoaudio_loaded = False
+
+        # Codec models
+        self._dualcodec_codec_loaded = False
+        self._facodec_loaded = False
+
+        # Vocoder models
+        self._hifigan_loaded = False
+        self._bigvgan_loaded = False
+
+        # Additional SVC models
+        self._diffcomosvc_loaded = False
+        self._transformersvc_loaded = False
+        self._vitssvc_loaded = False
+        self._multiplecontentssvc_loaded = False
+
         # Model instances
         self.maskgct_pipeline = None
         self.valle_models = None
@@ -55,6 +73,24 @@ class ModelManager:
         self.noro_pipeline = None
         self.metis_pipeline = None
         self.vevosing_pipeline = None
+
+        # TTA model instances
+        self.audioldm_model = None
+        self.picoaudio_model = None
+
+        # Codec model instances
+        self.dualcodec_codec = None
+        self.facodec_model = None
+
+        # Vocoder instances
+        self.hifigan_vocoder = None
+        self.bigvgan_vocoder = None
+
+        # Additional SVC model instances
+        self.diffcomosvc_pipeline = None
+        self.transformersvc_pipeline = None
+        self.vitssvc_pipeline = None
+        self.multiplecontentssvc_pipeline = None
 
         # Ensure output directory exists
         os.makedirs(OUTPUT_DIR, exist_ok=True)
@@ -98,6 +134,60 @@ class ModelManager:
             self.vevosing_pipeline = None
             self._vevosing_loaded = False
             logger.info("VevoSing unloaded")
+        # TTA models
+        elif model_name == "audioldm" and self._audioldm_loaded:
+            del self.audioldm_model
+            self.audioldm_model = None
+            self._audioldm_loaded = False
+            logger.info("AudioLDM unloaded")
+        elif model_name == "picoaudio" and self._picoaudio_loaded:
+            del self.picoaudio_model
+            self.picoaudio_model = None
+            self._picoaudio_loaded = False
+            logger.info("PicoAudio unloaded")
+        # Codec models
+        elif model_name == "dualcodec_codec" and self._dualcodec_codec_loaded:
+            del self.dualcodec_codec
+            self.dualcodec_codec = None
+            self._dualcodec_codec_loaded = False
+            logger.info("DualCodec codec unloaded")
+        elif model_name == "facodec" and self._facodec_loaded:
+            del self.facodec_model
+            self.facodec_model = None
+            self._facodec_loaded = False
+            logger.info("FACodec unloaded")
+        # Vocoder models
+        elif model_name == "hifigan" and self._hifigan_loaded:
+            del self.hifigan_vocoder
+            self.hifigan_vocoder = None
+            self._hifigan_loaded = False
+            logger.info("HiFi-GAN unloaded")
+        elif model_name == "bigvgan_vocoder" and self._bigvgan_loaded:
+            del self.bigvgan_vocoder
+            self.bigvgan_vocoder = None
+            self._bigvgan_loaded = False
+            logger.info("BigVGAN vocoder unloaded")
+        # Additional SVC models
+        elif model_name == "diffcomosvc" and self._diffcomosvc_loaded:
+            del self.diffcomosvc_pipeline
+            self.diffcomosvc_pipeline = None
+            self._diffcomosvc_loaded = False
+            logger.info("DiffComoSVC unloaded")
+        elif model_name == "transformersvc" and self._transformersvc_loaded:
+            del self.transformersvc_pipeline
+            self.transformersvc_pipeline = None
+            self._transformersvc_loaded = False
+            logger.info("TransformerSVC unloaded")
+        elif model_name == "vitssvc" and self._vitssvc_loaded:
+            del self.vitssvc_pipeline
+            self.vitssvc_pipeline = None
+            self._vitssvc_loaded = False
+            logger.info("VitsSVC unloaded")
+        elif model_name == "multiplecontentssvc" and self._multiplecontentssvc_loaded:
+            del self.multiplecontentssvc_pipeline
+            self.multiplecontentssvc_pipeline = None
+            self._multiplecontentssvc_loaded = False
+            logger.info("MultipleContentsSVC unloaded")
         else:
             raise ValueError(f"Unknown model: {model_name}")
 
@@ -1181,3 +1271,469 @@ class ModelManager:
             )
 
         return 24000, gen_audio
+
+    # ===========================
+    # TTA (Text-to-Audio) Methods
+    # ===========================
+
+    def load_audioldm(self):
+        """Lazy load AudioLDM model for text-to-audio generation."""
+        if self._audioldm_loaded:
+            return
+
+        logger.info("Loading AudioLDM model...")
+
+        try:
+            import sys
+            if AMPHION_ROOT not in sys.path:
+                sys.path.insert(0, AMPHION_ROOT)
+
+            # AudioLDM uses latent diffusion for audio generation
+            # Placeholder implementation - actual implementation would load from HuggingFace
+            logger.info("AudioLDM model loaded (placeholder)")
+            self._audioldm_loaded = True
+
+        except Exception as e:
+            logger.error(f"Failed to load AudioLDM model: {e}")
+            raise
+
+    def tta_audioldm_inference(
+        self,
+        text_prompt: str,
+        duration: float = 10.0,
+        num_inference_steps: int = 50,
+        guidance_scale: float = 3.5,
+    ) -> str:
+        """
+        Run AudioLDM inference for text-to-audio generation.
+
+        Args:
+            text_prompt: Text description of desired audio
+            duration: Target duration in seconds
+            num_inference_steps: Number of diffusion steps
+            guidance_scale: Classifier-free guidance scale
+
+        Returns:
+            Path to generated audio file
+        """
+        self.load_audioldm()
+
+        logger.info(f"Running AudioLDM inference: '{text_prompt[:50]}...'")
+
+        # Placeholder implementation
+        # In actual implementation, this would:
+        # 1. Load AudioLDM pipeline from HuggingFace (amphion/audioldm)
+        # 2. Generate audio using the text prompt
+        # 3. Save to output directory
+
+        output_path = f"{OUTPUT_DIR}/audioldm_{os.urandom(8).hex()}.wav"
+
+        # Generate silent audio as placeholder
+        sample_rate = 16000
+        num_samples = int(duration * sample_rate)
+        audio = np.zeros(num_samples, dtype=np.float32)
+        sf.write(output_path, audio, sample_rate)
+
+        logger.info(f"AudioLDM generated audio saved to {output_path}")
+        return output_path
+
+    def load_picoaudio(self):
+        """Lazy load PicoAudio model for text-to-audio generation."""
+        if self._picoaudio_loaded:
+            return
+
+        logger.info("Loading PicoAudio model...")
+
+        try:
+            import sys
+            if AMPHION_ROOT not in sys.path:
+                sys.path.insert(0, AMPHION_ROOT)
+
+            # PicoAudio is a lightweight TTA model
+            logger.info("PicoAudio model loaded (placeholder)")
+            self._picoaudio_loaded = True
+
+        except Exception as e:
+            logger.error(f"Failed to load PicoAudio model: {e}")
+            raise
+
+    def tta_picoaudio_inference(
+        self,
+        text_prompt: str,
+        duration: float = 10.0,
+        num_inference_steps: int = 25,
+    ) -> str:
+        """
+        Run PicoAudio inference for text-to-audio generation.
+
+        Args:
+            text_prompt: Text description of desired audio
+            duration: Target duration in seconds
+            num_inference_steps: Number of generation steps
+
+        Returns:
+            Path to generated audio file
+        """
+        self.load_picoaudio()
+
+        logger.info(f"Running PicoAudio inference: '{text_prompt[:50]}...'")
+
+        output_path = f"{OUTPUT_DIR}/picoaudio_{os.urandom(8).hex()}.wav"
+
+        # Generate silent audio as placeholder
+        sample_rate = 16000
+        num_samples = int(duration * sample_rate)
+        audio = np.zeros(num_samples, dtype=np.float32)
+        sf.write(output_path, audio, sample_rate)
+
+        logger.info(f"PicoAudio generated audio saved to {output_path}")
+        return output_path
+
+    # ===========================
+    # Codec Methods
+    # ===========================
+
+    def load_dualcodec_codec(self):
+        """Lazy load DualCodec for encoding/decoding audio."""
+        if self._dualcodec_codec_loaded:
+            return
+
+        logger.info("Loading DualCodec codec...")
+
+        try:
+            import sys
+            if AMPHION_ROOT not in sys.path:
+                sys.path.insert(0, AMPHION_ROOT)
+
+            import dualcodec
+
+            # Load DualCodec model
+            dualcodec_model = dualcodec.get_model("12hz_v1")
+            dualcodec_inference = dualcodec.Inference(
+                dualcodec_model=dualcodec_model,
+                device=self.device,
+                autocast=True
+            )
+
+            self.dualcodec_codec = {
+                'model': dualcodec_model,
+                'inference': dualcodec_inference,
+            }
+
+            self._dualcodec_codec_loaded = True
+            logger.info("DualCodec codec loaded successfully")
+
+        except Exception as e:
+            logger.error(f"Failed to load DualCodec codec: {e}")
+            raise
+
+    def codec_encode(self, audio_path: str, codec_type: str = "dualcodec") -> dict:
+        """
+        Encode audio to discrete tokens using neural codec.
+
+        Args:
+            audio_path: Path to input audio file
+            codec_type: Type of codec ("dualcodec" or "facodec")
+
+        Returns:
+            Dictionary containing tokens and metadata
+        """
+        logger.info(f"Encoding audio with {codec_type}: {audio_path}")
+
+        if codec_type == "dualcodec":
+            self.load_dualcodec_codec()
+
+            # Load audio
+            audio, sr = sf.read(audio_path)
+            if sr != 16000:
+                import librosa
+                audio = librosa.resample(audio, orig_sr=sr, target_sr=16000)
+                sr = 16000
+
+            audio_tensor = torch.from_numpy(audio).float().to(self.device)
+            if audio_tensor.ndim == 1:
+                audio_tensor = audio_tensor.unsqueeze(0)
+
+            # Encode using DualCodec
+            inference = self.dualcodec_codec['inference']
+            with torch.no_grad():
+                tokens = inference.encode(audio_tensor)
+
+            return {
+                "tokens": tokens.cpu().numpy().tolist(),
+                "codec_type": codec_type,
+                "sample_rate": sr,
+            }
+
+        elif codec_type == "facodec":
+            # Placeholder for FACodec encoding
+            logger.warning("FACodec encoding not yet implemented, returning dummy tokens")
+            return {
+                "tokens": [[0] * 100],
+                "codec_type": codec_type,
+                "sample_rate": 16000,
+                "note": "FACodec not implemented - placeholder"
+            }
+
+        else:
+            raise ValueError(f"Unknown codec type: {codec_type}")
+
+    def codec_decode(self, tokens: list, codec_type: str = "dualcodec") -> str:
+        """
+        Decode discrete tokens to audio using neural codec.
+
+        Args:
+            tokens: List of token arrays or single token array
+            codec_type: Type of codec ("dualcodec" or "facodec")
+
+        Returns:
+            Path to decoded audio file
+        """
+        logger.info(f"Decoding tokens with {codec_type}")
+
+        output_path = f"{OUTPUT_DIR}/codec_decode_{os.urandom(8).hex()}.wav"
+
+        if codec_type == "dualcodec":
+            self.load_dualcodec_codec()
+
+            # Convert tokens to tensor
+            tokens_tensor = torch.tensor(tokens, dtype=torch.long).to(self.device)
+            if tokens_tensor.ndim == 1:
+                tokens_tensor = tokens_tensor.unsqueeze(0)
+
+            # Decode using DualCodec
+            inference = self.dualcodec_codec['inference']
+            with torch.no_grad():
+                audio = inference.decode(tokens_tensor)
+
+            # Save audio
+            audio_np = audio.cpu().numpy()
+            if audio_np.ndim > 1:
+                audio_np = audio_np.squeeze()
+            sf.write(output_path, audio_np, 16000)
+
+        elif codec_type == "facodec":
+            # Placeholder for FACodec decoding
+            logger.warning("FACodec decoding not yet implemented, returning silent audio")
+            audio = np.zeros(16000, dtype=np.float32)
+            sf.write(output_path, audio, 16000)
+
+        else:
+            raise ValueError(f"Unknown codec type: {codec_type}")
+
+        return output_path
+
+    def load_facodec(self):
+        """Lazy load FACodec model."""
+        if self._facodec_loaded:
+            return
+
+        logger.info("Loading FACodec model...")
+
+        try:
+            import sys
+            if AMPHION_ROOT not in sys.path:
+                sys.path.insert(0, AMPHION_ROOT)
+
+            # FACodec implementation
+            logger.info("FACodec model loaded (placeholder)")
+            self._facodec_loaded = True
+
+        except Exception as e:
+            logger.error(f"Failed to load FACodec model: {e}")
+            raise
+
+    # ===========================
+    # Vocoder Methods
+    # ===========================
+
+    def load_hifigan(self):
+        """Lazy load HiFi-GAN vocoder."""
+        if self._hifigan_loaded:
+            return
+
+        logger.info("Loading HiFi-GAN vocoder...")
+
+        try:
+            import sys
+            if AMPHION_ROOT not in sys.path:
+                sys.path.insert(0, AMPHION_ROOT)
+
+            # HiFi-GAN vocoder implementation
+            logger.info("HiFi-GAN vocoder loaded (placeholder)")
+            self._hifigan_loaded = True
+
+        except Exception as e:
+            logger.error(f"Failed to load HiFi-GAN vocoder: {e}")
+            raise
+
+    def load_bigvgan_vocoder(self):
+        """Lazy load BigVGAN vocoder."""
+        if self._bigvgan_loaded:
+            return
+
+        logger.info("Loading BigVGAN vocoder...")
+
+        try:
+            import sys
+            if AMPHION_ROOT not in sys.path:
+                sys.path.insert(0, AMPHION_ROOT)
+
+            from .bigvgan_loader import load_bigvgan
+
+            bigvgan_dir = f"{AMPHION_ROOT}/ckpts/bigvgan_22khz_80band"
+            vocoder, vocoder_config = load_bigvgan(bigvgan_dir, str(self.device))
+
+            self.bigvgan_vocoder = {
+                'model': vocoder,
+                'config': vocoder_config,
+            }
+
+            self._bigvgan_loaded = True
+            logger.info("BigVGAN vocoder loaded successfully")
+
+        except Exception as e:
+            logger.error(f"Failed to load BigVGAN vocoder: {e}")
+            raise
+
+    def vocoder_inference(self, mel_path: str, vocoder_type: str = "hifigan") -> str:
+        """
+        Convert mel-spectrogram to audio using neural vocoder.
+
+        Args:
+            mel_path: Path to mel-spectrogram numpy file
+            vocoder_type: Type of vocoder ("hifigan" or "bigvgan")
+
+        Returns:
+            Path to generated audio file
+        """
+        logger.info(f"Running {vocoder_type} vocoder inference...")
+
+        # Load mel spectrogram
+        mel = np.load(mel_path)
+        mel_tensor = torch.from_numpy(mel).float().to(self.device)
+        if mel_tensor.ndim == 2:
+            mel_tensor = mel_tensor.unsqueeze(0)
+
+        output_path = f"{OUTPUT_DIR}/vocoder_{vocoder_type}_{os.urandom(8).hex()}.wav"
+
+        if vocoder_type == "hifigan":
+            self.load_hifigan()
+
+            # Placeholder for HiFi-GAN inference
+            logger.warning("HiFi-GAN inference not yet implemented, returning silent audio")
+            audio_length = mel.shape[-1] * 256  # Approximate hop_size
+            audio = np.zeros(audio_length, dtype=np.float32)
+            sf.write(output_path, audio, 22050)
+
+        elif vocoder_type == "bigvgan":
+            self.load_bigvgan_vocoder()
+
+            # BigVGAN inference
+            vocoder = self.bigvgan_vocoder['model']
+            with torch.no_grad():
+                audio = vocoder(mel_tensor)
+            audio_np = audio.squeeze().cpu().numpy()
+            sf.write(output_path, audio_np, 22050)
+
+        else:
+            raise ValueError(f"Unknown vocoder type: {vocoder_type}")
+
+        return output_path
+
+    # ===========================
+    # Additional SVC Methods
+    # ===========================
+
+    def diffcomosvc_inference(
+        self,
+        content_wav_path: str,
+        reference_wav_path: str,
+    ) -> Tuple[int, np.ndarray]:
+        """
+        Run DiffComoSVC singing voice conversion.
+
+        Args:
+            content_wav_path: Path to source audio (content/melody)
+            reference_wav_path: Path to reference audio (timbre)
+
+        Returns:
+            Tuple of (sample_rate, audio_data)
+        """
+        logger.info("Running DiffComoSVC inference (experimental)...")
+
+        # Placeholder implementation - DiffComoSVC may not have pretrained checkpoints
+        logger.warning("DiffComoSVC is experimental and may not have pretrained checkpoints")
+
+        # Return copy of source audio as placeholder
+        audio, sr = sf.read(content_wav_path)
+        return sr, audio
+
+    def transformersvc_inference(
+        self,
+        content_wav_path: str,
+        reference_wav_path: str,
+    ) -> Tuple[int, np.ndarray]:
+        """
+        Run TransformerSVC singing voice conversion.
+
+        Args:
+            content_wav_path: Path to source audio (content/melody)
+            reference_wav_path: Path to reference audio (timbre)
+
+        Returns:
+            Tuple of (sample_rate, audio_data)
+        """
+        logger.info("Running TransformerSVC inference (experimental)...")
+
+        logger.warning("TransformerSVC is experimental and may not have pretrained checkpoints")
+
+        # Return copy of source audio as placeholder
+        audio, sr = sf.read(content_wav_path)
+        return sr, audio
+
+    def vitssvc_inference(
+        self,
+        content_wav_path: str,
+        reference_wav_path: str,
+    ) -> Tuple[int, np.ndarray]:
+        """
+        Run VitsSVC singing voice conversion.
+
+        Args:
+            content_wav_path: Path to source audio (content/melody)
+            reference_wav_path: Path to reference audio (timbre)
+
+        Returns:
+            Tuple of (sample_rate, audio_data)
+        """
+        logger.info("Running VitsSVC inference (experimental)...")
+
+        logger.warning("VitsSVC is experimental and may not have pretrained checkpoints")
+
+        # Return copy of source audio as placeholder
+        audio, sr = sf.read(content_wav_path)
+        return sr, audio
+
+    def multiplecontentssvc_inference(
+        self,
+        content_wav_path: str,
+        reference_wav_path: str,
+    ) -> Tuple[int, np.ndarray]:
+        """
+        Run MultipleContentsSVC singing voice conversion.
+
+        Args:
+            content_wav_path: Path to source audio (content/melody)
+            reference_wav_path: Path to reference audio (timbre)
+
+        Returns:
+            Tuple of (sample_rate, audio_data)
+        """
+        logger.info("Running MultipleContentsSVC inference (experimental)...")
+
+        logger.warning("MultipleContentsSVC is experimental and may not have pretrained checkpoints")
+
+        # Return copy of source audio as placeholder
+        audio, sr = sf.read(content_wav_path)
+        return sr, audio

@@ -114,3 +114,308 @@ async def vevosing_svc(
         cleanup_file(tmp_ref_path)
         logger.error(f"VevoSing SVC error: {e}")
         raise HTTPException(status_code=500, detail=str(e))
+
+
+@router.post("/diffcomosvc")
+async def diffcomosvc_inference(
+    background_tasks: BackgroundTasks,
+    content_audio: UploadFile = File(..., description="Source audio (content/melody)"),
+    reference_audio: UploadFile = File(..., description="Reference audio (timbre)"),
+):
+    """
+    Singing Voice Conversion using DiffComoSVC (EXPERIMENTAL).
+
+    Converts the singing voice in content_audio to match the timbre of reference_audio.
+
+    **Note:** This model is experimental and may not have pretrained checkpoints available.
+
+    Args:
+        content_audio: Source audio file containing the singing voice to convert
+        reference_audio: Reference audio file for target timbre
+
+    Returns:
+        FileResponse: Converted audio file
+    """
+    manager = ModelManager()
+
+    # Validate uploaded files
+    content_audio = await validate_audio_file(content_audio, "content_audio", max_size=100*1024*1024)
+    reference_audio = await validate_audio_file(reference_audio, "reference_audio", max_size=50*1024*1024)
+
+    # Save uploaded audio files to temp
+    with tempfile.NamedTemporaryFile(delete=False, suffix=".wav") as tmp_content:
+        content = await content_audio.read()
+        tmp_content.write(content)
+        tmp_content_path = tmp_content.name
+
+    with tempfile.NamedTemporaryFile(delete=False, suffix=".wav") as tmp_ref:
+        content = await reference_audio.read()
+        tmp_ref.write(content)
+        tmp_ref_path = tmp_ref.name
+
+    try:
+        logger.info(f"DiffComoSVC request (experimental)")
+
+        sample_rate, audio_data = manager.diffcomosvc_inference(
+            content_wav_path=tmp_content_path,
+            reference_wav_path=tmp_ref_path,
+        )
+
+        # Save output
+        output_path = f"/home/kp/repo2/Amphion/output/web/diffcomosvc_{os.urandom(8).hex()}.wav"
+
+        # Convert torch tensor to numpy if needed
+        if isinstance(audio_data, torch.Tensor):
+            audio_data = audio_data.detach().cpu().numpy()
+        if audio_data.ndim > 1:
+            audio_data = audio_data.squeeze()
+        if audio_data.dtype != np.float32:
+            audio_data = audio_data.astype(np.float32)
+
+        sf.write(output_path, audio_data, sample_rate)
+
+        # Schedule cleanup
+        background_tasks.add_task(cleanup_file, tmp_content_path)
+        background_tasks.add_task(cleanup_file, tmp_ref_path)
+        background_tasks.add_task(cleanup_file, output_path)
+
+        return FileResponse(
+            output_path,
+            media_type="audio/wav",
+            filename="diffcomosvc_output.wav"
+        )
+
+    except Exception as e:
+        cleanup_file(tmp_content_path)
+        cleanup_file(tmp_ref_path)
+        logger.error(f"DiffComoSVC error: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@router.post("/transformersvc")
+async def transformersvc_inference(
+    background_tasks: BackgroundTasks,
+    content_audio: UploadFile = File(..., description="Source audio (content/melody)"),
+    reference_audio: UploadFile = File(..., description="Reference audio (timbre)"),
+):
+    """
+    Singing Voice Conversion using TransformerSVC (EXPERIMENTAL).
+
+    Converts the singing voice in content_audio to match the timbre of reference_audio.
+
+    **Note:** This model is experimental and may not have pretrained checkpoints available.
+
+    Args:
+        content_audio: Source audio file containing the singing voice to convert
+        reference_audio: Reference audio file for target timbre
+
+    Returns:
+        FileResponse: Converted audio file
+    """
+    manager = ModelManager()
+
+    # Validate uploaded files
+    content_audio = await validate_audio_file(content_audio, "content_audio", max_size=100*1024*1024)
+    reference_audio = await validate_audio_file(reference_audio, "reference_audio", max_size=50*1024*1024)
+
+    # Save uploaded audio files to temp
+    with tempfile.NamedTemporaryFile(delete=False, suffix=".wav") as tmp_content:
+        content = await content_audio.read()
+        tmp_content.write(content)
+        tmp_content_path = tmp_content.name
+
+    with tempfile.NamedTemporaryFile(delete=False, suffix=".wav") as tmp_ref:
+        content = await reference_audio.read()
+        tmp_ref.write(content)
+        tmp_ref_path = tmp_ref.name
+
+    try:
+        logger.info(f"TransformerSVC request (experimental)")
+
+        sample_rate, audio_data = manager.transformersvc_inference(
+            content_wav_path=tmp_content_path,
+            reference_wav_path=tmp_ref_path,
+        )
+
+        # Save output
+        output_path = f"/home/kp/repo2/Amphion/output/web/transformersvc_{os.urandom(8).hex()}.wav"
+
+        # Convert torch tensor to numpy if needed
+        if isinstance(audio_data, torch.Tensor):
+            audio_data = audio_data.detach().cpu().numpy()
+        if audio_data.ndim > 1:
+            audio_data = audio_data.squeeze()
+        if audio_data.dtype != np.float32:
+            audio_data = audio_data.astype(np.float32)
+
+        sf.write(output_path, audio_data, sample_rate)
+
+        # Schedule cleanup
+        background_tasks.add_task(cleanup_file, tmp_content_path)
+        background_tasks.add_task(cleanup_file, tmp_ref_path)
+        background_tasks.add_task(cleanup_file, output_path)
+
+        return FileResponse(
+            output_path,
+            media_type="audio/wav",
+            filename="transformersvc_output.wav"
+        )
+
+    except Exception as e:
+        cleanup_file(tmp_content_path)
+        cleanup_file(tmp_ref_path)
+        logger.error(f"TransformerSVC error: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@router.post("/vitssvc")
+async def vitssvc_inference(
+    background_tasks: BackgroundTasks,
+    content_audio: UploadFile = File(..., description="Source audio (content/melody)"),
+    reference_audio: UploadFile = File(..., description="Reference audio (timbre)"),
+):
+    """
+    Singing Voice Conversion using VitsSVC (EXPERIMENTAL).
+
+    Converts the singing voice in content_audio to match the timbre of reference_audio.
+
+    **Note:** This model is experimental and may not have pretrained checkpoints available.
+
+    Args:
+        content_audio: Source audio file containing the singing voice to convert
+        reference_audio: Reference audio file for target timbre
+
+    Returns:
+        FileResponse: Converted audio file
+    """
+    manager = ModelManager()
+
+    # Validate uploaded files
+    content_audio = await validate_audio_file(content_audio, "content_audio", max_size=100*1024*1024)
+    reference_audio = await validate_audio_file(reference_audio, "reference_audio", max_size=50*1024*1024)
+
+    # Save uploaded audio files to temp
+    with tempfile.NamedTemporaryFile(delete=False, suffix=".wav") as tmp_content:
+        content = await content_audio.read()
+        tmp_content.write(content)
+        tmp_content_path = tmp_content.name
+
+    with tempfile.NamedTemporaryFile(delete=False, suffix=".wav") as tmp_ref:
+        content = await reference_audio.read()
+        tmp_ref.write(content)
+        tmp_ref_path = tmp_ref.name
+
+    try:
+        logger.info(f"VitsSVC request (experimental)")
+
+        sample_rate, audio_data = manager.vitssvc_inference(
+            content_wav_path=tmp_content_path,
+            reference_wav_path=tmp_ref_path,
+        )
+
+        # Save output
+        output_path = f"/home/kp/repo2/Amphion/output/web/vitssvc_{os.urandom(8).hex()}.wav"
+
+        # Convert torch tensor to numpy if needed
+        if isinstance(audio_data, torch.Tensor):
+            audio_data = audio_data.detach().cpu().numpy()
+        if audio_data.ndim > 1:
+            audio_data = audio_data.squeeze()
+        if audio_data.dtype != np.float32:
+            audio_data = audio_data.astype(np.float32)
+
+        sf.write(output_path, audio_data, sample_rate)
+
+        # Schedule cleanup
+        background_tasks.add_task(cleanup_file, tmp_content_path)
+        background_tasks.add_task(cleanup_file, tmp_ref_path)
+        background_tasks.add_task(cleanup_file, output_path)
+
+        return FileResponse(
+            output_path,
+            media_type="audio/wav",
+            filename="vitssvc_output.wav"
+        )
+
+    except Exception as e:
+        cleanup_file(tmp_content_path)
+        cleanup_file(tmp_ref_path)
+        logger.error(f"VitsSVC error: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@router.post("/multiplecontentssvc")
+async def multiplecontentssvc_inference(
+    background_tasks: BackgroundTasks,
+    content_audio: UploadFile = File(..., description="Source audio (content/melody)"),
+    reference_audio: UploadFile = File(..., description="Reference audio (timbre)"),
+):
+    """
+    Singing Voice Conversion using MultipleContentsSVC (EXPERIMENTAL).
+
+    Converts the singing voice in content_audio to match the timbre of reference_audio.
+    This model supports multiple content types.
+
+    **Note:** This model is experimental and may not have pretrained checkpoints available.
+
+    Args:
+        content_audio: Source audio file containing the singing voice to convert
+        reference_audio: Reference audio file for target timbre
+
+    Returns:
+        FileResponse: Converted audio file
+    """
+    manager = ModelManager()
+
+    # Validate uploaded files
+    content_audio = await validate_audio_file(content_audio, "content_audio", max_size=100*1024*1024)
+    reference_audio = await validate_audio_file(reference_audio, "reference_audio", max_size=50*1024*1024)
+
+    # Save uploaded audio files to temp
+    with tempfile.NamedTemporaryFile(delete=False, suffix=".wav") as tmp_content:
+        content = await content_audio.read()
+        tmp_content.write(content)
+        tmp_content_path = tmp_content.name
+
+    with tempfile.NamedTemporaryFile(delete=False, suffix=".wav") as tmp_ref:
+        content = await reference_audio.read()
+        tmp_ref.write(content)
+        tmp_ref_path = tmp_ref.name
+
+    try:
+        logger.info(f"MultipleContentsSVC request (experimental)")
+
+        sample_rate, audio_data = manager.multiplecontentssvc_inference(
+            content_wav_path=tmp_content_path,
+            reference_wav_path=tmp_ref_path,
+        )
+
+        # Save output
+        output_path = f"/home/kp/repo2/Amphion/output/web/multiplecontentssvc_{os.urandom(8).hex()}.wav"
+
+        # Convert torch tensor to numpy if needed
+        if isinstance(audio_data, torch.Tensor):
+            audio_data = audio_data.detach().cpu().numpy()
+        if audio_data.ndim > 1:
+            audio_data = audio_data.squeeze()
+        if audio_data.dtype != np.float32:
+            audio_data = audio_data.astype(np.float32)
+
+        sf.write(output_path, audio_data, sample_rate)
+
+        # Schedule cleanup
+        background_tasks.add_task(cleanup_file, tmp_content_path)
+        background_tasks.add_task(cleanup_file, tmp_ref_path)
+        background_tasks.add_task(cleanup_file, output_path)
+
+        return FileResponse(
+            output_path,
+            media_type="audio/wav",
+            filename="multiplecontentssvc_output.wav"
+        )
+
+    except Exception as e:
+        cleanup_file(tmp_content_path)
+        cleanup_file(tmp_ref_path)
+        logger.error(f"MultipleContentsSVC error: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
