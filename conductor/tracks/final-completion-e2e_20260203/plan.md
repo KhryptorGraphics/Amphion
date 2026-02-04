@@ -61,17 +61,17 @@ Implement advanced SVC models (DiffComoSVC, TransformerSVC, VitsSVC, MultipleCon
 
 ### Tasks
 
-- [ ] Task 3.1: Set up DiffComoSVC model loader
-- [ ] Task 3.2: Implement DiffComoSVC inference pipeline
-- [ ] Task 3.3: Set up TransformerSVC model loader
-- [ ] Task 3.4: Implement TransformerSVC inference
-- [ ] Task 3.5: Set up VitsSVC model loader
-- [ ] Task 3.6: Implement VitsSVC inference
-- [ ] Task 3.7: Set up MultipleContentsSVC model loader
-- [ ] Task 3.8: Implement MultipleContentsSVC inference
-- [ ] Task 3.9: Create SVC checkpoint management
-- [ ] Task 3.10: Update all /api/svc/* endpoints
-- [ ] Task 3.11: Deploy and test SVC endpoints
+- [x] Task 3.1: Set up DiffComoSVC model loader
+- [x] Task 3.2: Implement DiffComoSVC inference pipeline
+- [x] Task 3.3: Set up TransformerSVC model loader
+- [x] Task 3.4: Implement TransformerSVC inference
+- [x] Task 3.5: Set up VitsSVC model loader
+- [x] Task 3.6: Implement VitsSVC inference
+- [x] Task 3.7: Set up MultipleContentsSVC model loader
+- [x] Task 3.8: Implement MultipleContentsSVC inference
+- [x] Task 3.9: Create SVC checkpoint management
+- [x] Task 3.10: Update all /api/svc/* endpoints
+- [x] Task 3.11: Deploy and test SVC endpoints
 
 ### Verification
 

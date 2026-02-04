@@ -11,7 +11,7 @@ from fastapi.staticfiles import StaticFiles
 import os
 import logging
 
-from .routes import tts, vc, svc, health, evaluation, tta, codec, vocoder
+from .routes import tts, vc, svc, health, evaluation, tta, codec, vocoder, training
 from .websocket.progress import manager
 from .auth import AuthMiddleware
 from .rate_limit import RateLimitMiddleware
@@ -59,6 +59,7 @@ app.include_router(svc.router, prefix="/api/svc", tags=["Singing Voice Conversio
 app.include_router(tta.router, prefix="/api/tta", tags=["Text-to-Audio"])
 app.include_router(codec.router, prefix="/api/codec", tags=["Codec"])
 app.include_router(vocoder.router, prefix="/api/vocoder", tags=["Vocoder"])
+app.include_router(training.router, prefix="/api/training", tags=["Training"])
 app.include_router(evaluation.router, prefix="/api/evaluation", tags=["Evaluation"])
 app.include_router(health.router, prefix="/api", tags=["Health"])
 
