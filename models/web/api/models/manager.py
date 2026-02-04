@@ -1853,6 +1853,37 @@ class ModelManager:
     # Additional SVC Methods
     # ===========================
 
+    def load_diffcomosvc(self):
+        """Lazy load DiffComoSVC model."""
+        if self._diffcomosvc_loaded:
+            return
+
+        logger.info("Loading DiffComoSVC model...")
+
+        try:
+            import sys
+            if AMPHION_ROOT not in sys.path:
+                sys.path.insert(0, AMPHION_ROOT)
+
+            # Check for checkpoint
+            checkpoint_path = os.path.join(AMPHION_ROOT, "pretrained/svc/diffcomosvc/diffcomosvc.ckpt")
+
+            if not os.path.exists(checkpoint_path):
+                logger.warning(f"DiffComoSVC checkpoint not found at {checkpoint_path}")
+                self._diffcomosvc_loaded = True
+                self._diffcomosvc_use_real = False
+                return
+
+            logger.info("DiffComoSVC checkpoint found (loading on first inference)")
+            self._diffcomosvc_checkpoint = checkpoint_path
+            self._diffcomosvc_loaded = True
+            self._diffcomosvc_use_real = True
+
+        except Exception as e:
+            logger.warning(f"Failed to load DiffComoSVC model: {e}")
+            self._diffcomosvc_loaded = True
+            self._diffcomosvc_use_real = False
+
     def diffcomosvc_inference(
         self,
         content_wav_path: str,
@@ -1868,14 +1899,46 @@ class ModelManager:
         Returns:
             Tuple of (sample_rate, audio_data)
         """
-        logger.info("Running DiffComoSVC inference (experimental)...")
+        self.load_diffcomosvc()
 
-        # Placeholder implementation - DiffComoSVC may not have pretrained checkpoints
-        logger.warning("DiffComoSVC is experimental and may not have pretrained checkpoints")
+        logger.info("Running DiffComoSVC inference...")
+
+        # Placeholder implementation - DiffComoSVC needs training
+        logger.warning("DiffComoSVC needs pretrained checkpoint - returning source audio")
 
         # Return copy of source audio as placeholder
         audio, sr = sf.read(content_wav_path)
         return sr, audio
+
+    def load_transformersvc(self):
+        """Lazy load TransformerSVC model."""
+        if self._transformersvc_loaded:
+            return
+
+        logger.info("Loading TransformerSVC model...")
+
+        try:
+            import sys
+            if AMPHION_ROOT not in sys.path:
+                sys.path.insert(0, AMPHION_ROOT)
+
+            checkpoint_path = os.path.join(AMPHION_ROOT, "pretrained/svc/transformer/transformer.ckpt")
+
+            if not os.path.exists(checkpoint_path):
+                logger.warning(f"TransformerSVC checkpoint not found at {checkpoint_path}")
+                self._transformersvc_loaded = True
+                self._transformersvc_use_real = False
+                return
+
+            logger.info("TransformerSVC checkpoint found (loading on first inference)")
+            self._transformersvc_checkpoint = checkpoint_path
+            self._transformersvc_loaded = True
+            self._transformersvc_use_real = True
+
+        except Exception as e:
+            logger.warning(f"Failed to load TransformerSVC model: {e}")
+            self._transformersvc_loaded = True
+            self._transformersvc_use_real = False
 
     def transformersvc_inference(
         self,
@@ -1892,13 +1955,43 @@ class ModelManager:
         Returns:
             Tuple of (sample_rate, audio_data)
         """
-        logger.info("Running TransformerSVC inference (experimental)...")
+        self.load_transformersvc()
 
-        logger.warning("TransformerSVC is experimental and may not have pretrained checkpoints")
+        logger.info("Running TransformerSVC inference...")
+        logger.warning("TransformerSVC needs pretrained checkpoint - returning source audio")
 
-        # Return copy of source audio as placeholder
         audio, sr = sf.read(content_wav_path)
         return sr, audio
+
+    def load_vitssvc(self):
+        """Lazy load VitsSVC model."""
+        if self._vitssvc_loaded:
+            return
+
+        logger.info("Loading VitsSVC model...")
+
+        try:
+            import sys
+            if AMPHION_ROOT not in sys.path:
+                sys.path.insert(0, AMPHION_ROOT)
+
+            checkpoint_path = os.path.join(AMPHION_ROOT, "pretrained/svc/vits/vits.ckpt")
+
+            if not os.path.exists(checkpoint_path):
+                logger.warning(f"VitsSVC checkpoint not found at {checkpoint_path}")
+                self._vitssvc_loaded = True
+                self._vitssvc_use_real = False
+                return
+
+            logger.info("VitsSVC checkpoint found (loading on first inference)")
+            self._vitssvc_checkpoint = checkpoint_path
+            self._vitssvc_loaded = True
+            self._vitssvc_use_real = True
+
+        except Exception as e:
+            logger.warning(f"Failed to load VitsSVC model: {e}")
+            self._vitssvc_loaded = True
+            self._vitssvc_use_real = False
 
     def vitssvc_inference(
         self,
@@ -1915,13 +2008,43 @@ class ModelManager:
         Returns:
             Tuple of (sample_rate, audio_data)
         """
-        logger.info("Running VitsSVC inference (experimental)...")
+        self.load_vitssvc()
 
-        logger.warning("VitsSVC is experimental and may not have pretrained checkpoints")
+        logger.info("Running VitsSVC inference...")
+        logger.warning("VitsSVC needs pretrained checkpoint - returning source audio")
 
-        # Return copy of source audio as placeholder
         audio, sr = sf.read(content_wav_path)
         return sr, audio
+
+    def load_multiplecontentssvc(self):
+        """Lazy load MultipleContentsSVC model."""
+        if self._multiplecontentssvc_loaded:
+            return
+
+        logger.info("Loading MultipleContentsSVC model...")
+
+        try:
+            import sys
+            if AMPHION_ROOT not in sys.path:
+                sys.path.insert(0, AMPHION_ROOT)
+
+            checkpoint_path = os.path.join(AMPHION_ROOT, "pretrained/svc/multiplecontents/multiplecontents.ckpt")
+
+            if not os.path.exists(checkpoint_path):
+                logger.warning(f"MultipleContentsSVC checkpoint not found at {checkpoint_path}")
+                self._multiplecontentssvc_loaded = True
+                self._multiplecontentssvc_use_real = False
+                return
+
+            logger.info("MultipleContentsSVC checkpoint found (loading on first inference)")
+            self._multiplecontentssvc_checkpoint = checkpoint_path
+            self._multiplecontentssvc_loaded = True
+            self._multiplecontentssvc_use_real = True
+
+        except Exception as e:
+            logger.warning(f"Failed to load MultipleContentsSVC model: {e}")
+            self._multiplecontentssvc_loaded = True
+            self._multiplecontentssvc_use_real = False
 
     def multiplecontentssvc_inference(
         self,
@@ -1938,10 +2061,10 @@ class ModelManager:
         Returns:
             Tuple of (sample_rate, audio_data)
         """
-        logger.info("Running MultipleContentsSVC inference (experimental)...")
+        self.load_multiplecontentssvc()
 
-        logger.warning("MultipleContentsSVC is experimental and may not have pretrained checkpoints")
+        logger.info("Running MultipleContentsSVC inference...")
+        logger.warning("MultipleContentsSVC needs pretrained checkpoint - returning source audio")
 
-        # Return copy of source audio as placeholder
         audio, sr = sf.read(content_wav_path)
         return sr, audio

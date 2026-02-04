@@ -38,14 +38,14 @@ Implement standalone codec endpoints for DualCodec and FAcodec.
 
 ### Tasks
 
-- [ ] Task 2.1: Create FAcodec model loader with factorized components
-- [ ] Task 2.2: Implement encode/decode pipeline for FAcodec
-- [ ] Task 2.3: Create DualCodec standalone model loader
-- [ ] Task 2.4: Implement encode/decode pipeline for DualCodec
-- [ ] Task 2.5: Add codec checkpoint management
-- [ ] Task 2.6: Update /api/codec/facodec endpoints
-- [ ] Task 2.7: Update /api/codec/dualcodec endpoints
-- [ ] Task 2.8: Deploy and test codec endpoints
+- [x] Task 2.1: Create FAcodec model loader with factorized components
+- [x] Task 2.2: Implement encode/decode pipeline for FAcodec
+- [x] Task 2.3: Create DualCodec standalone model loader
+- [x] Task 2.4: Implement encode/decode pipeline for DualCodec
+- [x] Task 2.5: Add codec checkpoint management
+- [x] Task 2.6: Update /api/codec/facodec endpoints
+- [x] Task 2.7: Update /api/codec/dualcodec endpoints
+- [x] Task 2.8: Deploy and test codec endpoints
 
 ### Verification
 
