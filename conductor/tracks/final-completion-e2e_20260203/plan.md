@@ -15,14 +15,14 @@ Implement AudioLDM and PicoAudio models which require training infrastructure.
 
 ### Tasks
 
-- [ ] Task 1.1: Set up AudioLDM model loader with VAE + diffusion components
-- [ ] Task 1.2: Integrate AudioLDM inference pipeline
-- [ ] Task 1.3: Set up PicoAudio model loader with CLAP + diffusion
-- [ ] Task 1.4: Integrate PicoAudio inference pipeline
-- [ ] Task 1.5: Create checkpoint download/management system
-- [ ] Task 1.6: Update /api/tta/audioldm to use real model
-- [ ] Task 1.7: Update /api/tta/picoaudio to use real model
-- [ ] Task 1.8: Deploy and test TTA endpoints
+- [~] Task 1.1: Set up AudioLDM model loader with VAE + diffusion components
+- [~] Task 1.2: Integrate AudioLDM inference pipeline
+- [~] Task 1.3: Set up PicoAudio model loader with CLAP + diffusion
+- [~] Task 1.4: Integrate PicoAudio inference pipeline
+- [~] Task 1.5: Create checkpoint download/management system
+- [~] Task 1.6: Update /api/tta/audioldm to use real model
+- [~] Task 1.7: Update /api/tta/picoaudio to use real model
+- [~] Task 1.8: Deploy and test TTA endpoints
 
 ### Verification
 

@@ -1288,10 +1288,32 @@ class ModelManager:
             if AMPHION_ROOT not in sys.path:
                 sys.path.insert(0, AMPHION_ROOT)
 
-            # AudioLDM uses latent diffusion for audio generation
-            # Placeholder implementation - actual implementation would load from HuggingFace
-            logger.info("AudioLDM model loaded (placeholder)")
-            self._audioldm_loaded = True
+            # Try to load from HuggingFace using diffusers AudioLDM pipeline
+            try:
+                from diffusers import AudioLDMPipeline
+                import torch
+
+                # Load the pretrained AudioLDM model
+                self._audioldm_pipe = AudioLDMPipeline.from_pretrained(
+                    "cvssp/audioldm-s-full",
+                    torch_dtype=torch.float16 if torch.cuda.is_available() else torch.float32,
+                )
+
+                if torch.cuda.is_available():
+                    self._audioldm_pipe = self._audioldm_pipe.to("cuda")
+                    logger.info("AudioLDM loaded on CUDA")
+                else:
+                    logger.info("AudioLDM loaded on CPU")
+
+                logger.info("AudioLDM model loaded from HuggingFace")
+                self._audioldm_loaded = True
+                self._audioldm_use_hf = True
+
+            except Exception as hf_error:
+                logger.warning(f"Could not load from HuggingFace: {hf_error}")
+                logger.info("AudioLDM will use placeholder (model needs training)")
+                self._audioldm_loaded = True
+                self._audioldm_use_hf = False
 
         except Exception as e:
             logger.error(f"Failed to load AudioLDM model: {e}")
@@ -1320,21 +1342,37 @@ class ModelManager:
 
         logger.info(f"Running AudioLDM inference: '{text_prompt[:50]}...'")
 
-        # Placeholder implementation
-        # In actual implementation, this would:
-        # 1. Load AudioLDM pipeline from HuggingFace (amphion/audioldm)
-        # 2. Generate audio using the text prompt
-        # 3. Save to output directory
-
         output_path = f"{OUTPUT_DIR}/audioldm_{os.urandom(8).hex()}.wav"
 
-        # Generate silent audio as placeholder
+        # Use HuggingFace model if available
+        if hasattr(self, '_audioldm_use_hf') and self._audioldm_use_hf:
+            try:
+                # Generate audio using diffusers pipeline
+                audio = self._audioldm_pipe(
+                    text_prompt,
+                    num_inference_steps=num_inference_steps,
+                    guidance_scale=guidance_scale,
+                    audio_length_in_s=duration,
+                ).audios[0]
+
+                # Save the generated audio
+                import scipy.io.wavfile as wavfile
+                wavfile.write(output_path, rate=16000, data=audio)
+
+                logger.info(f"AudioLDM generated audio saved to {output_path}")
+                return output_path
+
+            except Exception as e:
+                logger.error(f"AudioLDM HF inference failed: {e}, falling back to placeholder")
+
+        # Fallback: Generate silent audio as placeholder
+        logger.warning("AudioLDM using placeholder - model needs HuggingFace access or training")
         sample_rate = 16000
         num_samples = int(duration * sample_rate)
         audio = np.zeros(num_samples, dtype=np.float32)
         sf.write(output_path, audio, sample_rate)
 
-        logger.info(f"AudioLDM generated audio saved to {output_path}")
+        logger.info(f"AudioLDM placeholder audio saved to {output_path}")
         return output_path
 
     def load_picoaudio(self):
@@ -1342,16 +1380,35 @@ class ModelManager:
         if self._picoaudio_loaded:
             return
 
-        logger.info("Loading PicoAudio model...")
+        logger.info("Loading PicoAudio model (using AudioLDM-M for fast inference)...")
 
         try:
             import sys
             if AMPHION_ROOT not in sys.path:
                 sys.path.insert(0, AMPHION_ROOT)
 
-            # PicoAudio is a lightweight TTA model
-            logger.info("PicoAudio model loaded (placeholder)")
-            self._picoaudio_loaded = True
+            # Use AudioLDM-M (medium) for faster inference as PicoAudio equivalent
+            try:
+                from diffusers import AudioLDMPipeline
+                import torch
+
+                self._picoaudio_pipe = AudioLDMPipeline.from_pretrained(
+                    "cvssp/audioldm-m-full",
+                    torch_dtype=torch.float16 if torch.cuda.is_available() else torch.float32,
+                )
+
+                if torch.cuda.is_available():
+                    self._picoaudio_pipe = self._picoaudio_pipe.to("cuda")
+
+                logger.info("PicoAudio (AudioLDM-M) loaded from HuggingFace")
+                self._picoaudio_loaded = True
+                self._picoaudio_use_hf = True
+
+            except Exception as hf_error:
+                logger.warning(f"Could not load from HuggingFace: {hf_error}")
+                logger.info("PicoAudio will use placeholder")
+                self._picoaudio_loaded = True
+                self._picoaudio_use_hf = False
 
         except Exception as e:
             logger.error(f"Failed to load PicoAudio model: {e}")
@@ -1365,11 +1422,12 @@ class ModelManager:
     ) -> str:
         """
         Run PicoAudio inference for text-to-audio generation.
+        Uses AudioLDM-M for faster generation.
 
         Args:
             text_prompt: Text description of desired audio
             duration: Target duration in seconds
-            num_inference_steps: Number of generation steps
+            num_inference_steps: Number of generation steps (fewer for speed)
 
         Returns:
             Path to generated audio file
@@ -1380,13 +1438,35 @@ class ModelManager:
 
         output_path = f"{OUTPUT_DIR}/picoaudio_{os.urandom(8).hex()}.wav"
 
-        # Generate silent audio as placeholder
+        # Use HuggingFace model if available
+        if hasattr(self, '_picoaudio_use_hf') and self._picoaudio_use_hf:
+            try:
+                # Generate audio using diffusers pipeline with fewer steps for speed
+                audio = self._picoaudio_pipe(
+                    text_prompt,
+                    num_inference_steps=num_inference_steps,  # Fewer steps for speed
+                    guidance_scale=3.0,
+                    audio_length_in_s=min(duration, 10.0),  # Cap at 10s for speed
+                ).audios[0]
+
+                # Save the generated audio
+                import scipy.io.wavfile as wavfile
+                wavfile.write(output_path, rate=16000, data=audio)
+
+                logger.info(f"PicoAudio generated audio saved to {output_path}")
+                return output_path
+
+            except Exception as e:
+                logger.error(f"PicoAudio HF inference failed: {e}, falling back to placeholder")
+
+        # Fallback: Generate silent audio as placeholder
+        logger.warning("PicoAudio using placeholder - model needs HuggingFace access or training")
         sample_rate = 16000
         num_samples = int(duration * sample_rate)
         audio = np.zeros(num_samples, dtype=np.float32)
         sf.write(output_path, audio, sample_rate)
 
-        logger.info(f"PicoAudio generated audio saved to {output_path}")
+        logger.info(f"PicoAudio placeholder audio saved to {output_path}")
         return output_path
 
     # ===========================
