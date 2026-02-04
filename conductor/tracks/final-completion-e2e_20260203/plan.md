@@ -87,14 +87,14 @@ Create API endpoints for training job management.
 
 ### Tasks
 
-- [ ] Task 4.1: Design training job data model
-- [ ] Task 4.2: Create /api/training/jobs endpoint (list, create)
-- [ ] Task 4.3: Create /api/training/jobs/{id} endpoint (get, cancel)
-- [ ] Task 4.4: Create /api/training/monitor endpoint (loss curves, progress)
-- [ ] Task 4.5: Create /api/training/checkpoints endpoint (browse, download)
-- [ ] Task 4.6: Implement training job queue system
-- [ ] Task 4.7: Add WebSocket updates for training progress
-- [ ] Task 4.8: Deploy and test training endpoints
+- [x] Task 4.1: Design training job data model
+- [x] Task 4.2: Create /api/training/jobs endpoint (list, create)
+- [x] Task 4.3: Create /api/training/jobs/{id} endpoint (get, cancel)
+- [x] Task 4.4: Create /api/training/monitor endpoint (loss curves, progress)
+- [x] Task 4.5: Create /api/training/checkpoints endpoint (browse, download)
+- [x] Task 4.6: Implement training job queue system
+- [x] Task 4.7: Add WebSocket updates for training progress
+- [x] Task 4.8: Deploy and test training endpoints
 
 ### Verification
 
