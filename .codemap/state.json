@@ -1,7 +1,18 @@
 {
-  "updated_at": "2026-02-04T13:11:15.672043571-06:00",
+  "updated_at": "2026-02-04T13:56:47.181213968-06:00",
   "file_count": 1088,
   "hubs": [
+    "models/tts/base/__init__.py",
+    "text/numbers.py",
+    "modules/wenet_extractor/transformer/ctc.py",
+    "models/svc/vevosing/vevosing_utils.py",
+    "text/__init__.py",
+    "models/svc/transformer/conformer.py",
+    "models/codec/vevo/vevo_repcodec.py",
+    "preprocessors/__init__.py",
+    "modules/general/utils.py",
+    "models/base/base_sampler.py",
+    "modules/wenet_extractor/transformer/subsampling.py",
     "models/tts/base/tts_inferece.py",
     "models/tta/picoaudio/picoaudio/audioldm/clap/training/params.py",
     "models/tta/picoaudio/picoaudio/audioldm/clap/training/data.py",
@@ -71,18 +82,7 @@
     "utils/data_utils.py",
     "utils/mel.py",
     "models/vocoders/gan/discriminator/mpd.py",
-    "modules/naturalpseech2/transformers.py",
-    "models/tts/base/__init__.py",
-    "text/numbers.py",
-    "modules/wenet_extractor/transformer/ctc.py",
-    "models/svc/vevosing/vevosing_utils.py",
-    "text/__init__.py",
-    "models/svc/transformer/conformer.py",
-    "models/codec/vevo/vevo_repcodec.py",
-    "preprocessors/__init__.py",
-    "modules/general/utils.py",
-    "models/base/base_sampler.py",
-    "modules/wenet_extractor/transformer/subsampling.py"
+    "modules/naturalpseech2/transformers.py"
   ],
   "importers": {
     "evaluation/metrics/energy/energy_pearson_coefficients.py": [
@@ -3323,6 +3323,36 @@
       "dirty": true,
       "importers": 4,
       "is_hub": true
+    },
+    {
+      "time": "2026-02-04T13:56:07.796276833-06:00",
+      "op": "CREATE",
+      "path": "models/web/api/routes/tta.py",
+      "lang": "python",
+      "lines": 125,
+      "delta": 1,
+      "size_delta": 116,
+      "dirty": true
+    },
+    {
+      "time": "2026-02-04T13:56:27.919221153-06:00",
+      "op": "CREATE",
+      "path": "models/web/api/routes/tta.py",
+      "lang": "python",
+      "lines": 127,
+      "delta": 2,
+      "size_delta": 198,
+      "dirty": true
+    },
+    {
+      "time": "2026-02-04T13:56:47.176351361-06:00",
+      "op": "CREATE",
+      "path": "models/web/api/routes/tta.py",
+      "lang": "python",
+      "lines": 131,
+      "delta": 4,
+      "size_delta": 406,
+      "dirty": true
     }
   ]
 }

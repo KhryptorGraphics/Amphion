@@ -111,13 +111,13 @@ Create API endpoints for dataset handling.
 
 ### Tasks
 
-- [ ] Task 5.1: Design dataset data model
-- [ ] Task 5.2: Create /api/datasets endpoint (list, upload)
-- [ ] Task 5.3: Create /api/datasets/{id} endpoint (get, delete)
-- [ ] Task 5.4: Create /api/datasets/{id}/preprocess endpoint
-- [ ] Task 5.5: Implement preprocessing pipeline integration
-- [ ] Task 5.6: Add audio preview for dataset samples
-- [ ] Task 5.7: Deploy and test dataset endpoints
+- [x] Task 5.1: Design dataset data model
+- [x] Task 5.2: Create /api/datasets endpoint (list, upload)
+- [x] Task 5.3: Create /api/datasets/{id} endpoint (get, delete)
+- [x] Task 5.4: Create /api/datasets/{id}/preprocess endpoint
+- [x] Task 5.5: Implement preprocessing pipeline integration
+- [x] Task 5.6: Add audio preview for dataset samples
+- [x] Task 5.7: Deploy and test dataset endpoints
 
 ### Verification
 

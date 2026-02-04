@@ -32,6 +32,7 @@ async def audioldm_tta(
     background_tasks: BackgroundTasks,
     text: str = Form(..., description="Text description of desired audio"),
     duration: float = Form(10.0, description="Target duration in seconds"),
+    audio_length_in_s: Optional[float] = Form(None, description="Target duration in seconds (alias for duration)"),
     num_inference_steps: int = Form(50, description="Number of diffusion steps"),
     guidance_scale: float = Form(3.5, description="Classifier-free guidance scale"),
 ):
@@ -53,11 +54,13 @@ async def audioldm_tta(
     manager = ModelManager()
 
     try:
-        logger.info(f"AudioLDM TTA request: text='{text[:50]}...', duration={duration}")
+        # Use audio_length_in_s if provided (frontend compatibility), otherwise use duration
+        actual_duration = audio_length_in_s if audio_length_in_s is not None else duration
+        logger.info(f"AudioLDM TTA request: text='{text[:50]}...', duration={actual_duration}")
 
         output_path = manager.tta_audioldm_inference(
             text_prompt=text,
-            duration=duration,
+            duration=actual_duration,
             num_inference_steps=num_inference_steps,
             guidance_scale=guidance_scale,
         )
@@ -82,6 +85,7 @@ async def picoaudio_tta(
     background_tasks: BackgroundTasks,
     text: str = Form(..., description="Text description of desired audio"),
     duration: float = Form(10.0, description="Target duration in seconds"),
+    audio_length_in_s: Optional[float] = Form(None, description="Target duration in seconds (alias for duration)"),
     num_inference_steps: int = Form(25, description="Number of generation steps"),
 ):
     """
@@ -93,6 +97,7 @@ async def picoaudio_tta(
     Args:
         text: Text description of desired audio (e.g., "car engine starting")
         duration: Target duration in seconds (default: 10.0)
+        audio_length_in_s: Alternative parameter name for duration (frontend compatibility)
         num_inference_steps: Number of generation steps (default: 25)
 
     Returns:
@@ -101,11 +106,13 @@ async def picoaudio_tta(
     manager = ModelManager()
 
     try:
-        logger.info(f"PicoAudio TTA request: text='{text[:50]}...', duration={duration}")
+        # Use audio_length_in_s if provided (frontend compatibility), otherwise use duration
+        actual_duration = audio_length_in_s if audio_length_in_s is not None else duration
+        logger.info(f"PicoAudio TTA request: text='{text[:50]}...', duration={actual_duration}")
 
         output_path = manager.tta_picoaudio_inference(
             text_prompt=text,
-            duration=duration,
+            duration=actual_duration,
             num_inference_steps=num_inference_steps,
         )
 
