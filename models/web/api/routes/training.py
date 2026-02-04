@@ -18,12 +18,10 @@ import os
 import json
 import uuid
 
-from ..models.manager import ModelManager
-from ..utils.logger import get_logger
+import logging
 
-logger = get_logger(__name__)
+logger = logging.getLogger(__name__)
 router = APIRouter(prefix="/training", tags=["training"])
-manager = ModelManager()
 
 # In-memory job storage (replace with database in production)
 training_jobs: Dict[str, Dict[str, Any]] = {}

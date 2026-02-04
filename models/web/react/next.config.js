@@ -1,7 +1,11 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  // Removed static export mode - we need SSR for the dynamic API routes
-  // distDir: '.next' is the default
+  output: 'export',
+  distDir: 'dist',
+  assetPrefix: '/',
+  images: {
+    unoptimized: true
+  }
 }
 
 module.exports = nextConfig
