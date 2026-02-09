@@ -10,7 +10,7 @@ import { HelpTooltip } from "@/components/ui/help-tooltip";
 import { AudioPlayer } from "@/components/ui/audio-player";
 import { Progress } from "@/components/ui/progress";
 import { useToast } from "@/hooks/use-toast";
-import { Play, Download, ArrowLeft, Loader2, FileAudio, Volume2, Wand2 } from "lucide-react";
+import { Play, Download, ArrowLeft, Loader2, FileAudio, Volume2, Wand2, FlaskConical } from "lucide-react";
 import Link from "next/link";
 
 const PARAMETER_HELP = {
@@ -209,6 +209,24 @@ export default function NoroPage() {
         </div>
 
         <div className="space-y-4">
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <FlaskConical className="h-5 w-5" />
+                About Noro
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <p className="text-sm text-muted-foreground">
+                Noro is a noise-robust voice conversion model based on diffusion. Unlike other VC
+                models that require clean reference audio, Noro is specifically designed to handle
+                noisy or low-quality reference recordings. It uses a diffusion process with
+                configurable inference steps and sigma parameters to generate high-quality converted
+                speech even from challenging input conditions.
+              </p>
+            </CardContent>
+          </Card>
+
           <Card>
             <CardHeader>
               <CardTitle>Conversion</CardTitle>

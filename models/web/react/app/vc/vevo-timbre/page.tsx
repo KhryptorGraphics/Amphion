@@ -4,13 +4,18 @@ import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
+import { Slider } from "@/components/ui/slider";
 import { FileUpload } from "@/components/ui/file-upload";
 import { HelpTooltip } from "@/components/ui/help-tooltip";
 import { AudioPlayer } from "@/components/ui/audio-player";
 import { Progress } from "@/components/ui/progress";
 import { useToast } from "@/hooks/use-toast";
-import { Play, Download, ArrowLeft, Loader2, FileAudio, Volume2 } from "lucide-react";
+import { Play, Download, ArrowLeft, Loader2, FileAudio, Volume2, Wand2, FlaskConical } from "lucide-react";
 import Link from "next/link";
+
+const PARAMETER_HELP = {
+  flowMatchingSteps: "Number of flow matching steps (higher = better quality but slower)",
+};
 
 export default function VevoTimbrePage() {
   const { toast } = useToast();
@@ -19,6 +24,8 @@ export default function VevoTimbrePage() {
   const [isConverting, setIsConverting] = useState(false);
   const [progress, setProgress] = useState(0);
   const [convertedAudio, setConvertedAudio] = useState<string | null>(null);
+
+  const [flowMatchingSteps, setFlowMatchingSteps] = useState(32);
 
   const handleConvert = async () => {
     if (!sourceAudio || !referenceAudio) {
@@ -37,6 +44,7 @@ export default function VevoTimbrePage() {
       const formData = new FormData();
       formData.append("source_audio", sourceAudio);
       formData.append("reference_audio", referenceAudio);
+      formData.append("flow_matching_steps", flowMatchingSteps.toString());
 
       const progressInterval = setInterval(() => {
         setProgress((prev) => {
@@ -143,9 +151,55 @@ export default function VevoTimbrePage() {
               />
             </CardContent>
           </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Wand2 className="h-5 w-5" />
+                Parameters
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-6">
+              <div className="space-y-2">
+                <div className="flex items-center justify-between">
+                  <Label className="flex items-center gap-2">
+                    Flow Matching Steps
+                    <HelpTooltip content={PARAMETER_HELP.flowMatchingSteps} />
+                  </Label>
+                  <span className="text-sm text-muted-foreground w-12 text-right">
+                    {flowMatchingSteps}
+                  </span>
+                </div>
+                <Slider
+                  value={[flowMatchingSteps]}
+                  onValueChange={([v]) => setFlowMatchingSteps(v)}
+                  min={10}
+                  max={100}
+                  step={2}
+                />
+              </div>
+            </CardContent>
+          </Card>
         </div>
 
         <div className="space-y-4">
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <FlaskConical className="h-5 w-5" />
+                About Vevo Timbre
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <p className="text-sm text-muted-foreground">
+                Vevo Timbre performs timbre-only voice conversion using flow matching. It changes the
+                voice color/identity of the speaker while preserving their original speaking style,
+                prosody, and content. This is useful when you want to keep the exact same delivery
+                and expression but swap the voice to sound like a different person.
+              </p>
+            </CardContent>
+          </Card>
+
           <Card>
             <CardHeader>
               <CardTitle>Conversion</CardTitle>

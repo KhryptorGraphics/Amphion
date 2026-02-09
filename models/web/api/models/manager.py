@@ -739,7 +739,8 @@ class ModelManager:
         self,
         src_wav: str,
         style_ref_wav: str,
-        timbre_ref_wav: Optional[str] = None
+        timbre_ref_wav: Optional[str] = None,
+        flow_matching_steps: int = 32
     ) -> Tuple[int, np.ndarray]:
         """
         Run Vevo Voice Conversion inference.
@@ -757,6 +758,7 @@ class ModelManager:
             src_text=None,
             style_ref_wav_path=style_ref_wav,
             timbre_ref_wav_path=timbre_ref_wav,
+            flow_matching_steps=flow_matching_steps,
         )
 
         return 24000, gen_audio.cpu().numpy()
@@ -764,7 +766,8 @@ class ModelManager:
     def vevo_timbre_inference(
         self,
         src_wav: str,
-        timbre_ref_wav: str
+        timbre_ref_wav: str,
+        flow_matching_steps: int = 32
     ) -> Tuple[int, np.ndarray]:
         """
         Run Vevo Timbre conversion inference.
@@ -777,7 +780,7 @@ class ModelManager:
         gen_audio = self.vevo_vc_pipeline.inference_fm(
             src_wav_path=src_wav,
             timbre_ref_wav_path=timbre_ref_wav,
-            flow_matching_steps=32,
+            flow_matching_steps=flow_matching_steps,
         )
 
         return 24000, gen_audio.cpu().numpy()
@@ -785,7 +788,8 @@ class ModelManager:
     def vevo_style_inference(
         self,
         src_wav: str,
-        style_ref_wav: str
+        style_ref_wav: str,
+        flow_matching_steps: int = 32
     ) -> Tuple[int, np.ndarray]:
         """
         Run Vevo Style conversion inference.
@@ -800,6 +804,7 @@ class ModelManager:
             src_text=None,
             style_ref_wav_path=style_ref_wav,
             timbre_ref_wav_path=src_wav,  # Keep original timbre
+            flow_matching_steps=flow_matching_steps,
         )
 
         return 24000, gen_audio.cpu().numpy()

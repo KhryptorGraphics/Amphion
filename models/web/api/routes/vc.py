@@ -4,6 +4,7 @@ Voice Conversion Routes
 Endpoints for voice conversion model inference.
 """
 
+from typing import Optional
 from fastapi import APIRouter, UploadFile, File, Form, HTTPException, BackgroundTasks
 from fastapi.responses import FileResponse
 import tempfile
@@ -32,7 +33,9 @@ def cleanup_file(file_path: str):
 async def vevo_voice_conversion(
     background_tasks: BackgroundTasks,
     source_audio: UploadFile = File(..., description="Source audio to convert"),
-    reference_audio: UploadFile = File(..., description="Reference voice audio")
+    reference_audio: UploadFile = File(..., description="Reference voice audio (style)"),
+    timbre_audio: Optional[UploadFile] = File(None, description="Separate timbre reference audio"),
+    flow_matching_steps: int = Form(32, description="Flow matching steps (10-100)")
 ):
     """
     Convert voice using Vevo Voice model (full conversion).
@@ -41,7 +44,9 @@ async def vevo_voice_conversion(
 
     Args:
         source_audio: Audio file to convert
-        reference_audio: Target voice reference
+        reference_audio: Target voice reference (used for style, and timbre if no separate timbre_audio)
+        timbre_audio: Optional separate timbre reference audio
+        flow_matching_steps: Number of flow matching steps (10-100)
 
     Returns:
         FileResponse: Converted audio file
@@ -63,13 +68,24 @@ async def vevo_voice_conversion(
         tmp_ref.write(content)
         tmp_ref_path = tmp_ref.name
 
+    tmp_timbre_path = None
+    if timbre_audio is not None:
+        timbre_audio = await validate_audio_file(timbre_audio, "timbre_audio")
+        with tempfile.NamedTemporaryFile(delete=False, suffix=".wav") as tmp_timbre:
+            content = await timbre_audio.read()
+            tmp_timbre.write(content)
+            tmp_timbre_path = tmp_timbre.name
+
     try:
-        logger.info("Vevo Voice conversion request")
+        logger.info(f"Vevo Voice conversion request (steps={flow_matching_steps}, separate_timbre={tmp_timbre_path is not None})")
+
+        timbre_ref = tmp_timbre_path if tmp_timbre_path else tmp_ref_path
 
         sample_rate, audio_data = manager.vevo_vc_inference(
             src_wav=tmp_src_path,
             style_ref_wav=tmp_ref_path,
-            timbre_ref_wav=tmp_ref_path  # Same reference for full conversion
+            timbre_ref_wav=timbre_ref,
+            flow_matching_steps=flow_matching_steps
         )
 
         # Save output
@@ -79,6 +95,8 @@ async def vevo_voice_conversion(
         # Schedule cleanup
         background_tasks.add_task(cleanup_file, tmp_src_path)
         background_tasks.add_task(cleanup_file, tmp_ref_path)
+        if tmp_timbre_path:
+            background_tasks.add_task(cleanup_file, tmp_timbre_path)
         background_tasks.add_task(cleanup_file, output_path)
 
         return FileResponse(
@@ -90,6 +108,8 @@ async def vevo_voice_conversion(
     except Exception as e:
         cleanup_file(tmp_src_path)
         cleanup_file(tmp_ref_path)
+        if tmp_timbre_path:
+            cleanup_file(tmp_timbre_path)
         logger.error(f"Vevo Voice conversion error: {e}")
         raise HTTPException(status_code=500, detail=str(e))
 
@@ -98,7 +118,8 @@ async def vevo_voice_conversion(
 async def vevo_timbre_conversion(
     background_tasks: BackgroundTasks,
     source_audio: UploadFile = File(..., description="Source audio to convert"),
-    reference_audio: UploadFile = File(..., description="Timbre reference audio")
+    reference_audio: UploadFile = File(..., description="Timbre reference audio"),
+    flow_matching_steps: int = Form(32, description="Flow matching steps (10-100)")
 ):
     """
     Convert timbre using Vevo Timbre model.
@@ -108,6 +129,7 @@ async def vevo_timbre_conversion(
     Args:
         source_audio: Audio file to convert
         reference_audio: Target timbre reference
+        flow_matching_steps: Number of flow matching steps (10-100)
 
     Returns:
         FileResponse: Converted audio file
@@ -130,11 +152,12 @@ async def vevo_timbre_conversion(
         tmp_ref_path = tmp_ref.name
 
     try:
-        logger.info("Vevo Timbre conversion request")
+        logger.info(f"Vevo Timbre conversion request (steps={flow_matching_steps})")
 
         sample_rate, audio_data = manager.vevo_timbre_inference(
             src_wav=tmp_src_path,
-            timbre_ref_wav=tmp_ref_path
+            timbre_ref_wav=tmp_ref_path,
+            flow_matching_steps=flow_matching_steps
         )
 
         # Save output
@@ -163,7 +186,8 @@ async def vevo_timbre_conversion(
 async def vevo_style_conversion(
     background_tasks: BackgroundTasks,
     source_audio: UploadFile = File(..., description="Source audio to convert"),
-    reference_audio: UploadFile = File(..., description="Style reference audio")
+    reference_audio: UploadFile = File(..., description="Style reference audio"),
+    flow_matching_steps: int = Form(32, description="Flow matching steps (10-100)")
 ):
     """
     Convert style/accent using Vevo Style model.
@@ -173,6 +197,7 @@ async def vevo_style_conversion(
     Args:
         source_audio: Audio file to convert
         reference_audio: Target style reference
+        flow_matching_steps: Number of flow matching steps (10-100)
 
     Returns:
         FileResponse: Converted audio file
@@ -195,11 +220,12 @@ async def vevo_style_conversion(
         tmp_ref_path = tmp_ref.name
 
     try:
-        logger.info("Vevo Style conversion request")
+        logger.info(f"Vevo Style conversion request (steps={flow_matching_steps})")
 
         sample_rate, audio_data = manager.vevo_style_inference(
             src_wav=tmp_src_path,
-            style_ref_wav=tmp_ref_path
+            style_ref_wav=tmp_ref_path,
+            flow_matching_steps=flow_matching_steps
         )
 
         # Save output
