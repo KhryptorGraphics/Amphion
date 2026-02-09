@@ -65,6 +65,10 @@ class ModelManager:
         self._vitssvc_loaded = False
         self._multiplecontentssvc_loaded = False
 
+        # Source separation
+        self._demucs_loaded = False
+        self.demucs_separator = None
+
         # Model instances
         self.maskgct_pipeline = None
         self.valle_models = None
@@ -188,6 +192,12 @@ class ModelManager:
             self.multiplecontentssvc_pipeline = None
             self._multiplecontentssvc_loaded = False
             logger.info("MultipleContentsSVC unloaded")
+        elif model_name == "demucs" and self._demucs_loaded:
+            if self.demucs_separator is not None:
+                self.demucs_separator.unload()
+            self.demucs_separator = None
+            self._demucs_loaded = False
+            logger.info("Demucs unloaded")
         else:
             raise ValueError(f"Unknown model: {model_name}")
 
@@ -1276,6 +1286,36 @@ class ModelManager:
             )
 
         return 24000, gen_audio
+
+    # ===========================
+    # Source Separation Methods
+    # ===========================
+
+    def load_demucs(self):
+        """Lazy load Demucs source separator."""
+        if self._demucs_loaded:
+            return
+
+        logger.info("Loading Demucs source separator...")
+        from .demucs_separator import DemucsSourceSeparator
+
+        self.demucs_separator = DemucsSourceSeparator(self.device)
+        self.demucs_separator.load()
+        self._demucs_loaded = True
+        logger.info("Demucs source separator loaded successfully")
+
+    def demucs_separate(self, audio_path: str) -> tuple:
+        """
+        Separate vocals from accompaniment using Demucs.
+
+        Args:
+            audio_path: Path to input audio file
+
+        Returns:
+            (vocals_path, accompaniment_path) as temp WAV files at 44100Hz
+        """
+        self.load_demucs()
+        return self.demucs_separator.separate(audio_path)
 
     # ===========================
     # TTA (Text-to-Audio) Methods

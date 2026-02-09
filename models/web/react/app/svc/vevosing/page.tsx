@@ -18,13 +18,15 @@ import { HelpTooltip } from "@/components/ui/help-tooltip";
 import { AudioPlayer } from "@/components/ui/audio-player";
 import { Progress } from "@/components/ui/progress";
 import { useToast } from "@/hooks/use-toast";
-import { Play, Download, ArrowLeft, Loader2, FileAudio, Volume2, Music, FlaskConical } from "lucide-react";
+import { Play, Download, ArrowLeft, Loader2, FileAudio, Volume2, Music, FlaskConical, Scissors } from "lucide-react";
 import Link from "next/link";
 
 const PARAMETER_HELP = {
   mode: "FM (Flow Matching) for timbre-only control, AR (Autoregressive) for full control including prosody",
   useShiftedSrc: "Use pitch-shifted source for better prosody extraction",
   flowMatchingSteps: "Number of flow matching steps (higher = better quality but slower)",
+  fullSongMode: "Automatically separate vocals from instrumentals, convert the vocals, and remix with the original accompaniment",
+  vocalsVolume: "Adjust the volume of the converted vocals relative to the accompaniment",
 };
 
 export default function VevoSingPage() {
@@ -39,6 +41,8 @@ export default function VevoSingPage() {
     mode: "fm",
     useShiftedSrc: true,
     flowMatchingSteps: 32,
+    fullSongMode: false,
+    vocalsVolumeDb: 0,
   });
 
   const handleConvert = async () => {
@@ -61,6 +65,8 @@ export default function VevoSingPage() {
       formData.append("mode", params.mode);
       formData.append("use_shifted_src", params.useShiftedSrc.toString());
       formData.append("flow_matching_steps", params.flowMatchingSteps.toString());
+      formData.append("full_song_mode", params.fullSongMode.toString());
+      formData.append("vocals_volume_db", params.vocalsVolumeDb.toString());
 
       const progressInterval = setInterval(() => {
         setProgress((prev) => {
@@ -88,7 +94,9 @@ export default function VevoSingPage() {
 
       toast({
         title: "Success",
-        description: "Singing voice converted successfully with VevoSing",
+        description: params.fullSongMode
+          ? "Full song converted and remixed successfully"
+          : "Singing voice converted successfully with VevoSing",
       });
     } catch (error) {
       toast({
@@ -110,6 +118,20 @@ export default function VevoSingPage() {
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
+  };
+
+  const getProgressMessage = () => {
+    if (params.fullSongMode) {
+      if (progress < 20) return "Separating vocals from instrumentals...";
+      if (progress < 60) return "Converting singing voice...";
+      if (progress < 90) return "Remixing with instrumentals...";
+      if (progress < 100) return "Finalizing...";
+      return "Complete!";
+    }
+    if (progress < 30) return "Analyzing audio...";
+    if (progress < 70) return "Converting voice...";
+    if (progress < 100) return "Finalizing...";
+    return "Complete!";
   };
 
   return (
@@ -134,8 +156,11 @@ export default function VevoSingPage() {
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <Music className="h-5 w-5" />
-                Content Audio (Melody)
-                <HelpTooltip content="The singing voice you want to convert - the melody/content is preserved" />
+                {params.fullSongMode ? "Content Audio (Full Song)" : "Content Audio (Melody)"}
+                <HelpTooltip content={params.fullSongMode
+                  ? "Upload a complete song with vocals and instrumentals - vocals will be automatically separated"
+                  : "The singing voice you want to convert - the melody/content is preserved"
+                } />
               </CardTitle>
             </CardHeader>
             <CardContent>
@@ -143,7 +168,10 @@ export default function VevoSingPage() {
                 accept="audio/*"
                 onFileSelect={setContentAudio}
                 selectedFile={contentAudio}
-                label="Upload content audio (song to convert)"
+                label={params.fullSongMode
+                  ? "Upload complete song (vocals + instrumentals)"
+                  : "Upload content audio (song to convert)"
+                }
                 description="WAV or MP3 format recommended"
               />
             </CardContent>
@@ -193,6 +221,56 @@ export default function VevoSingPage() {
                   <li>Click <strong>Convert Singing Voice</strong> and wait for the result.</li>
                 </ol>
               </div>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Scissors className="h-5 w-5" />
+                Full Song Mode
+                <HelpTooltip content={PARAMETER_HELP.fullSongMode} />
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="flex items-center justify-between">
+                <Label className="flex items-center gap-2 cursor-pointer">
+                  Enable Full Song Mode
+                </Label>
+                <Switch
+                  checked={params.fullSongMode}
+                  onCheckedChange={(v) =>
+                    setParams((p) => ({ ...p, fullSongMode: v }))
+                  }
+                />
+              </div>
+              <p className="text-xs text-muted-foreground">
+                Upload a complete song with vocals and instrumentals. Demucs will automatically
+                separate the vocals, convert them, and remix with the original accompaniment.
+              </p>
+
+              {params.fullSongMode && (
+                <div className="space-y-2">
+                  <div className="flex items-center justify-between">
+                    <Label className="flex items-center gap-2">
+                      Vocals Volume
+                      <HelpTooltip content={PARAMETER_HELP.vocalsVolume} />
+                    </Label>
+                    <span className="text-sm text-muted-foreground w-16 text-right">
+                      {params.vocalsVolumeDb > 0 ? "+" : ""}{params.vocalsVolumeDb} dB
+                    </span>
+                  </div>
+                  <Slider
+                    value={[params.vocalsVolumeDb]}
+                    onValueChange={([v]) =>
+                      setParams((p) => ({ ...p, vocalsVolumeDb: v }))
+                    }
+                    min={-6}
+                    max={6}
+                    step={0.5}
+                  />
+                </div>
+              )}
             </CardContent>
           </Card>
 
@@ -288,10 +366,7 @@ export default function VevoSingPage() {
                 <div className="space-y-2">
                   <Progress value={progress} />
                   <p className="text-sm text-center text-muted-foreground">
-                    {progress < 30 && "Analyzing audio..."}
-                    {progress >= 30 && progress < 70 && "Converting voice..."}
-                    {progress >= 70 && progress < 100 && "Finalizing..."}
-                    {progress === 100 && "Complete!"}
+                    {getProgressMessage()}
                   </p>
                 </div>
               )}

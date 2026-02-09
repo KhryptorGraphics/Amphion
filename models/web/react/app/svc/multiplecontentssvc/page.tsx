@@ -7,8 +7,11 @@ import { FileUpload } from "@/components/ui/file-upload";
 import { AudioPlayer } from "@/components/ui/audio-player";
 import { Progress } from "@/components/ui/progress";
 import { useToast } from "@/hooks/use-toast";
-import { Play, Download, ArrowLeft, Loader2, Music, Volume2, FlaskConical } from "lucide-react";
+import { Play, Download, ArrowLeft, Loader2, Music, Volume2, FlaskConical, Scissors } from "lucide-react";
 import { HelpTooltip } from "@/components/ui/help-tooltip";
+import { Switch } from "@/components/ui/switch";
+import { Label } from "@/components/ui/label";
+import { Slider } from "@/components/ui/slider";
 import Link from "next/link";
 
 export default function MultipleContentsSVCPage() {
@@ -18,6 +21,8 @@ export default function MultipleContentsSVCPage() {
   const [isConverting, setIsConverting] = useState(false);
   const [progress, setProgress] = useState(0);
   const [convertedAudio, setConvertedAudio] = useState<string | null>(null);
+  const [fullSongMode, setFullSongMode] = useState(false);
+  const [vocalsVolumeDb, setVocalsVolumeDb] = useState(0);
 
   const handleConvert = async () => {
     if (!contentAudio || !referenceAudio) {
@@ -36,6 +41,8 @@ export default function MultipleContentsSVCPage() {
       const formData = new FormData();
       formData.append("content_audio", contentAudio);
       formData.append("reference_audio", referenceAudio);
+      formData.append("full_song_mode", fullSongMode.toString());
+      formData.append("vocals_volume_db", vocalsVolumeDb.toString());
 
       const progressInterval = setInterval(() => {
         setProgress((prev) => {
@@ -63,7 +70,9 @@ export default function MultipleContentsSVCPage() {
 
       toast({
         title: "Success",
-        description: "Singing voice converted successfully with MultipleContentsSVC",
+        description: fullSongMode
+          ? "Full song converted successfully with MultipleContentsSVC"
+          : "Singing voice converted successfully with MultipleContentsSVC",
       });
     } catch (error) {
       toast({
@@ -85,6 +94,20 @@ export default function MultipleContentsSVCPage() {
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
+  };
+
+  const getProgressMessage = () => {
+    if (fullSongMode) {
+      if (progress < 20) return "Separating vocals from instrumentals...";
+      if (progress < 60) return "Converting singing voice...";
+      if (progress < 90) return "Remixing with instrumentals...";
+      if (progress < 100) return "Finalizing...";
+      return "Complete!";
+    }
+    if (progress < 30) return "Analyzing audio...";
+    if (progress < 70) return "Converting voice...";
+    if (progress < 100) return "Finalizing...";
+    return "Complete!";
   };
 
   return (
@@ -114,8 +137,14 @@ export default function MultipleContentsSVCPage() {
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <Music className="h-5 w-5" />
-                Content Audio (Melody)
-                <HelpTooltip content="The singing voice you want to convert - the melody/content is preserved" />
+                {fullSongMode ? "Content Audio (Full Song)" : "Content Audio (Melody)"}
+                <HelpTooltip
+                  content={
+                    fullSongMode
+                      ? "Upload a complete song with vocals and instrumentals - will be auto-separated"
+                      : "The singing voice you want to convert - the melody/content is preserved"
+                  }
+                />
               </CardTitle>
             </CardHeader>
             <CardContent>
@@ -123,7 +152,11 @@ export default function MultipleContentsSVCPage() {
                 accept="audio/*"
                 onFileSelect={setContentAudio}
                 selectedFile={contentAudio}
-                label="Upload content audio (song to convert)"
+                label={
+                  fullSongMode
+                    ? "Upload complete song (vocals + instrumentals)"
+                    : "Upload content audio (song to convert)"
+                }
                 description="WAV or MP3 format recommended"
               />
             </CardContent>
@@ -178,6 +211,52 @@ export default function MultipleContentsSVCPage() {
 
           <Card>
             <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Scissors className="h-5 w-5" />
+                Full Song Mode
+                <HelpTooltip content="Automatically separate vocals from instrumentals, convert the vocals, and remix with the original accompaniment" />
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="flex items-center justify-between">
+                <Label className="flex items-center gap-2 cursor-pointer">
+                  Enable Full Song Mode
+                </Label>
+                <Switch
+                  checked={fullSongMode}
+                  onCheckedChange={setFullSongMode}
+                />
+              </div>
+              <p className="text-xs text-muted-foreground">
+                Upload a complete song with vocals and instrumentals. Demucs will automatically
+                separate the vocals, convert them, and remix with the original accompaniment.
+              </p>
+
+              {fullSongMode && (
+                <div className="space-y-2">
+                  <div className="flex items-center justify-between">
+                    <Label className="flex items-center gap-2">
+                      Vocals Volume
+                      <HelpTooltip content="Adjust the volume of the converted vocals relative to the accompaniment" />
+                    </Label>
+                    <span className="text-sm text-muted-foreground w-16 text-right">
+                      {vocalsVolumeDb > 0 ? "+" : ""}{vocalsVolumeDb} dB
+                    </span>
+                  </div>
+                  <Slider
+                    value={[vocalsVolumeDb]}
+                    onValueChange={([v]) => setVocalsVolumeDb(v)}
+                    min={-6}
+                    max={6}
+                    step={0.5}
+                  />
+                </div>
+              )}
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
               <CardTitle>Conversion</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
@@ -204,10 +283,7 @@ export default function MultipleContentsSVCPage() {
                 <div className="space-y-2">
                   <Progress value={progress} />
                   <p className="text-sm text-center text-muted-foreground">
-                    {progress < 30 && "Analyzing audio..."}
-                    {progress >= 30 && progress < 70 && "Converting voice..."}
-                    {progress >= 70 && progress < 100 && "Finalizing..."}
-                    {progress === 100 && "Complete!"}
+                    {getProgressMessage()}
                   </p>
                 </div>
               )}

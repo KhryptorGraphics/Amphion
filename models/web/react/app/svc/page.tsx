@@ -93,6 +93,7 @@ export default function SVCPage() {
               <li><strong>Similar pitch range</strong> &mdash; conversion works best when source and target singers have a similar vocal range.</li>
               <li><strong>Reference length</strong> &mdash; 5-15 seconds of reference audio is usually enough. Longer isn&apos;t always better.</li>
               <li><strong>VevoSing is recommended</strong> &mdash; it&apos;s the most capable model with tunable parameters. The experimental models require pre-trained checkpoints.</li>
+              <li><strong>Full Song Mode</strong> &mdash; all models support Full Song Mode. Toggle it on to upload a complete song with instrumentals &mdash; Demucs will separate vocals automatically, convert them, and remix with the original accompaniment.</li>
             </ul>
           </CardContent>
         </Card>
