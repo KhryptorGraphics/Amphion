@@ -71,6 +71,14 @@ class AuthMiddleware(BaseHTTPMiddleware):
         "/api/docs",
         "/api/redoc",
         "/api/openapi.json",
+        # Frontend-facing inference routes (rate-limited separately)
+        "/api/svc/",
+        "/api/vc/",
+        "/api/tts/",
+        "/api/tta/",
+        "/api/codec/",
+        "/api/vocoder/",
+        "/api/evaluation/",
     ]
 
     async def dispatch(self, request: Request, call_next):

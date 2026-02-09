@@ -6,8 +6,8 @@ Used by the SVC pipeline's "Full Song Mode" to process complete songs.
 """
 
 import torch
-import torchaudio
 import numpy as np
+import librosa
 import soundfile as sf
 import tempfile
 import logging
@@ -51,14 +51,20 @@ class DemucsSourceSeparator:
         self.load()
         from demucs.apply import apply_model
 
-        # Load audio
-        wav, sr = torchaudio.load(audio_path)
+        # Load audio using soundfile (avoids torchcodec dependency in torchaudio 2.10+)
+        audio_np, sr = sf.read(audio_path, always_2d=True)
+        # soundfile returns [samples, channels], convert to [channels, samples] tensor
+        wav = torch.from_numpy(audio_np.T).float()
 
         # Resample to 44100Hz if needed (Demucs expects 44.1kHz)
         if sr != 44100:
             logger.info(f"Resampling from {sr}Hz to 44100Hz for Demucs")
-            resampler = torchaudio.transforms.Resample(sr, 44100)
-            wav = resampler(wav)
+            resampled_channels = []
+            for ch in range(wav.shape[0]):
+                resampled_channels.append(
+                    librosa.resample(wav[ch].numpy(), orig_sr=sr, target_sr=44100)
+                )
+            wav = torch.from_numpy(np.stack(resampled_channels))
 
         # Ensure stereo (Demucs expects 2 channels)
         if wav.shape[0] == 1:
@@ -91,8 +97,9 @@ class DemucsSourceSeparator:
         vocals_path = tempfile.mktemp(suffix="_vocals.wav")
         accompaniment_path = tempfile.mktemp(suffix="_accompaniment.wav")
 
-        torchaudio.save(vocals_path, vocals.cpu(), 44100)
-        torchaudio.save(accompaniment_path, accompaniment.cpu(), 44100)
+        # Use soundfile for saving (avoids torchcodec dependency)
+        sf.write(vocals_path, vocals.cpu().numpy().T, 44100)
+        sf.write(accompaniment_path, accompaniment.cpu().numpy().T, 44100)
 
         logger.info(f"Separation complete: vocals={vocals_path}, accompaniment={accompaniment_path}")
         return vocals_path, accompaniment_path

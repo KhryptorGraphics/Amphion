@@ -29,6 +29,50 @@ async def health_check() -> Dict[str, str]:
     }
 
 
+@router.get("/gpu/status")
+async def gpu_status() -> Dict[str, Any]:
+    """
+    Get GPU status and CUDA information.
+
+    Returns:
+        dict: GPU status, CUDA availability, and memory usage
+    """
+    try:
+        cuda_available = torch.cuda.is_available()
+        if cuda_available:
+            device_name = torch.cuda.get_device_name(0)
+            memory_allocated = torch.cuda.memory_allocated(0) / 1024**3
+            memory_reserved = torch.cuda.memory_reserved(0) / 1024**3
+            total_memory = torch.cuda.get_device_properties(0).total_memory / 1024**3
+
+            return {
+                "status": "available",
+                "cuda_available": True,
+                "device_count": torch.cuda.device_count(),
+                "current_device": torch.cuda.current_device(),
+                "device_name": device_name,
+                "memory": {
+                    "allocated_gb": round(memory_allocated, 2),
+                    "reserved_gb": round(memory_reserved, 2),
+                    "total_gb": round(total_memory, 2),
+                    "free_gb": round(total_memory - memory_allocated, 2)
+                }
+            }
+        else:
+            return {
+                "status": "unavailable",
+                "cuda_available": False,
+                "device_count": 0,
+                "message": "CUDA not available - running on CPU"
+            }
+    except Exception as e:
+        return {
+            "status": "error",
+            "cuda_available": False,
+            "error": str(e)
+        }
+
+
 @router.get("/models/status")
 async def models_status() -> Dict[str, Any]:
     """
