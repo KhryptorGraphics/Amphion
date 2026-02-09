@@ -79,6 +79,9 @@ class AuthMiddleware(BaseHTTPMiddleware):
         "/api/codec/",
         "/api/vocoder/",
         "/api/evaluation/",
+        # Dashboard status endpoints
+        "/api/gpu/",
+        "/api/models/",
     ]
 
     async def dispatch(self, request: Request, call_next):
