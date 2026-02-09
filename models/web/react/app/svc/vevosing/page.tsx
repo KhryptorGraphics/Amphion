@@ -18,7 +18,7 @@ import { HelpTooltip } from "@/components/ui/help-tooltip";
 import { AudioPlayer } from "@/components/ui/audio-player";
 import { Progress } from "@/components/ui/progress";
 import { useToast } from "@/hooks/use-toast";
-import { Play, Download, ArrowLeft, Loader2, FileAudio, Volume2, Music } from "lucide-react";
+import { Play, Download, ArrowLeft, Loader2, FileAudio, Volume2, Music, FlaskConical } from "lucide-react";
 import Link from "next/link";
 
 const PARAMETER_HELP = {
@@ -170,6 +170,32 @@ export default function VevoSingPage() {
         </div>
 
         <div className="space-y-4">
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <FlaskConical className="h-5 w-5" />
+                About VevoSing
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-3">
+              <p className="text-sm text-muted-foreground">
+                VevoSing is Amphion&apos;s most capable singing voice conversion model, built on the
+                Vevo framework. It converts a singing voice to sound like a different singer while
+                preserving the original melody, pitch, and lyrics.
+              </p>
+              <div className="text-sm text-muted-foreground">
+                <p className="font-medium text-foreground mb-1">How to use:</p>
+                <ol className="space-y-1 list-decimal list-inside">
+                  <li>Upload the <strong>song you want to convert</strong> as Content Audio (isolated vocals work best).</li>
+                  <li>Upload a <strong>sample of the target singer&apos;s voice</strong> as Reference Audio (5-15s is enough).</li>
+                  <li>Choose a <strong>mode</strong>: FM for timbre-only swap, or AR for full control over prosody and style.</li>
+                  <li>Adjust <strong>Flow Matching Steps</strong> &mdash; higher values improve quality but take longer.</li>
+                  <li>Click <strong>Convert Singing Voice</strong> and wait for the result.</li>
+                </ol>
+              </div>
+            </CardContent>
+          </Card>
+
           <Card>
             <CardHeader>
               <CardTitle>Parameters</CardTitle>

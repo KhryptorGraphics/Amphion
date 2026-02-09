@@ -1,7 +1,7 @@
 "use client";
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { ArrowRight, Music, Wand2, Layers, Sparkles, FileAudio } from "lucide-react";
+import { ArrowRight, Music, Wand2, Layers, Sparkles, FileAudio, BookOpen, Lightbulb } from "lucide-react";
 import Link from "next/link";
 
 const svcModels = [
@@ -56,6 +56,49 @@ export default function SVCPage() {
           Convert singing voices while preserving melody and pitch
         </p>
       </div>
+
+      <div className="grid gap-4 md:grid-cols-2 mb-6">
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <BookOpen className="h-5 w-5" />
+              How Singing Voice Conversion Works
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-3">
+            <p className="text-sm text-muted-foreground">
+              SVC lets you re-sing a song in a completely different voice while keeping the
+              original melody, lyrics, and timing intact.
+            </p>
+            <ol className="text-sm text-muted-foreground space-y-2 list-decimal list-inside">
+              <li><strong>Upload Content Audio</strong> &mdash; the song you want to convert. The melody, pitch, and rhythm from this file are preserved.</li>
+              <li><strong>Upload Reference Audio</strong> &mdash; a sample of the target singer&apos;s voice. This provides the vocal timbre (tone color) to apply.</li>
+              <li><strong>Adjust Parameters</strong> &mdash; if the model supports them (e.g., VevoSing has mode and step controls).</li>
+              <li><strong>Click Convert</strong> &mdash; the model will generate a new audio file singing the same song in the target voice.</li>
+            </ol>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Lightbulb className="h-5 w-5" />
+              Tips for Best Results
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <ul className="text-sm text-muted-foreground space-y-2 list-disc list-inside">
+              <li><strong>Use clean audio</strong> &mdash; background music or noise in either file reduces quality. Isolated vocals work best.</li>
+              <li><strong>WAV over MP3</strong> &mdash; lossless formats preserve more detail for the model to work with.</li>
+              <li><strong>Similar pitch range</strong> &mdash; conversion works best when source and target singers have a similar vocal range.</li>
+              <li><strong>Reference length</strong> &mdash; 5-15 seconds of reference audio is usually enough. Longer isn&apos;t always better.</li>
+              <li><strong>VevoSing is recommended</strong> &mdash; it&apos;s the most capable model with tunable parameters. The experimental models require pre-trained checkpoints.</li>
+            </ul>
+          </CardContent>
+        </Card>
+      </div>
+
+      <h2 className="text-xl font-semibold tracking-tight mb-4">Choose a Model</h2>
 
       <div className="grid gap-4 md:grid-cols-2">
         {svcModels.map((model) => {

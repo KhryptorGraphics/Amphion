@@ -157,13 +157,22 @@ export default function VitsSVCPage() {
                 About VitsSVC
               </CardTitle>
             </CardHeader>
-            <CardContent>
+            <CardContent className="space-y-3">
               <p className="text-sm text-muted-foreground">
                 VitsSVC is an end-to-end singing voice conversion model based on VITS (Variational
                 Inference with adversarial learning for end-to-end Text-to-Speech). It combines
                 variational autoencoders with normalizing flows and adversarial training for
                 natural-sounding voice conversion in a single forward pass.
               </p>
+              <div className="text-sm text-muted-foreground">
+                <p className="font-medium text-foreground mb-1">How to use:</p>
+                <ol className="space-y-1 list-decimal list-inside">
+                  <li>Upload the <strong>song you want to convert</strong> as Content Audio &mdash; isolated vocals without background music work best.</li>
+                  <li>Upload a <strong>sample of the target singer&apos;s voice</strong> as Reference Audio &mdash; 5-15 seconds is enough.</li>
+                  <li>Click <strong>Convert Singing Voice</strong> and wait for the result.</li>
+                </ol>
+                <p className="mt-2 text-xs italic">Requires a pre-trained VitsSVC checkpoint. Contact the project maintainer if the model is not loaded.</p>
+              </div>
             </CardContent>
           </Card>
 

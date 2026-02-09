@@ -157,13 +157,22 @@ export default function MultipleContentsSVCPage() {
                 About MultipleContentsSVC
               </CardTitle>
             </CardHeader>
-            <CardContent>
+            <CardContent className="space-y-3">
               <p className="text-sm text-muted-foreground">
                 MultipleContentsSVC extracts and combines multiple content representations (phonetic,
                 melodic, rhythmic) from the source audio to achieve more complete content preservation
                 during voice conversion. This multi-feature approach reduces artifacts and improves
                 naturalness compared to single-content methods.
               </p>
+              <div className="text-sm text-muted-foreground">
+                <p className="font-medium text-foreground mb-1">How to use:</p>
+                <ol className="space-y-1 list-decimal list-inside">
+                  <li>Upload the <strong>song you want to convert</strong> as Content Audio &mdash; isolated vocals without background music work best.</li>
+                  <li>Upload a <strong>sample of the target singer&apos;s voice</strong> as Reference Audio &mdash; 5-15 seconds is enough.</li>
+                  <li>Click <strong>Convert Singing Voice</strong> and wait for the result.</li>
+                </ol>
+                <p className="mt-2 text-xs italic">Requires a pre-trained MultipleContentsSVC checkpoint. Contact the project maintainer if the model is not loaded.</p>
+              </div>
             </CardContent>
           </Card>
 
