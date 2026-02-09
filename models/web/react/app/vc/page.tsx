@@ -11,7 +11,7 @@ import { Slider } from "@/components/ui/slider";
 import { Label } from "@/components/ui/label";
 import { HelpTooltip } from "@/components/ui/help-tooltip";
 import { useToast } from "@/hooks/use-toast";
-import { Play, Download, ArrowRight, Mic2, Music, Volume2, Wand2, Loader2, FileAudio } from "lucide-react";
+import { Play, Download, ArrowRight, Mic2, Music, Volume2, Wand2, Loader2, FileAudio, FlaskConical } from "lucide-react";
 import Link from "next/link";
 
 const vcModels = [
@@ -52,6 +52,39 @@ const svcModels = [
     description: "Singing voice conversion - convert singer voice",
     icon: Music,
     href: "/svc/vevosing",
+    experimental: false,
+  },
+  {
+    id: "diffcomosvc",
+    name: "DiffComoSVC",
+    description: "Diffusion-based SVC using consistency model",
+    icon: Wand2,
+    href: "/svc/diffcomosvc",
+    experimental: true,
+  },
+  {
+    id: "transformersvc",
+    name: "TransformerSVC",
+    description: "Transformer-based SVC with attention mechanisms",
+    icon: Mic2,
+    href: "/svc/transformersvc",
+    experimental: true,
+  },
+  {
+    id: "vitssvc",
+    name: "VitsSVC",
+    description: "VITS-based end-to-end singing voice conversion",
+    icon: Music,
+    href: "/svc/vitssvc",
+    experimental: true,
+  },
+  {
+    id: "multiplecontentssvc",
+    name: "MultipleContentsSVC",
+    description: "Multi-content SVC with enhanced quality",
+    icon: FileAudio,
+    href: "/svc/multiplecontentssvc",
+    experimental: true,
   },
 ];
 
@@ -110,6 +143,11 @@ export default function VCPage() {
                       <CardTitle className="flex items-center gap-2">
                         <Icon className="h-5 w-5" />
                         {model.name}
+                        {model.experimental && (
+                          <span className="px-2 py-0.5 text-xs font-medium rounded-full bg-amber-500/10 text-amber-500 border border-amber-500/20">
+                            Experimental
+                          </span>
+                        )}
                       </CardTitle>
                     </CardHeader>
                     <CardContent>
@@ -125,15 +163,6 @@ export default function VCPage() {
               );
             })}
           </div>
-
-          <Card className="border-dashed">
-            <CardContent className="py-8 text-center">
-              <Music className="mx-auto h-12 w-12 text-muted-foreground/50 mb-4" />
-              <p className="text-muted-foreground">
-                More SVC models coming soon: DiffComoSVC, TransformerSVC, VitsSVC
-              </p>
-            </CardContent>
-          </Card>
         </TabsContent>
       </Tabs>
     </div>
