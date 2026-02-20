@@ -687,3 +687,116 @@ def extract_utt_content_features_dataloader(cfg, metadata, num_workers):
                     batch_content_features = extractor.extract_content_features(wavs)
                     for index, utt in enumerate(_metadata):
                         extractor.save_feature(utt, batch_content_features[index])
+
+
+def extract_aligned_content_features(cfg, metadata, dataset_output, num_workers=1):
+    """Extract aligned content features by pre-computing resolution transformations.
+
+    This function pre-computes the alignment of content features (whisper, contentvec, wenet)
+    to match the mel spectrogram frame length, saving computation during training.
+
+    Args:
+        cfg: Configuration object containing preprocessing settings
+        metadata (list): List of utterance metadata dictionaries
+        dataset_output (str): Directory where processed features are stored
+        num_workers (int, optional): Number of workers for parallel processing. Defaults to 1.
+
+    The function creates aligned feature files in:
+        {dataset_output}/{feature_type}_aligned/{uid}.npy
+    """
+    from utils.io import save_feature
+
+    for utt in tqdm(metadata, desc="Extracting aligned content features"):
+        uid = utt["Uid"]
+        dataset = utt["Dataset"]
+
+        # Get target length from mel spectrogram
+        mel_path = os.path.join(
+            dataset_output, cfg.preprocess.mel_dir, uid + ".npy"
+        )
+        if not os.path.exists(mel_path):
+            continue
+
+        mel = np.load(mel_path)
+        # mel shape: (n_mels, T) or (T, n_mels)
+        if mel.shape[0] == cfg.preprocess.n_mel:
+            target_len = mel.shape[1]
+        else:
+            target_len = mel.shape[0]
+
+        # Process whisper features
+        if cfg.preprocess.extract_whisper_feature:
+            _extract_single_aligned_feature(
+                cfg, dataset_output, uid, dataset, target_len, "whisper"
+            )
+
+        # Process contentvec features
+        if cfg.preprocess.extract_contentvec_feature:
+            _extract_single_aligned_feature(
+                cfg, dataset_output, uid, dataset, target_len, "contentvec"
+            )
+
+        # Process wenet features
+        if cfg.preprocess.extract_wenet_feature:
+            _extract_single_aligned_feature(
+                cfg, dataset_output, uid, dataset, target_len, "wenet"
+            )
+
+
+def _extract_single_aligned_feature(
+    cfg, dataset_output, uid, dataset, target_len, feature_type
+):
+    """Extract and save a single aligned content feature.
+
+    Args:
+        cfg: Configuration object
+        dataset_output: Output directory path
+        uid: Utterance ID
+        dataset: Dataset name
+        target_len: Target frame length from mel spectrogram
+        feature_type: Type of content feature (whisper, contentvec, wenet)
+    """
+    # Load the source content feature
+    source_path = os.path.join(
+        dataset_output, feature_type, uid + ".npy"
+    )
+    if not os.path.exists(source_path):
+        return
+
+    content_feature = np.load(source_path)
+
+    # Get the appropriate extractor for resolution transformation parameters
+    extractor = _get_extractor_for_alignment(cfg, feature_type)
+    if extractor is None:
+        return
+
+    # Apply resolution transformation
+    aligned_feature = extractor.offline_resolution_transformation(
+        content_feature, target_len
+    )
+
+    # Save aligned feature
+    aligned_dir = os.path.join(dataset_output, f"{feature_type}_aligned")
+    os.makedirs(aligned_dir, exist_ok=True)
+    save_path = os.path.join(aligned_dir, uid + ".npy")
+    np.save(save_path, aligned_feature)
+
+
+def _get_extractor_for_alignment(cfg, feature_type):
+    """Get the appropriate extractor instance for alignment parameters.
+
+    Args:
+        cfg: Configuration object
+        feature_type: Type of content feature (whisper, contentvec, wenet)
+
+    Returns:
+        Extractor instance with initialized alignment parameters
+    """
+    if feature_type == "whisper":
+        return WhisperExtractor(cfg)
+    elif feature_type == "contentvec":
+        return ContentvecExtractor(cfg)
+    elif feature_type == "wenet":
+        return WenetExtractor(cfg)
+    else:
+        return None
