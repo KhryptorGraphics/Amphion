@@ -408,26 +408,41 @@ def inference(
 # Language list
 language_list = ["en", "zh", "ja", "ko", "fr", "de"]
 
-# Gradio interface
-iface = gr.Interface(
-    fn=inference,
-    inputs=[
-        gr.Audio(label="Upload Prompt Wav", type="filepath"),
-        gr.Textbox(label="Target Text"),
-        gr.Number(
-            label="Target Duration (in seconds), if the target duration is less than 0, the system will estimate a duration.",
-            value=-1,
-        ),  # Removed 'optional=True'
-        gr.Slider(
-            label="Number of Timesteps", minimum=15, maximum=100, value=25, step=1
-        ),
-    ],
-    outputs=gr.Audio(label="Generated Audio"),
+# Gradio interface with dark theme
+with gr.Blocks(
     title="MaskGCT TTS Demo",
-    description="""
+    theme=gr.themes.Glass(),
+    css="""
+    .gradio-container { max-width: 1200px; margin: auto; }
+    """
+) as iface:
+    gr.Markdown("""
+    # MaskGCT TTS Demo
+
     [![arXiv](https://img.shields.io/badge/arXiv-Paper-COLOR.svg)](https://arxiv.org/abs/2409.00750) [![hf](https://img.shields.io/badge/%F0%9F%A4%97%20HuggingFace-model-yellow)](https://huggingface.co/amphion/maskgct) [![hf](https://img.shields.io/badge/%F0%9F%A4%97%20HuggingFace-demo-pink)](https://huggingface.co/spaces/amphion/maskgct) [![readme](https://img.shields.io/badge/README-Key%20Features-blue)](https://github.com/open-mmlab/Amphion/tree/main/models/tts/maskgct)
-    """,
-)
+    """)
+
+    with gr.Row():
+        with gr.Column():
+            prompt_wav = gr.Audio(label="Upload Prompt Wav", type="filepath")
+            target_text = gr.Textbox(label="Target Text", lines=3)
+            target_len = gr.Number(
+                label="Target Duration (in seconds), if the target duration is less than 0, the system will estimate a duration.",
+                value=-1,
+            )
+            n_timesteps = gr.Slider(
+                label="Number of Timesteps", minimum=15, maximum=100, value=25, step=1
+            )
+            generate_btn = gr.Button("Generate Audio", variant="primary")
+
+        with gr.Column():
+            output_audio = gr.Audio(label="Generated Audio")
+
+    generate_btn.click(
+        fn=inference,
+        inputs=[prompt_wav, target_text, target_len, n_timesteps],
+        outputs=[output_audio]
+    )
 
 # Launch the interface
 iface.launch(
