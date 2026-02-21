@@ -189,7 +189,7 @@ def infer(
     return (final_sample_rate, final_wave), spectrogram_path, ref_text
 
 
-with gr.Blocks() as app_credits:
+with gr.Blocks(theme=gr.themes.Glass()) as app_credits:
     gr.Markdown(
         """
 # Credits
@@ -199,7 +199,7 @@ with gr.Blocks() as app_credits:
 * [jpgallegoar](https://github.com/jpgallegoar) for multiple speech-type generation & voice chat
 """
     )
-with gr.Blocks() as app_tts:
+with gr.Blocks(theme=gr.themes.Glass()) as app_tts:
     gr.Markdown("# Batched TTS")
     ref_audio_input = gr.Audio(label="Reference Audio", type="filepath")
     gen_text_input = gr.Textbox(label="Text to Generate", lines=10)
@@ -305,7 +305,7 @@ def parse_speechtypes_text(gen_text):
     return segments
 
 
-with gr.Blocks() as app_multistyle:
+with gr.Blocks(theme=gr.themes.Glass()) as app_multistyle:
     # New section for multistyle generation
     gr.Markdown(
         """
@@ -575,11 +575,11 @@ with gr.Blocks() as app_multistyle:
     )
 
 
-with gr.Blocks() as app_chat:
+with gr.Blocks(theme=gr.themes.Glass()) as app_chat:
     gr.Markdown(
         """
 # Voice Chat
-Have a conversation with an AI using your reference voice! 
+Have a conversation with an AI using your reference voice!
 1. Upload a reference audio clip and optionally its transcript.
 2. Load the chat model.
 3. Record your message through your microphone.
@@ -819,7 +819,7 @@ Have a conversation with an AI using your reference voice!
         )
 
 
-with gr.Blocks() as app:
+with gr.Blocks(theme=gr.themes.Glass()) as app:
     gr.Markdown(
         f"""
 # E2/F5 TTS
