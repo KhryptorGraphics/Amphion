@@ -8,6 +8,7 @@ import sys
 import numpy as np
 import json
 import argparse
+import multiprocessing
 import whisper
 import torch
 
@@ -248,6 +249,12 @@ if __name__ == "__main__":
         default="english",
         help="(Optional)['english','chinese']",
     )
+    parser.add_argument(
+        "--n_workers",
+        type=int,
+        default=1,
+        help="(Optional) Number of parallel workers for metric computation.",
+    )
 
     args = parser.parse_args()
 
@@ -265,4 +272,5 @@ if __name__ == "__main__":
         ltr_path=args.ltr_path,
         intelligibility_mode=args.intelligibility_mode,
         language=args.language,
+        n_workers=args.n_workers,
     )
