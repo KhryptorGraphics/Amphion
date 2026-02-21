@@ -103,8 +103,13 @@ def extract_utt_acoustic_features_parallel(metadata, dataset_output, cfg, n_work
     task_type = cfg.task_type
     results = []
 
+    # Use 'spawn' context to avoid issues with forked processes inheriting
+    # potentially problematic state from modules like pyworld that may have
+    # been imported during serial extraction or other preprocessing
+    ctx = mp.get_context('spawn')
+
     # Use multiprocessing Pool with initializer to pass cfg to workers
-    with mp.Pool(
+    with ctx.Pool(
         processes=n_workers,
         initializer=_init_acoustic_worker,
         initargs=(dataset_output, cfg, task_type)
