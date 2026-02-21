@@ -89,7 +89,7 @@ def generate_history_html(session_state):
         buffer.seek(0)
         data_uri = "data:audio/wav;base64," + base64.b64encode(buffer.read()).decode()
         html.append(
-            f'<div style="border: 1px solid #ccc; padding: 10px; margin: 10px;">'
+            f'<div style="border: 1px solid var(--border-color-primary); padding: 10px; margin: 10px; border-radius: 8px;">'
             f"<h4>History Entry {idx+1}</h4>"
             f'<audio controls><source src="{data_uri}" type="audio/wav"></audio>'
             f'<p>{entry["metadata"]}</p>'
@@ -105,7 +105,7 @@ def clear_history(session_state):
 
 
 # Gradio interface
-with gr.Blocks() as demo:
+with gr.Blocks(theme=gr.themes.Default(primary_hue="blue")) as demo:
     gr.Markdown("# DualCodec Audio Demo")
 
     with gr.Row():
