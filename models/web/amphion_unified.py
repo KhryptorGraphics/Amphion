@@ -537,7 +537,7 @@ def create_app():
 
     with gr.Blocks(
         title="Amphion TTS/VC Demo",
-        theme=gr.themes.Soft(),
+        theme=gr.themes.Glass(),
         css="""
         .gradio-container { max-width: 1200px; margin: auto; }
         .tab-nav button { font-size: 16px; font-weight: 600; }
