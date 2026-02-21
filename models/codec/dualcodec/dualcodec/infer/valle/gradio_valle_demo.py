@@ -87,7 +87,13 @@ def process_tts(
 
 
 # Create Gradio interface
-with gr.Blocks(title="Valle TTS Demo") as demo:
+with gr.Blocks(
+    title="Valle TTS Demo",
+    theme=gr.themes.Glass(),
+    css="""
+    .gradio-container { max-width: 1200px; margin: auto; }
+    """
+) as demo:
     gr.Markdown("# Valle TTS Demo")
     gr.Markdown("Generate speech using reference audio and text.")
 
