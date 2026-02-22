@@ -172,7 +172,8 @@
     // Dataloader
     "dataloader": {
       "num_worker": 32,
-      "pin_memory": true
+      "pin_memory": true,
+      "persistent_workers": true
     },
     "gradient_accumulation_step": 1,
     "total_training_steps": 50000,
