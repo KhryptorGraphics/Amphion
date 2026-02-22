@@ -101,23 +101,21 @@ export function useAudioAnalyser(options: UseAudioAnalyserOptions = {}) {
   )
 
   const getByteFrequencyData = React.useCallback(
-    (array?: Uint8Array): Uint8Array | null => {
-      if (!analyserRef.current || !array) {
-        return null
+    (array: Uint8Array): void => {
+      if (!analyserRef.current) {
+        return
       }
-      analyserRef.current.getByteFrequencyData(array)
-      return array
+      analyserRef.current.getByteFrequencyData(array as Uint8Array<ArrayBuffer>)
     },
     []
   )
 
   const getByteTimeDomainData = React.useCallback(
-    (array?: Uint8Array): Uint8Array | null => {
-      if (!analyserRef.current || !array) {
-        return null
+    (array: Uint8Array): void => {
+      if (!analyserRef.current) {
+        return
       }
-      analyserRef.current.getByteTimeDomainData(array)
-      return array
+      analyserRef.current.getByteTimeDomainData(array as Uint8Array<ArrayBuffer>)
     },
     []
   )

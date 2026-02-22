@@ -4,25 +4,31 @@ import { useRef, useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
 import { Play, Pause, Volume2 } from "lucide-react";
+import { WaveformVisualizer } from "./waveform-visualizer";
 
 interface AudioPlayerProps {
   src: string;
   compact?: boolean;
+  showWaveform?: boolean;
 }
 
-export function AudioPlayer({ src, compact }: AudioPlayerProps) {
+export function AudioPlayer({ src, compact, showWaveform = false }: AudioPlayerProps) {
   const audioRef = useRef<HTMLAudioElement>(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
   const [volume, setVolume] = useState(1);
+  const [audioElementReady, setAudioElementReady] = useState(false);
 
   useEffect(() => {
     const audio = audioRef.current;
     if (!audio) return;
 
     const handleTimeUpdate = () => setCurrentTime(audio.currentTime);
-    const handleLoadedMetadata = () => setDuration(audio.duration);
+    const handleLoadedMetadata = () => {
+      setDuration(audio.duration);
+      setAudioElementReady(true);
+    };
     const handleEnded = () => setIsPlaying(false);
 
     audio.addEventListener("timeupdate", handleTimeUpdate);
@@ -101,36 +107,17 @@ export function AudioPlayer({ src, compact }: AudioPlayerProps) {
     );
   }
 
-  if (compact) {
-    return (
-      <div className="flex items-center gap-2">
-        <audio ref={audioRef} src={src} className="hidden" />
-        <Button
-          variant="outline"
-          size="icon"
-          onClick={togglePlay}
-          className="h-8 w-8"
-        >
-          {isPlaying ? <Pause className="h-3 w-3" /> : <Play className="h-3 w-3" />}
-        </Button>
-        <div className="flex-1">
-          <Slider
-            value={[currentTime]}
-            max={duration || 100}
-            step={0.1}
-            onValueChange={handleSeek}
-          />
-        </div>
-        <span className="text-xs text-muted-foreground w-16 text-right">
-          {formatTime(currentTime)}
-        </span>
-      </div>
-    );
-  }
-
   return (
     <div className="space-y-2">
       <audio ref={audioRef} src={src} className="hidden" />
+
+      {showWaveform && audioElementReady && (
+        <WaveformVisualizer
+          audioElement={audioRef.current}
+          mode="waveform"
+          className="h-24"
+        />
+      )}
 
       <div className="flex items-center gap-3">
         <Button
