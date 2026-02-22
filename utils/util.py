@@ -512,6 +512,23 @@ def load_preset(preset_name, presets_dir="presets"):
     return load_config(preset_path)
 
 
+def list_presets(presets_dir="presets"):
+    """List all available preset names from a presets directory
+
+    Args:
+        presets_dir (str, optional): directory to load presets from. Defaults to "presets".
+
+    Returns:
+        list: a list of preset names (without .json extension)
+    """
+    if not os.path.exists(presets_dir):
+        return []
+
+    preset_files = glob.glob(os.path.join(presets_dir, "*.json"))
+    preset_names = [os.path.splitext(os.path.basename(f))[0] for f in preset_files]
+    return sorted(preset_names)
+
+
 class JsonHParams:
     def __init__(self, **kwargs):
         for k, v in kwargs.items():
