@@ -475,6 +475,43 @@ def save_config(save_path, cfg):
         )
 
 
+def save_preset(preset_name, cfg, presets_dir="presets"):
+    """Save a configuration preset to a presets directory
+
+    Args:
+        preset_name (str): name of the preset (without .json extension)
+        cfg (dict): dictionary that stores configurations
+        presets_dir (str, optional): directory to save presets. Defaults to "presets".
+    """
+    # Create presets directory if it doesn't exist
+    if not os.path.exists(presets_dir):
+        os.makedirs(presets_dir, exist_ok=True)
+
+    # Save preset to JSON file
+    preset_path = os.path.join(presets_dir, f"{preset_name}.json")
+    save_config(preset_path, cfg)
+    return preset_path
+
+
+def load_preset(preset_name, presets_dir="presets"):
+    """Load a configuration preset by name from a presets directory
+
+    Args:
+        preset_name (str): name of the preset (without .json extension)
+        presets_dir (str, optional): directory to load presets from. Defaults to "presets".
+
+    Returns:
+        JsonHParams: an object that stores configurations
+
+    Raises:
+        FileNotFoundError: if the preset file does not exist
+    """
+    preset_path = os.path.join(presets_dir, f"{preset_name}.json")
+    if not os.path.exists(preset_path):
+        raise FileNotFoundError(f"Preset '{preset_name}' not found at {preset_path}")
+    return load_config(preset_path)
+
+
 class JsonHParams:
     def __init__(self, **kwargs):
         for k, v in kwargs.items():
