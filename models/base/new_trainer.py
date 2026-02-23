@@ -360,6 +360,16 @@ class BaseTrainer(object):
                     shutil.rmtree(path, ignore_errors=True)
                     self.logger.debug(f"Remove old checkpoint: {path}")
 
+                self._fire_callbacks(
+                    "on_checkpoint_saved",
+                    TrainerState(
+                        epoch=self.epoch,
+                        step=self.step,
+                        train_loss=train_loss,
+                        checkpoint_path=self.tmp_checkpoint_save_path,
+                    ),
+                )
+
             self.accelerator.wait_for_everyone()
             if run_eval:
                 # TODO: run evaluation
