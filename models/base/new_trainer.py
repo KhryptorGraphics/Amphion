@@ -215,12 +215,21 @@ class BaseTrainer(object):
     def _fire_callbacks(self, event: str, state: TrainerState) -> None:
         """Invoke *event* on every registered callback with the given *state*.
 
+        Each callback is invoked inside a try/except so that a misbehaving
+        callback cannot interrupt the training loop.
+
         Args:
             event: The name of the hook method to call (e.g. ``"on_epoch_end"``).
             state: Current :class:`TrainerState` snapshot passed to each hook.
         """
         for callback in self.callbacks:
-            getattr(callback, event)(state)
+            try:
+                getattr(callback, event)(state)
+            except Exception as exc:
+                self.logger.warning(
+                    f"Callback {callback.__class__.__name__}.{event} raised an "
+                    f"exception and was skipped: {exc}"
+                )
 
     ### Following are abstract methods that should be implemented in child classes ###
     @abstractmethod
@@ -268,6 +277,10 @@ class BaseTrainer(object):
         self.optimizer.zero_grad()
         # Wait to ensure good to go
         self.accelerator.wait_for_everyone()
+        self._fire_callbacks(
+            "on_train_begin",
+            TrainerState(epoch=self.epoch, step=self.step),
+        )
         while self.epoch < self.max_epoch:
             self.logger.info("\n")
             self.logger.info("-" * 32)
@@ -363,6 +376,10 @@ class BaseTrainer(object):
             )
             self._save_auxiliary_states()
 
+        self._fire_callbacks(
+            "on_train_end",
+            TrainerState(epoch=self.epoch, step=self.step),
+        )
         self.accelerator.end_training()
 
     ### Following are methods that can be used directly in child classes ###
