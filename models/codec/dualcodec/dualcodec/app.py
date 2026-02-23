@@ -33,6 +33,45 @@ def load_model(model_id):
     return MODEL_CONFIGS[model_id]["max_quantizers"]
 
 
+def toggle_theme(session_state):
+    """Toggle between light and dark themes."""
+    if session_state is None:
+        session_state = {"history": [], "theme": "light"}
+
+    # Toggle theme
+    current_theme = session_state.get("theme", "light")
+    new_theme = "dark" if current_theme == "light" else "light"
+    session_state["theme"] = new_theme
+
+    # Update theme button text
+    button_text = "☀️ Light Mode" if new_theme == "dark" else "🌙 Dark Mode"
+
+    # Return dynamic CSS for injection
+    css_html = f"<style>{get_theme_css(new_theme)}</style>"
+
+    return session_state, button_text, css_html
+
+
+def get_theme_css(theme):
+    """Return CSS styling based on theme."""
+    if theme == "dark":
+        return """
+        body { background-color: #1a1a1a; color: #ffffff; }
+        .gradio-container { background-color: #2d2d2d; color: #ffffff; }
+        .panel { background-color: #3d3d3d; color: #ffffff; border: 1px solid #555555; }
+        .label { color: #ffffff; }
+        h1, h2, h3, h4, h5, h6 { color: #ffffff; }
+        """
+    else:
+        return """
+        body { background-color: #ffffff; color: #000000; }
+        .gradio-container { background-color: #f0f0f0; color: #000000; }
+        .panel { background-color: #ffffff; color: #000000; border: 1px solid #cccccc; }
+        .label { color: #000000; }
+        h1, h2, h3, h4, h5, h6 { color: #000000; }
+        """
+
+
 def process_audio(audio_file, model_id, n_quantizers, session_state):
     global current_model, current_inference
     if current_model is None or current_inference is None:
@@ -54,7 +93,11 @@ def process_audio(audio_file, model_id, n_quantizers, session_state):
 
     # Update session state
     if session_state is None:
-        session_state = {"history": []}
+        session_state = {"history": [], "theme": "light"}
+
+    # Ensure theme key exists
+    if "theme" not in session_state:
+        session_state["theme"] = "light"
 
     # Add new entry to history
     new_entry = {
@@ -105,7 +148,7 @@ def clear_history(session_state):
 
 
 # Gradio interface
-with gr.Blocks(theme=gr.themes.Default(primary_hue="blue")) as demo:
+with gr.Blocks(css=get_theme_css("light")) as demo:
     gr.Markdown("# DualCodec Audio Demo")
 
     with gr.Row():
@@ -119,6 +162,7 @@ with gr.Blocks(theme=gr.themes.Default(primary_hue="blue")) as demo:
             value=8,
             label="Number of Quantizers",
         )
+        theme_toggle = gr.Button("🌙 Dark Mode")
 
     audio_input = gr.Audio(type="filepath", label="Input Audio")
     inference_button = gr.Button("Run Inference")
@@ -131,7 +175,12 @@ with gr.Blocks(theme=gr.themes.Default(primary_hue="blue")) as demo:
     history_display = gr.HTML(label="History Audios")
 
     # Session state to store history audios (unique to each user)
-    session_state = gr.State({"history": []})
+    session_state = gr.State({"history": [], "theme": "light"})
+
+    # Dynamic CSS injection for theme switching
+    theme_css_html = gr.HTML(
+        value=f"<style>{get_theme_css('light')}</style>", visible=False
+    )
 
     # Set up interactions
     model_dropdown.change(fn=update_slider, inputs=model_dropdown, outputs=n_quantizers)
@@ -142,6 +191,13 @@ with gr.Blocks(theme=gr.themes.Default(primary_hue="blue")) as demo:
     )
     session_state.change(
         fn=generate_history_html, inputs=session_state, outputs=history_display
+    )
+
+    # Theme toggle button
+    theme_toggle.click(
+        fn=toggle_theme,
+        inputs=session_state,
+        outputs=[session_state, theme_toggle, theme_css_html],
     )
 
     # Clear history button
