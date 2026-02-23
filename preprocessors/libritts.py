@@ -11,6 +11,7 @@ from glob import glob
 from collections import defaultdict
 
 from utils.util import has_existed
+from utils.validators import DatasetValidator
 
 
 def libritts_statistics(data_dir):
@@ -70,6 +71,9 @@ def main(output_path, dataset_path):
         return
     utt2singer = open(utt2singer_file, "w")
 
+    # Initialize validator
+    validator = DatasetValidator()
+
     # Load
     libritts_path = dataset_path
 
@@ -109,7 +113,11 @@ def main(output_path, dataset_path):
                         distribution, speaker, chosen_pharase, chosen_uid
                     )
                     res["Path"] = os.path.join(libritts_path, res["Path"])
-                    assert os.path.exists(res["Path"])
+
+                    # Validate file existence instead of assert
+                    if not os.path.exists(res["Path"]):
+                        print(f"Warning: Audio file not found: {res['Path']}")
+                        continue
 
                     text_file_path = os.path.join(
                         libritts_path,
@@ -118,9 +126,17 @@ def main(output_path, dataset_path):
                         chosen_pharase,
                         chosen_uid + ".normalized.txt",
                     )
+
+                    # Validate text file existence and content
+                    if not os.path.exists(text_file_path):
+                        print(f"Warning: Text file not found: {text_file_path}")
+                        continue
+
                     with open(text_file_path, "r") as f:
                         lines = f.readlines()
-                        assert len(lines) == 1
+                        if len(lines) != 1:
+                            print(f"Warning: Text file should contain exactly one line: {text_file_path}")
+                            continue
                         text = lines[0].strip()
                         res["Text"] = text
 
@@ -156,6 +172,21 @@ def main(output_path, dataset_path):
             valid_total_duration / 3600,
         )
     )
+
+    # Validate metadata using DatasetValidator
+    validator = DatasetValidator()
+
+    # Validate train metadata
+    if not validator.validate_metadata_schema(train):
+        print("Warning: Train metadata validation failed")
+
+    # Validate test metadata
+    if not validator.validate_metadata_schema(test):
+        print("Warning: Test metadata validation failed")
+
+    # Validate valid metadata
+    if not validator.validate_metadata_schema(valid):
+        print("Warning: Valid metadata validation failed")
 
     # Save train.json and test.json
     with open(train_output_file, "w") as f:
