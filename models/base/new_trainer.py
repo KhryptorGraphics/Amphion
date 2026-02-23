@@ -286,6 +286,11 @@ class BaseTrainer(object):
             self.logger.info("-" * 32)
             self.logger.info("Epoch {}: ".format(self.epoch))
 
+            self._fire_callbacks(
+                "on_epoch_start",
+                TrainerState(epoch=self.epoch, step=self.step),
+            )
+
             ### TODO: change the return values of _train_epoch() to a loss dict, or (total_loss, loss_dict)
             ### It's inconvenient for the model with multiple losses
             # Do training & validating epoch
@@ -359,6 +364,11 @@ class BaseTrainer(object):
             if run_eval:
                 # TODO: run evaluation
                 pass
+
+            self._fire_callbacks(
+                "on_epoch_end",
+                TrainerState(epoch=self.epoch, step=self.step),
+            )
 
             # Update info for each epoch
             self.epoch += 1
