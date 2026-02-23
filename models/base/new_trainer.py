@@ -377,7 +377,12 @@ class BaseTrainer(object):
 
             self._fire_callbacks(
                 "on_epoch_end",
-                TrainerState(epoch=self.epoch, step=self.step),
+                TrainerState(
+                    epoch=self.epoch,
+                    step=self.step,
+                    train_loss=train_loss,
+                    valid_loss=valid_loss,
+                ),
             )
 
             # Update info for each epoch
@@ -386,15 +391,23 @@ class BaseTrainer(object):
         # Finish training and save final checkpoint
         self.accelerator.wait_for_everyone()
         if self.accelerator.is_main_process:
-            self.accelerator.save_state(
-                os.path.join(
-                    self.checkpoint_dir,
-                    "final_epoch-{:04d}_step-{:07d}_loss-{:.6f}".format(
-                        self.epoch, self.step, valid_loss
-                    ),
-                )
+            final_checkpoint_path = os.path.join(
+                self.checkpoint_dir,
+                "final_epoch-{:04d}_step-{:07d}_loss-{:.6f}".format(
+                    self.epoch, self.step, valid_loss
+                ),
             )
+            self.accelerator.save_state(final_checkpoint_path)
             self._save_auxiliary_states()
+            self._fire_callbacks(
+                "on_checkpoint_saved",
+                TrainerState(
+                    epoch=self.epoch,
+                    step=self.step,
+                    valid_loss=valid_loss,
+                    checkpoint_path=final_checkpoint_path,
+                ),
+            )
 
         self._fire_callbacks(
             "on_train_end",
