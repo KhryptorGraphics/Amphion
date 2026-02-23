@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Mic, Volume2, Music, FileAudio, BarChart3, Wand2, AudioWaveform, Waves } from "lucide-react";
+import { Mic, Volume2, Music, FileAudio, BarChart3, Wand2, AudioWaveform, Waves, GitCompare } from "lucide-react";
 
 const FEATURES = [
   {
@@ -62,6 +62,13 @@ const FEATURES = [
     href: "/batch",
     color: "bg-teal-500",
   },
+  {
+    title: "Audio Comparison",
+    description: "Compare original and generated audio side-by-side with synchronized playback",
+    icon: GitCompare,
+    href: "/compare",
+    color: "bg-rose-500",
+  },
 ];
 
 export default function HomePage() {
@@ -97,12 +104,15 @@ export default function HomePage() {
         <p className="text-muted-foreground mb-6">
           Choose a tool above to start generating audio, or explore the documentation to learn more.
         </p>
-        <div className="flex gap-4 justify-center">
+        <div className="flex gap-4 justify-center flex-wrap">
           <Button size="lg" asChild>
             <Link href="/tts">Start with TTS</Link>
           </Button>
           <Button size="lg" variant="outline" asChild>
             <Link href="/tts/compare">Compare Models</Link>
+          </Button>
+          <Button size="lg" variant="outline" asChild>
+            <Link href="/compare">Compare Audio</Link>
           </Button>
         </div>
       </div>
