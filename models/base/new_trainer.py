@@ -410,6 +410,10 @@ class BaseTrainer(object):
             smoothing=0.04,
             disable=not self.accelerator.is_main_process,
         ):
+            self._fire_callbacks(
+                "on_batch_start",
+                TrainerState(epoch=self.epoch, step=self.step),
+            )
             # Do training step and BP
             with self.accelerator.accumulate(self.model):
                 loss = self._train_step(batch)
@@ -417,6 +421,11 @@ class BaseTrainer(object):
                 self.optimizer.step()
                 self.optimizer.zero_grad()
             self.batch_count += 1
+
+            self._fire_callbacks(
+                "on_batch_end",
+                TrainerState(epoch=self.epoch, step=self.step),
+            )
 
             # Update info for each step
             # TODO: step means BP counts or batch counts?
