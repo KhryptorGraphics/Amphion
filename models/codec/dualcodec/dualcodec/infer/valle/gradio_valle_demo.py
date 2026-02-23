@@ -86,16 +86,42 @@ def process_tts(
     return (final_sample_rate, final_wave) if final_wave is not None else None
 
 
+def get_theme_css(theme):
+    """Return CSS styling based on theme."""
+    if theme == "dark":
+        return """
+        body { background-color: #1a1a1a !important; color: #ffffff !important; }
+        .gradio-container { background-color: #2d2d2d !important; color: #ffffff !important; }
+        .panel { background-color: #3d3d3d !important; color: #ffffff !important; border: 1px solid #555555 !important; }
+        label { color: #ffffff !important; }
+        h1, h2, h3, h4, h5, h6 { color: #ffffff !important; }
+        input, textarea, select { background-color: #3d3d3d !important; color: #ffffff !important; }
+        """
+    else:
+        return ""
+
+
+# Theme toggle function
+def toggle_theme(is_dark: bool):
+    """Toggle between light and dark themes using CSS injection."""
+    new_is_dark = not is_dark
+    button_text = "☀️ Light Mode" if new_is_dark else "🌙 Dark Mode"
+    css_html = f"<style>{get_theme_css('dark' if new_is_dark else 'light')}</style>"
+    return button_text, new_is_dark, css_html
+
 # Create Gradio interface
-with gr.Blocks(
-    title="Valle TTS Demo",
-    theme=gr.themes.Glass(),
-    css="""
-    .gradio-container { max-width: 1200px; margin: auto; }
-    """
-) as demo:
+with gr.Blocks(title="Valle TTS Demo", theme=gr.themes.Soft()) as demo:
+    # State to track theme (False = light, True = dark)
+    theme_state = gr.State(value=False)
+
     gr.Markdown("# Valle TTS Demo")
     gr.Markdown("Generate speech using reference audio and text.")
+
+    with gr.Row():
+        theme_toggle = gr.Button("🌙 Dark Mode", size="sm")
+
+    # Hidden HTML component for dynamic CSS injection
+    theme_css_html = gr.HTML(value="", visible=False)
 
     with gr.Row():
         with gr.Column():
@@ -174,6 +200,13 @@ with gr.Blocks(
                 type="numpy",
                 format="wav",
             )
+
+    # Theme toggle event - uses CSS injection for reliable cross-version dark mode
+    theme_toggle.click(
+        fn=toggle_theme,
+        inputs=theme_state,
+        outputs=[theme_toggle, theme_state, theme_css_html]
+    )
 
     # Set up event handlers
     generate_btn.click(

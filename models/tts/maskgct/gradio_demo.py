@@ -218,7 +218,6 @@ def semantic2acoustic(
     cfg=2.5,
     rescale_cfg=0.75,
 ):
-
     semantic_code = combine_semantic_code
 
     cond = s2a_model_1layer.cond_emb(semantic_code)
@@ -392,6 +391,30 @@ def inference(
     return save_path
 
 
+def get_theme_css(theme):
+    """Return CSS styling based on theme."""
+    if theme == "dark":
+        return """
+        body { background-color: #1a1a1a !important; color: #ffffff !important; }
+        .gradio-container { background-color: #2d2d2d !important; color: #ffffff !important; }
+        .panel { background-color: #3d3d3d !important; color: #ffffff !important; border: 1px solid #555555 !important; }
+        label { color: #ffffff !important; }
+        h1, h2, h3, h4, h5, h6 { color: #ffffff !important; }
+        input, textarea, select { background-color: #3d3d3d !important; color: #ffffff !important; }
+        """
+    else:
+        return ""
+
+
+# Theme toggle function
+def toggle_theme(is_dark: bool):
+    """Toggle between light and dark themes using CSS injection."""
+    new_is_dark = not is_dark
+    button_text = "☀️ Light Mode" if new_is_dark else "🌙 Dark Mode"
+    css_html = f"<style>{get_theme_css('dark' if new_is_dark else 'light')}</style>"
+    return button_text, new_is_dark, css_html
+
+
 # Load models once
 (
     semantic_model,
@@ -408,19 +431,29 @@ def inference(
 # Language list
 language_list = ["en", "zh", "ja", "ko", "fr", "de"]
 
-# Gradio interface with dark theme
+# Create Gradio Blocks interface with dark mode support
 with gr.Blocks(
     title="MaskGCT TTS Demo",
-    theme=gr.themes.Glass(),
+    theme=gr.themes.Default(),
     css="""
-    .gradio-container { max-width: 1200px; margin: auto; }
+    .gradio-container { max-width: 900px !important; margin: auto; }
+    footer {visibility: hidden}
     """
-) as iface:
+) as demo:
+    # State to track theme (False = light, True = dark)
+    theme_state = gr.State(value=False)
+
     gr.Markdown("""
     # MaskGCT TTS Demo
 
     [![arXiv](https://img.shields.io/badge/arXiv-Paper-COLOR.svg)](https://arxiv.org/abs/2409.00750) [![hf](https://img.shields.io/badge/%F0%9F%A4%97%20HuggingFace-model-yellow)](https://huggingface.co/amphion/maskgct) [![hf](https://img.shields.io/badge/%F0%9F%A4%97%20HuggingFace-demo-pink)](https://huggingface.co/spaces/amphion/maskgct) [![readme](https://img.shields.io/badge/README-Key%20Features-blue)](https://github.com/open-mmlab/Amphion/tree/main/models/tts/maskgct)
     """)
+
+    with gr.Row():
+        theme_toggle = gr.Button("🌙 Dark Mode", size="sm")
+
+    # Hidden HTML component for dynamic CSS injection
+    theme_css_html = gr.HTML(value="", visible=False)
 
     with gr.Row():
         with gr.Column():
@@ -433,19 +466,27 @@ with gr.Blocks(
             n_timesteps = gr.Slider(
                 label="Number of Timesteps", minimum=15, maximum=100, value=25, step=1
             )
-            generate_btn = gr.Button("Generate Audio", variant="primary")
+            submit_btn = gr.Button("Generate Speech", variant="primary")
 
         with gr.Column():
             output_audio = gr.Audio(label="Generated Audio")
 
-    generate_btn.click(
+    # Theme toggle event - uses CSS injection for reliable cross-version dark mode
+    theme_toggle.click(
+        fn=toggle_theme,
+        inputs=theme_state,
+        outputs=[theme_toggle, theme_state, theme_css_html]
+    )
+
+    # Inference event
+    submit_btn.click(
         fn=inference,
         inputs=[prompt_wav, target_text, target_len, n_timesteps],
-        outputs=[output_audio]
+        outputs=output_audio
     )
 
 # Launch the interface
-iface.launch(
+demo.launch(
     server_name="127.0.0.1",  # Localhost only - no external access
     server_port=14557,         # Custom port
     root_path="/gradio",       # Behind Apache reverse proxy
