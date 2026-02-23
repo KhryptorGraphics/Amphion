@@ -21,6 +21,7 @@ from torch.utils.data import ConcatDataset, DataLoader
 from tqdm import tqdm
 
 from models.base.base_sampler import build_samplers
+from models.base.training_callbacks import TrainerState, TrainingCallback
 from optimizer.optimizers import NoamLR
 
 
@@ -55,6 +56,9 @@ class BaseTrainer(object):
         if self.accelerator.is_main_process:
             os.makedirs(self.checkpoint_dir, exist_ok=True)
         self.logger.debug(f"Checkpoint directory: {self.checkpoint_dir}")
+
+        # init callbacks
+        self.callbacks: list = []
 
         # init counts
         self.batch_count: int = 0
@@ -196,6 +200,27 @@ class BaseTrainer(object):
             self.optimizer,
             self.scheduler,
         )
+
+    def register_callback(self, callback: TrainingCallback) -> None:
+        """Register a :class:`TrainingCallback` to receive training lifecycle events.
+
+        Args:
+            callback: A :class:`TrainingCallback` instance to register.  The
+                same instance can only be registered once; duplicate registrations
+                are silently ignored.
+        """
+        if callback not in self.callbacks:
+            self.callbacks.append(callback)
+
+    def _fire_callbacks(self, event: str, state: TrainerState) -> None:
+        """Invoke *event* on every registered callback with the given *state*.
+
+        Args:
+            event: The name of the hook method to call (e.g. ``"on_epoch_end"``).
+            state: Current :class:`TrainerState` snapshot passed to each hook.
+        """
+        for callback in self.callbacks:
+            getattr(callback, event)(state)
 
     ### Following are abstract methods that should be implemented in child classes ###
     @abstractmethod
