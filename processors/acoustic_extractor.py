@@ -6,11 +6,10 @@
 import os
 import torch
 import numpy as np
-import multiprocessing as mp
-from functools import partial
 
 import json
 from tqdm import tqdm
+from multiprocessing import Pool
 from sklearn.preprocessing import StandardScaler
 from utils.io import save_feature, save_txt, save_torch_audio
 from utils.util import has_existed
@@ -28,104 +27,52 @@ from utils.mel import (
 
 ZERO = 1e-12
 
-# Global variables for multiprocessing worker initialization
-_worker_dataset_output = None
-_worker_cfg = None
-_worker_task_type = None
 
-
-def _init_acoustic_worker(dataset_output, cfg, task_type):
-    """Initialize worker process with shared configuration.
-
-    This is called once per worker process to set up global state
-    that avoids pickling the cfg object for each task.
+def _process_single_utt(task):
+    """Process a single utterance for acoustic feature extraction
 
     Args:
-        dataset_output (str): Directory to store acoustic features
-        cfg: Configuration object
-        task_type (str): Type of task (tts, svc, vocoder, tta)
+        task (tuple): tuple of (utt, dataset_output, cfg)
+
     """
-    global _worker_dataset_output, _worker_cfg, _worker_task_type
-    _worker_dataset_output = dataset_output
-    _worker_cfg = cfg
-    _worker_task_type = task_type
-
-
-def _acoustic_extraction_worker(utt):
-    """Worker function for parallel acoustic feature extraction.
-
-    This is a picklable function designed to work with multiprocessing.Pool.
-    It uses global variables set by _init_acoustic_worker to avoid
-    pickling the cfg object for each utterance.
-
-    Args:
-        utt (dict): Utterance info including dataset, singer, uid, path, duration
-
-    Returns:
-        tuple: (uid, success, error_message) where success is bool and
-               error_message is None on success or str on failure
-    """
-    global _worker_dataset_output, _worker_cfg, _worker_task_type
-
-    uid = utt.get("Uid", "unknown")
-    try:
-        if _worker_task_type == "tts":
-            extract_utt_acoustic_features_tts(_worker_dataset_output, _worker_cfg, utt)
-        elif _worker_task_type == "svc":
-            extract_utt_acoustic_features_svc(_worker_dataset_output, _worker_cfg, utt)
-        elif _worker_task_type == "vocoder":
-            extract_utt_acoustic_features_vocoder(_worker_dataset_output, _worker_cfg, utt)
-        elif _worker_task_type == "tta":
-            extract_utt_acoustic_features_tta(_worker_dataset_output, _worker_cfg, utt)
-        else:
-            return (uid, False, f"Unknown task_type: {_worker_task_type}")
-        return (uid, True, None)
-    except Exception as e:
-        return (uid, False, str(e))
+    utt, dataset_output, cfg = task
+    if cfg.task_type == "tts":
+        extract_utt_acoustic_features_tts(dataset_output, cfg, utt)
+    elif cfg.task_type == "svc":
+        extract_utt_acoustic_features_svc(dataset_output, cfg, utt)
+    elif cfg.task_type == "vocoder":
+        extract_utt_acoustic_features_vocoder(dataset_output, cfg, utt)
+    elif cfg.task_type == "tta":
+        extract_utt_acoustic_features_tta(dataset_output, cfg, utt)
 
 
 def extract_utt_acoustic_features_parallel(metadata, dataset_output, cfg, n_workers=1):
-    """Extract acoustic features from utterances using multiprocessing.
+    """Extract acoustic features from utterances using muliprocess
 
     Args:
-        metadata (list): List of utterance dictionaries containing data from train.json and test.json files
-        dataset_output (str): Directory to store acoustic features
-        cfg: Configuration object with task_type attribute
-        n_workers (int, optional): Number of processes for parallel extraction. Defaults to 1.
+        metadata (dict): dictionary that stores data in train.json and test.json files
+        dataset_output (str): directory to store acoustic features
+        cfg (dict): dictionary that stores configurations
+        n_workers (int, optional): num of processes to extract features in parallel. Defaults to 1.
 
     Returns:
-        list: List of (uid, success, error) tuples for each processed utterance
+        list: acoustic features
     """
-    if n_workers <= 1:
-        # Fallback to serial processing for single worker
-        return extract_utt_acoustic_features_serial(metadata, dataset_output, cfg)
+    # If n_workers is 1, use serial processing (no multiprocessing overhead)
+    if n_workers == 1:
+        extract_utt_acoustic_features_serial(metadata, dataset_output, cfg)
+        return
 
-    task_type = cfg.task_type
-    results = []
+    # Create tasks for parallel processing
+    tasks = [(utt, dataset_output, cfg) for utt in metadata]
+    print(f"Processing {len(tasks)} utterances with {n_workers} workers")
 
-    # Use 'spawn' context to avoid issues with forked processes inheriting
-    # potentially problematic state from modules like pyworld that may have
-    # been imported during serial extraction or other preprocessing
-    ctx = mp.get_context('spawn')
-
-    # Use multiprocessing Pool with initializer to pass cfg to workers
-    with ctx.Pool(
-        processes=n_workers,
-        initializer=_init_acoustic_worker,
-        initargs=(dataset_output, cfg, task_type)
-    ) as pool:
-        # imap_unordered provides results as they complete with progress bar
-        for result in tqdm(
-            pool.imap_unordered(_acoustic_extraction_worker, metadata),
-            total=len(metadata),
-            desc="Extracting acoustic features"
+    # Process tasks in parallel
+    with Pool(processes=n_workers) as pool:
+        for _ in tqdm(
+            pool.imap_unordered(_process_single_utt, tasks), total=len(tasks)
         ):
-            uid, success, error = result
-            results.append(result)
-            if not success:
-                print(f"Warning: Failed to process utterance {uid}: {error}")
-
-    return results
+            pass
 
 
 def avg_phone_feature(feature, duration, interpolation=False):
