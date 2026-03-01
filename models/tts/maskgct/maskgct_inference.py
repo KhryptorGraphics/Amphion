@@ -6,7 +6,7 @@
 from models.tts.maskgct.maskgct_utils import *
 from huggingface_hub import hf_hub_download
 import safetensors
-import soundfile as sf
+from utils.inference_output import InferenceOutput, InferenceOutputWriter
 
 if __name__ == "__main__":
 
@@ -65,7 +65,7 @@ if __name__ == "__main__":
 
     # inference
     prompt_wav_path = "./models/tts/maskgct/wav/prompt.wav"
-    save_path = "generated_audio.wav"
+    output_dir = "output/maskgct"
     prompt_text = " We do not break. We never give in. We never back down."
     target_text = "In this paper, we introduce MaskGCT, a fully non-autoregressive TTS model that eliminates the need for explicit alignment information between text and speech supervision."
     # Specify the target duration (in seconds). If target_len = None, we use a simple rule to predict the target duration.
@@ -87,4 +87,18 @@ if __name__ == "__main__":
         prompt_wav_path, prompt_text, target_text, "en", "en", target_len=target_len
     )
 
-    sf.write(save_path, recovered_audio, 24000)
+    writer = InferenceOutputWriter(
+        output_dir=output_dir,
+        model_name="MaskGCT",
+        sample_rate=24000,
+    )
+    writer.add(
+        InferenceOutput(
+            uid="generated_audio",
+            audio=recovered_audio,
+            sample_rate=24000,
+            text=target_text,
+        )
+    )
+    manifest_path = writer.save_manifest()
+    print(f"Saved output to {output_dir}, manifest: {manifest_path}")
