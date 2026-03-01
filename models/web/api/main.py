@@ -11,14 +11,25 @@ from fastapi.staticfiles import StaticFiles
 import os
 import logging
 
-from .routes import tts, vc, svc, health, evaluation, tta, codec, vocoder, training, datasets, presets
+from .routes import (
+    tts,
+    vc,
+    svc,
+    health,
+    evaluation,
+    tta,
+    codec,
+    vocoder,
+    training,
+    datasets,
+    presets,
+)
 from .websocket.progress import manager
 from .auth import AuthMiddleware
 from .rate_limit import RateLimitMiddleware
 
 logging.basicConfig(
-    level=logging.INFO,
-    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+    level=logging.INFO, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s"
 )
 logger = logging.getLogger(__name__)
 
@@ -28,7 +39,7 @@ app = FastAPI(
     description="REST API for Amphion TTS and Voice Conversion models",
     openapi_url="/api/openapi.json",
     docs_url="/api/docs",
-    redoc_url="/api/redoc"
+    redoc_url="/api/redoc",
 )
 
 # CORS configuration for frontend
@@ -52,8 +63,12 @@ app.add_middleware(AuthMiddleware)
 # Ensure output directories exist
 os.makedirs("/home/kp/repo2/Amphion/output/web", exist_ok=True)
 _presets_dir = os.path.join(
-    os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))),
-    "output", "web", "presets"
+    os.path.dirname(
+        os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+    ),
+    "output",
+    "web",
+    "presets",
 )
 os.makedirs(_presets_dir, exist_ok=True)
 
@@ -112,10 +127,11 @@ async def shutdown_event():
 
 if __name__ == "__main__":
     import uvicorn
+
     uvicorn.run(
         "models.web.api.main:app",
         host="127.0.0.1",
         port=14555,
         reload=False,
-        log_level="info"
+        log_level="info",
     )

@@ -20,9 +20,7 @@ router = APIRouter()
 # File-based storage directory (relative to project root)
 _PROJECT_ROOT = os.path.dirname(
     os.path.dirname(
-        os.path.dirname(
-            os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-        )
+        os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
     )
 )
 PRESETS_DIR = os.path.join(_PROJECT_ROOT, "output", "web", "presets")
@@ -38,9 +36,7 @@ class PresetCreate(BaseModel):
     """Request model for creating a preset."""
 
     name: str = Field(..., description="Preset name")
-    model_id: str = Field(
-        ..., description="Model identifier (e.g., maskgct, vevo_tts)"
-    )
+    model_id: str = Field(..., description="Model identifier (e.g., maskgct, vevo_tts)")
     description: Optional[str] = Field(None, description="Preset description")
     parameters: Dict[str, Any] = Field(
         ..., description="Model configuration parameters"
