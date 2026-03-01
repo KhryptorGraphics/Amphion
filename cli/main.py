@@ -84,7 +84,15 @@ def _infer_placeholder(args):
 def main():
     """Entry point for the 'amphion' command-line interface."""
     parser, _ = build_parser()
-    args = parser.parse_args()
+
+    # Use parse_known_args so that model-specific flags (e.g. --text, --output)
+    # are not rejected here.  Each subcommand handler is responsible for
+    # parsing and validating the extra arguments.
+    args, extra = parser.parse_known_args()
+
+    # Stash the unrecognised arguments on the namespace so subcommand handlers
+    # can access them without needing to re-scan sys.argv.
+    args._extra_argv = extra
 
     if args.command is None:
         parser.print_help(sys.stdout)
