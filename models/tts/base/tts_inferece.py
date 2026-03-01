@@ -19,6 +19,7 @@ from abc import abstractmethod
 from pathlib import Path
 from utils.io import save_audio
 from utils.util import load_config
+from utils.inference_output import InferenceOutput, InferenceOutputWriter
 from models.vocoders.vocoder_inference import synthesis
 
 
@@ -176,32 +177,54 @@ class TTSInference(object):
         return str(checkpoint_path)
 
     def inference(self):
+        sample_rate = self.cfg.preprocess.sample_rate
+        model_name = (
+            os.path.basename(self.exp_dir) if hasattr(self, "exp_dir") else "tts"
+        )
+
         if self.infer_type == "single":
             out_dir = os.path.join(self.args.output_dir, "single")
-            os.makedirs(out_dir, exist_ok=True)
+            writer = InferenceOutputWriter(out_dir, model_name, sample_rate)
 
             pred_audio = self.inference_for_single_utterance()
-            save_path = os.path.join(out_dir, "test_pred.wav")
-            save_audio(save_path, pred_audio, self.cfg.preprocess.sample_rate)
+            audio_array = (
+                pred_audio.numpy()
+                if isinstance(pred_audio, torch.Tensor)
+                else pred_audio
+            )
+            writer.add(
+                InferenceOutput(
+                    uid="test_pred",
+                    audio=audio_array,
+                    sample_rate=sample_rate,
+                )
+            )
+            writer.save_manifest()
 
         elif self.infer_type == "batch":
             out_dir = os.path.join(self.args.output_dir, "batch")
-            os.makedirs(out_dir, exist_ok=True)
+            writer = InferenceOutputWriter(out_dir, model_name, sample_rate)
 
             pred_audio_list = self.inference_for_batches()
             for it, wav in zip(self.test_dataset.metadata, pred_audio_list):
                 uid = it["Uid"]
-                save_audio(
-                    os.path.join(out_dir, f"{uid}.wav"),
-                    wav.numpy(),
-                    self.cfg.preprocess.sample_rate,
-                    add_silence=True,
-                    turn_up=True,
+                audio_array = (
+                    wav.numpy() if isinstance(wav, torch.Tensor) else wav
+                )
+                writer.add(
+                    InferenceOutput(
+                        uid=uid,
+                        audio=audio_array,
+                        sample_rate=sample_rate,
+                        text=it.get("Text"),
+                    )
                 )
                 tmp_file = os.path.join(out_dir, f"{uid}.pt")
                 if os.path.exists(tmp_file):
                     os.remove(tmp_file)
-        print("Saved to: ", out_dir)
+            writer.save_manifest()
+
+        self.logger.info(f"Saved to: {out_dir}")
 
     @torch.inference_mode()
     def inference_for_batches(self):
