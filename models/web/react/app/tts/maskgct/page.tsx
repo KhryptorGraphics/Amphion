@@ -18,6 +18,7 @@ import { HelpTooltip } from "@/components/ui/help-tooltip";
 import { AudioPlayer } from "@/components/ui/audio-player";
 import { FileUpload } from "@/components/ui/file-upload";
 import { Progress } from "@/components/ui/progress";
+import { GenerationWaveform } from "@/components/ui/generation-waveform";
 import { useToast } from "@/hooks/use-toast";
 import {
   Play,
@@ -395,6 +396,8 @@ export default function MaskGCTPage() {
               </p>
             </div>
           )}
+
+          <GenerationWaveform isGenerating={isGenerating} />
 
           {generatedAudio && (
             <Card>
