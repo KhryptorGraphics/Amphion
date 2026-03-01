@@ -1,0 +1,149 @@
+# Copyright (c) 2023 Amphion.
+#
+# This source code is licensed under the MIT license found in the
+# LICENSE file in the root directory of this source tree.
+
+# docker-compose.override.yml — Development overrides for docker-compose.yml
+#
+# Docker Compose automatically merges this file with docker-compose.yml when
+# you run `docker compose up` from this directory.  No extra flags are needed.
+#
+# PURPOSE:
+#   This file is intended for LOCAL DEVELOPMENT ONLY.  It should never be used
+#   in production or CI/CD deployments.  It overrides the base compose file to:
+#
+#     1. Bind-mount the Python source tree into the running container so that
+#        edits on the host are immediately visible without rebuilding the image.
+#
+#     2. Enable uvicorn's --reload flag so the API process restarts automatically
+#        whenever a Python source file changes.
+#
+#     3. Set DEBUG=true and other developer-friendly environment variables.
+#
+#     4. Pass build-time ARGs that tag the image as a dev build and skip the
+#        production React build step (the frontend dev server handles hot-reload
+#        separately via the 'frontend' profile).
+#
+# TYPICAL USAGE:
+#   # Start API in dev mode (auto-reload on Python changes):
+#   docker compose up
+#
+#   # Start API + frontend dev server with hot-reload:
+#   docker compose --profile frontend up
+#
+#   # Rebuild the image after adding new dependencies:
+#   docker compose build
+#
+# NOTE: The GPU deploy reservation from docker-compose.yml is preserved; the
+# nvidia-container-toolkit must still be installed on the host.
+
+services:
+  # ============================================================
+  # api — Development overrides for the FastAPI backend.
+  #
+  # Key changes vs. docker-compose.yml:
+  #   • Python source directories are bind-mounted so that edits
+  #     on the host are reflected immediately inside the container.
+  #   • CMD is replaced with uvicorn --reload so the server restarts
+  #     on every .py file change detected under /app.
+  #   • DEBUG and LOG_LEVEL env vars are set for verbose output.
+  #   • The 'dev' build ARG is forwarded to the Dockerfile so future
+  #     stages can skip production-only steps (e.g. npm run build).
+  # ============================================================
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: webui
+      args:
+        # Signals the Dockerfile that this is a development build.
+        # Individual stages can gate production-only RUN steps on this ARG.
+        BUILD_ENV: development
+    volumes:
+      # ---- Live Python source (enables uvicorn --reload) ----
+      # Core model implementations and inference scripts
+      - ./models:/app/models
+      # Reusable neural building blocks (transformers, flows, diffusion, etc.)
+      - ./modules:/app/modules
+      # CLI entry points (train.py, inference.py, preprocess.py)
+      - ./bins:/app/bins
+      # Shared utility helpers (audio I/O, mel, F0, config loading, etc.)
+      - ./utils:/app/utils
+      # Experiment configs (JSON recipes used by run.sh scripts)
+      - ./egs:/app/egs
+      # Global default configs referenced by experiment configs
+      - ./config:/app/config
+      # Per-dataset preprocessors
+      - ./preprocessors:/app/preprocessors
+      # Evaluation metric helpers
+      - ./evaluation:/app/evaluation
+      # ---- Persistent data volumes (inherited from base compose) ----
+      # Generated audio output accessible on the host
+      - ./output:/app/output
+      # HuggingFace model weights cache (named volume for persistence)
+      - pretrained:/app/pretrained
+      # Training checkpoints (named volume for persistence)
+      - ckpts:/app/ckpts
+    environment:
+      PYTHONPATH: /app
+      # Enable debug logging in the FastAPI application
+      DEBUG: "true"
+      # Set uvicorn / application log level to debug
+      LOG_LEVEL: debug
+      # Suppress Python .pyc bytecode files (keeps bind-mounts clean)
+      PYTHONDONTWRITEBYTECODE: "1"
+      # Ensure Python output is not buffered (logs appear immediately)
+      PYTHONUNBUFFERED: "1"
+    # Override the production CMD with uvicorn --reload for live reloading.
+    # --reload-dir /app restricts the file-watcher to the application tree,
+    # preventing spurious restarts from changes in mounted system directories.
+    command:
+      - conda
+      - run
+      - --no-capture-output
+      - -n
+      - amphion
+      - uvicorn
+      - models.web.api.main:app
+      - --host
+      - "0.0.0.0"
+      - --port
+      - "14555"
+      - --reload
+      - --reload-dir
+      - /app
+      - --log-level
+      - debug
+    # Relax the healthcheck timing for dev: slower startup is expected when
+    # uvicorn is watching a large source tree on first load.
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:14555/api/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 10
+      start_period: 180s
+    # Do not auto-restart on exit in dev — let the developer inspect logs.
+    restart: "no"
+
+  # ============================================================
+  # frontend — Development overrides for the Node.js dev server.
+  #
+  # In development the React source is already bind-mounted via
+  # docker-compose.yml (./models/web/react:/app).  The only
+  # override here is to make the CHOKIDAR_USEPOLLING env var
+  # available so hot-reload works reliably inside Docker on
+  # macOS / Windows hosts where inotify events may not propagate.
+  # ============================================================
+  frontend:
+    environment:
+      PORT: "14556"
+      NODE_ENV: development
+      # Point the dev proxy at the API container
+      REACT_APP_API_BASE_URL: "http://api:14555"
+      # Force Create React App's file watcher to use polling.
+      # Required on macOS / Windows Docker Desktop where inotify
+      # events do not propagate through the VM layer.
+      CHOKIDAR_USEPOLLING: "true"
+      CHOKIDAR_INTERVAL: "1000"
+    # Do not auto-restart in dev so error output stays visible.
+    restart: "no"
