@@ -208,9 +208,7 @@ class TTSInference(object):
             pred_audio_list = self.inference_for_batches()
             for it, wav in zip(self.test_dataset.metadata, pred_audio_list):
                 uid = it["Uid"]
-                audio_array = (
-                    wav.numpy() if isinstance(wav, torch.Tensor) else wav
-                )
+                audio_array = wav.numpy() if isinstance(wav, torch.Tensor) else wav
                 writer.add(
                     InferenceOutput(
                         uid=uid,
