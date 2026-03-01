@@ -18,7 +18,7 @@ from accelerate.logging import get_logger
 from torch.utils.data import DataLoader
 
 from models.vocoders.vocoder_inference import synthesis
-from utils.io import save_audio
+from utils.inference_output import InferenceOutput, InferenceOutputWriter
 from utils.util import load_config
 from utils.audio_slicer import is_silence
 
@@ -161,20 +161,35 @@ class BaseInference(object):
         )
 
         output_audio_files = []
+        writer = InferenceOutputWriter(
+            output_dir=self.args.output_dir,
+            model_name=type(self).__name__,
+            sample_rate=self.cfg.preprocess.sample_rate,
+        )
+
         for it, wav in zip(self.test_dataset.metadata, res):
             uid = it["Uid"]
             file = os.path.join(self.args.output_dir, f"{uid}.wav")
             output_audio_files.append(file)
 
             wav = wav.numpy(force=True)
-            save_audio(
-                file,
-                wav,
-                self.cfg.preprocess.sample_rate,
-                add_silence=False,
-                turn_up=not is_silence(wav, self.cfg.preprocess.sample_rate),
+
+            # Apply volume normalization for non-silent audio (mirrors save_audio turn_up behavior)
+            if not is_silence(wav, self.cfg.preprocess.sample_rate):
+                volume_peak = 0.9
+                ratio = volume_peak / max(wav.max(), abs(wav.min()))
+                wav = wav * ratio
+
+            writer.add(
+                InferenceOutput(
+                    uid=uid,
+                    audio=wav,
+                    sample_rate=self.cfg.preprocess.sample_rate,
+                )
             )
             os.remove(os.path.join(self.args.output_dir, f"{uid}.pt"))
+
+        writer.save_manifest()
 
         return sorted(output_audio_files)
 
