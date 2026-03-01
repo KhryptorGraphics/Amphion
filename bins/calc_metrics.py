@@ -122,16 +122,19 @@ def calc_metric(
             result[metric] = str(tp_total / (tp_total + (fp_total + fn_total) / 2))
         else:
             scores = []
+
+            if metric in ["wer", "cer"]:
+                model = whisper.load_model("large")
+                if torch.cuda.is_available():
+                    device = torch.device("cuda")
+                    model = model.to(device)
+
             for i in tqdm(range(len(audios_ref))):
                 audio_ref = audios_ref[i]
                 audio_deg = audios_deg[i]
 
                 if metric in ["wer", "cer"]:
-                    model = whisper.load_model("large")
                     mode = kwargs["intelligibility_mode"]
-                    if torch.cuda.is_available():
-                        device = torch.device("cuda")
-                        model = model.to(device)
 
                     if mode == "gt_audio":
                         kwargs["audio_ref"] = audio_ref
