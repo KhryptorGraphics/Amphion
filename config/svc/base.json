@@ -66,6 +66,13 @@
         "contentvec_dir": "contentvec",
         "wenet_dir": "wenet",
         "mert_dir": "mert",
+        // Pre-aligned (cached) feature directories
+        "whisper_aligned_dir": "whisper_aligned",
+        "contentvec_aligned_dir": "contentvec_aligned",
+        "wenet_aligned_dir": "wenet_aligned",
+        "mert_aligned_dir": "mert_aligned",
+        // Whether to use pre-computed aligned features instead of aligning at runtime
+        "use_cached_alignment": false,
         // Extract content features using dataloader
         "pin_memory": true,
         "num_workers": 8,
