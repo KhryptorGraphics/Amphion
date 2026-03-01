@@ -7,6 +7,7 @@ import os
 from huggingface_hub import snapshot_download
 
 from models.vc.vevo.vevo_utils import *
+from utils.inference_output import InferenceOutput, InferenceOutputWriter
 
 
 def vevo_timbre(content_wav_path, reference_wav_path, output_path):
@@ -15,7 +16,22 @@ def vevo_timbre(content_wav_path, reference_wav_path, output_path):
         timbre_ref_wav_path=reference_wav_path,
         flow_matching_steps=32,
     )
-    save_audio(gen_audio, output_path=output_path)
+    output_dir = os.path.dirname(os.path.abspath(output_path))
+    uid = os.path.splitext(os.path.basename(output_path))[0]
+    writer = InferenceOutputWriter(
+        output_dir=output_dir,
+        model_name="VevoTimbre",
+        sample_rate=24000,
+    )
+    writer.add(
+        InferenceOutput(
+            uid=uid,
+            audio=gen_audio,
+            sample_rate=24000,
+        )
+    )
+    manifest_path = writer.save_manifest()
+    print(f"Saved output to {output_dir}, manifest: {manifest_path}")
 
 
 if __name__ == "__main__":
