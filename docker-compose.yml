@@ -1,0 +1,100 @@
+# Copyright (c) 2023 Amphion.
+#
+# This source code is licensed under the MIT license found in the
+# LICENSE file in the root directory of this source tree.
+
+# Usage:
+#   docker compose up                      — start API service (NVIDIA GPU required)
+#   docker compose --profile frontend up   — start API + frontend dev server
+#   docker compose down                    — stop and remove containers
+#   docker compose build                   — build / rebuild images
+#
+# GPU prerequisite: nvidia-container-toolkit must be installed on the host.
+# See https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/install-guide.html
+
+services:
+  # ============================================================
+  # api — FastAPI backend built from the 'webui' Dockerfile stage.
+  #
+  # Serves the REST API on port 14555 and the pre-built React
+  # frontend as static files from the same container.
+  # ============================================================
+  api:
+    image: realamphion/amphion:webui
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: webui
+    ports:
+      - "14555:14555"
+    volumes:
+      # Generated audio output — bind-mounted so files are accessible on the host
+      - ./output:/app/output
+      # Pretrained HuggingFace model weights cache (named volume for persistence)
+      - pretrained:/app/pretrained
+      # Training checkpoints (named volume for persistence)
+      - ckpts:/app/ckpts
+    environment:
+      PYTHONPATH: /app
+    # NVIDIA GPU access via the Docker Compose V2 device reservations spec.
+    # This is equivalent to --gpus all / --runtime=nvidia on docker run.
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
+    healthcheck:
+      # Hits the /api/health endpoint (registered in models/web/api/main.py)
+      test: ["CMD", "curl", "-f", "http://localhost:14555/api/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 120s
+    restart: unless-stopped
+
+  # ============================================================
+  # frontend — Node.js 20 dev server with hot-reload (optional).
+  #
+  # In production the compiled React bundle is baked into the
+  # 'webui' image and served by the api container on port 14555.
+  # Enable this service only for active frontend development:
+  #
+  #   docker compose --profile frontend up
+  # ============================================================
+  frontend:
+    image: node:20-alpine
+    working_dir: /app
+    command: ["npm", "start"]
+    ports:
+      - "14556:14556"
+    volumes:
+      # Mount the React source so edits trigger hot-reload
+      - ./models/web/react:/app
+      # Isolate node_modules inside the container (avoids host/container conflicts)
+      - frontend_node_modules:/app/node_modules
+    environment:
+      PORT: "14556"
+      NODE_ENV: development
+      # Point the dev proxy at the API container
+      REACT_APP_API_BASE_URL: "http://api:14555"
+    depends_on:
+      api:
+        condition: service_healthy
+    restart: unless-stopped
+    profiles:
+      - frontend
+
+volumes:
+  # Pretrained model weights downloaded from HuggingFace (amphion/ namespace)
+  pretrained:
+    driver: local
+
+  # Training checkpoints produced by accelerate-based trainers
+  ckpts:
+    driver: local
+
+  # node_modules isolation for the optional frontend dev service
+  frontend_node_modules:
+    driver: local
