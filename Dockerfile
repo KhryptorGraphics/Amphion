@@ -102,6 +102,88 @@ WORKDIR /app
 
 CMD ["/bin/bash"]
 
+# ============================================================
+# Stage 4: training — full training environment (extends inference)
+# ============================================================
+FROM inference AS training
+
+# General utilities and data-processing packages
+RUN conda run --no-capture-output -n amphion pip install --no-cache-dir \
+        setuptools \
+        ruamel.yaml \
+        colorama \
+        easydict \
+        tabulate \
+        loguru \
+        json5 \
+        Cython \
+        unidecode \
+        inflect \
+        tgt \
+        librosa==0.9.1 \
+        matplotlib \
+        typeguard \
+        einops \
+        omegaconf \
+        hydra-core \
+        humanfriendly \
+        pandas \
+        munch
+
+# Training core: torchaudio/torchvision cu118 wheels + signal-processing libs
+RUN conda run --no-capture-output -n amphion pip install --no-cache-dir \
+        torchaudio==2.0.2+cu118 \
+        torchvision==0.15.2+cu118 \
+        --extra-index-url https://download.pytorch.org/whl/cu118 \
+    && conda run --no-capture-output -n amphion pip install --no-cache-dir \
+        tensorboard \
+        tensorboardX \
+        diffusers \
+        praat-parselmouth \
+        audiomentations \
+        pedalboard \
+        ffmpeg-python==0.2.0 \
+        pyworld \
+        diffsptk==1.0.1 \
+        nnAudio \
+        ptwt
+
+# Audio codec and generation packages
+RUN conda run --no-capture-output -n amphion pip install --no-cache-dir \
+        vocos \
+        speechtokenizer \
+        descript-audio-codec
+
+# Evaluation and metrics packages
+RUN conda run --no-capture-output -n amphion pip install --no-cache-dir \
+        torchmetrics \
+        pymcd \
+        openai-whisper \
+        frechet_audio_distance \
+        asteroid \
+        resemblyzer \
+        vector-quantize-pytorch==1.12.5
+
+# PESQ (from source — no stable PyPI wheel)
+RUN conda run --no-capture-output -n amphion pip install --no-cache-dir \
+        https://github.com/vBaiCai/python-pesq/archive/master.zip
+
+# fairseq (installed separately due to complex dependencies)
+RUN conda run --no-capture-output -n amphion pip install --no-cache-dir fairseq
+
+# lhotse (from git — requires unreleased features)
+RUN conda run --no-capture-output -n amphion pip install --no-cache-dir \
+        git+https://github.com/lhotse-speech/lhotse
+
+# Pin phonemizer and pypinyin to versions tested with Amphion
+RUN conda run --no-capture-output -n amphion pip install --no-cache-dir \
+        phonemizer==3.2.1 \
+        pypinyin==0.48.0
+
+WORKDIR /app
+
+CMD ["/bin/bash"]
+
 # *** Build targets ***
 # docker build --target python-base -t realamphion/amphion:python-base .
 # docker build --target inference   -t realamphion/amphion:inference .
