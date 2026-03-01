@@ -405,7 +405,7 @@ export default function MaskGCTPage() {
                 <CardTitle>Generated Audio</CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
-                <AudioPlayer src={generatedAudio} />
+                <AudioPlayer src={generatedAudio} showWaveform />
                 <Button
                   variant="outline"
                   className="w-full"
