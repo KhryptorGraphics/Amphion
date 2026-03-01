@@ -3,6 +3,7 @@
 # This source code is licensed under the MIT license found in the
 # LICENSE file in the root directory of this source tree.
 
+import concurrent.futures
 import os
 import sys
 import numpy as np
@@ -141,13 +142,29 @@ def calc_metric(
             fp_total = 0
             fn_total = 0
 
-            for i in tqdm(range(len(audios_ref))):
-                audio_ref = audios_ref[i]
-                audio_deg = audios_deg[i]
-                tp, fp, fn = METRIC_FUNC[metric](audio_ref, audio_deg, kwargs=kwargs)
-                tp_total += tp
-                fp_total += fp
-                fn_total += fn
+            if n_workers > 1:
+                task_args = [
+                    (audios_ref[i], audios_deg[i], kwargs)
+                    for i in range(len(audios_ref))
+                ]
+                with concurrent.futures.ProcessPoolExecutor(
+                    max_workers=n_workers
+                ) as executor:
+                    for tp, fp, fn in tqdm(
+                        executor.map(_compute_file_metric_v_uv_f1, task_args),
+                        total=len(task_args),
+                    ):
+                        tp_total += tp
+                        fp_total += fp
+                        fn_total += fn
+            else:
+                for i in tqdm(range(len(audios_ref))):
+                    audio_ref = audios_ref[i]
+                    audio_deg = audios_deg[i]
+                    tp, fp, fn = METRIC_FUNC[metric](audio_ref, audio_deg, kwargs=kwargs)
+                    tp_total += tp
+                    fp_total += fp
+                    fn_total += fn
 
             result[metric] = str(tp_total / (tp_total + (fp_total + fn_total) / 2))
         else:
@@ -159,11 +176,9 @@ def calc_metric(
                     device = torch.device("cuda")
                     model = model.to(device)
 
-            for i in tqdm(range(len(audios_ref))):
-                audio_ref = audios_ref[i]
-                audio_deg = audios_deg[i]
-
-                if metric in ["wer", "cer"]:
+                for i in tqdm(range(len(audios_ref))):
+                    audio_ref = audios_ref[i]
+                    audio_deg = audios_deg[i]
                     mode = kwargs["intelligibility_mode"]
 
                     if mode == "gt_audio":
@@ -180,14 +195,33 @@ def calc_metric(
                             model,
                             kwargs=kwargs,
                         )
-                else:
+                    if not np.isnan(score):
+                        scores.append(score)
+            elif n_workers > 1:
+                task_args = [
+                    (audios_ref[i], audios_deg[i], metric, kwargs)
+                    for i in range(len(audios_ref))
+                ]
+                with concurrent.futures.ProcessPoolExecutor(
+                    max_workers=n_workers
+                ) as executor:
+                    for score in tqdm(
+                        executor.map(_compute_file_metric, task_args),
+                        total=len(task_args),
+                    ):
+                        if score is not None:
+                            scores.append(score)
+            else:
+                for i in tqdm(range(len(audios_ref))):
+                    audio_ref = audios_ref[i]
+                    audio_deg = audios_deg[i]
                     score = METRIC_FUNC[metric](
                         audio_ref,
                         audio_deg,
                         kwargs=kwargs,
                     )
-                if not np.isnan(score):
-                    scores.append(score)
+                    if not np.isnan(score):
+                        scores.append(score)
 
             scores = np.array(scores)
             result["{}".format(metric)] = str(np.mean(scores))
