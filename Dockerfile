@@ -184,6 +184,37 @@ WORKDIR /app
 
 CMD ["/bin/bash"]
 
+# ============================================================
+# Stage 5: webui — Web UI layer (extends training)
+# ============================================================
+FROM training AS webui
+
+# Install Node.js 20 LTS
+RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash - \
+    && apt-get install -y --no-install-recommends nodejs \
+    && rm -rf /var/lib/apt/lists/*
+
+# Install FastAPI and uvicorn into the amphion environment
+RUN conda run --no-capture-output -n amphion pip install --no-cache-dir \
+        fastapi \
+        uvicorn[standard] \
+        python-multipart \
+        aiofiles
+
+# Copy React frontend source and build it (baked into the image)
+COPY models/web/react /app/models/web/react
+WORKDIR /app/models/web/react
+RUN npm ci && npm run build
+
+WORKDIR /app
+
+EXPOSE 14555
+EXPOSE 14556
+
+CMD ["conda", "run", "--no-capture-output", "-n", "amphion", \
+     "uvicorn", "models.web.api.main:app", \
+     "--host", "0.0.0.0", "--port", "14555"]
+
 # *** Build targets ***
 # docker build --target python-base -t realamphion/amphion:python-base .
 # docker build --target inference   -t realamphion/amphion:inference .
