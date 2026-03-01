@@ -74,6 +74,34 @@ WORKDIR /app
 
 CMD ["/bin/bash"]
 
+# ============================================================
+# Stage 3: inference — minimal inference environment
+# ============================================================
+FROM python-base AS inference
+
+# Install inference-only Python packages.
+# Note: torch 2.0.1 ships cu117/cu118 wheels; cu118 is CUDA 12.x-compatible
+# via CUDA backward-compatibility (no cu124 wheel exists for 2.0.1).
+RUN conda run --no-capture-output -n amphion pip install --no-cache-dir \
+        torch==2.0.1+cu118 \
+        --extra-index-url https://download.pytorch.org/whl/cu118 \
+    && conda run --no-capture-output -n amphion pip install --no-cache-dir \
+        transformers==4.41.2 \
+        accelerate==0.24.1 \
+        numpy==1.26.0 \
+        scipy==1.12.0 \
+        librosa \
+        encodec \
+        phonemizer \
+        g2p_en \
+        pypinyin \
+        tqdm \
+        gradio
+
+WORKDIR /app
+
+CMD ["/bin/bash"]
+
 # *** Build targets ***
 # docker build --target python-base -t realamphion/amphion:python-base .
 # docker build --target inference   -t realamphion/amphion:inference .
