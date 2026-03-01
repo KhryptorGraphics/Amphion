@@ -8,8 +8,6 @@
 .cache
 pyrightconfig.json
 
-# GitHub files
-.github
 
 # Byte-compiled / optimized / DLL / cached files
 __pycache__/
