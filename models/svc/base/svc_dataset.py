@@ -40,6 +40,12 @@ class SVCOfflineDataset(BaseOfflineDataset):
             self.utt2whisper_path = load_content_feature_path(
                 self.metadata, cfg.preprocess.processed_dir, cfg.preprocess.whisper_dir
             )
+            if cfg.preprocess.use_cached_alignment:
+                self.utt2whisper_aligned_path = load_content_feature_path(
+                    self.metadata,
+                    cfg.preprocess.processed_dir,
+                    cfg.preprocess.whisper_aligned_dir,
+                )
 
         if cfg.model.condition_encoder.use_contentvec:
             self.contentvec_aligner = ContentvecExtractor(self.cfg)
@@ -48,16 +54,34 @@ class SVCOfflineDataset(BaseOfflineDataset):
                 cfg.preprocess.processed_dir,
                 cfg.preprocess.contentvec_dir,
             )
+            if cfg.preprocess.use_cached_alignment:
+                self.utt2contentVec_aligned_path = load_content_feature_path(
+                    self.metadata,
+                    cfg.preprocess.processed_dir,
+                    cfg.preprocess.contentvec_aligned_dir,
+                )
 
         if cfg.model.condition_encoder.use_mert:
             self.utt2mert_path = load_content_feature_path(
                 self.metadata, cfg.preprocess.processed_dir, cfg.preprocess.mert_dir
             )
+            if cfg.preprocess.use_cached_alignment:
+                self.utt2mert_aligned_path = load_content_feature_path(
+                    self.metadata,
+                    cfg.preprocess.processed_dir,
+                    cfg.preprocess.mert_aligned_dir,
+                )
         if cfg.model.condition_encoder.use_wenet:
             self.wenet_aligner = WenetExtractor(self.cfg)
             self.utt2wenet_path = load_content_feature_path(
                 self.metadata, cfg.preprocess.processed_dir, cfg.preprocess.wenet_dir
             )
+            if cfg.preprocess.use_cached_alignment:
+                self.utt2wenet_aligned_path = load_content_feature_path(
+                    self.metadata,
+                    cfg.preprocess.processed_dir,
+                    cfg.preprocess.wenet_aligned_dir,
+                )
 
     def __getitem__(self, index):
         single_feature = BaseOfflineDataset.__getitem__(self, index)
@@ -69,36 +93,60 @@ class SVCOfflineDataset(BaseOfflineDataset):
 
         if self.cfg.model.condition_encoder.use_whisper:
             assert "target_len" in single_feature.keys()
-            aligned_whisper_feat = (
-                self.whisper_aligner.offline_resolution_transformation(
-                    np.load(self.utt2whisper_path[utt]), single_feature["target_len"]
+            if self.cfg.preprocess.use_cached_alignment and os.path.exists(
+                self.utt2whisper_aligned_path[utt]
+            ):
+                aligned_whisper_feat = np.load(self.utt2whisper_aligned_path[utt])
+            else:
+                aligned_whisper_feat = (
+                    self.whisper_aligner.offline_resolution_transformation(
+                        np.load(self.utt2whisper_path[utt]),
+                        single_feature["target_len"],
+                    )
                 )
-            )
             single_feature["whisper_feat"] = aligned_whisper_feat
 
         if self.cfg.model.condition_encoder.use_contentvec:
             assert "target_len" in single_feature.keys()
-            aligned_contentvec = (
-                self.contentvec_aligner.offline_resolution_transformation(
-                    np.load(self.utt2contentVec_path[utt]), single_feature["target_len"]
+            if self.cfg.preprocess.use_cached_alignment and os.path.exists(
+                self.utt2contentVec_aligned_path[utt]
+            ):
+                aligned_contentvec = np.load(self.utt2contentVec_aligned_path[utt])
+            else:
+                aligned_contentvec = (
+                    self.contentvec_aligner.offline_resolution_transformation(
+                        np.load(self.utt2contentVec_path[utt]),
+                        single_feature["target_len"],
+                    )
                 )
-            )
             single_feature["contentvec_feat"] = aligned_contentvec
 
         if self.cfg.model.condition_encoder.use_mert:
             assert "target_len" in single_feature.keys()
-            aligned_mert_feat = align_content_feature_length(
-                np.load(self.utt2mert_path[utt]),
-                single_feature["target_len"],
-                source_hop=self.cfg.preprocess.mert_hop_size,
-            )
+            if self.cfg.preprocess.use_cached_alignment and os.path.exists(
+                self.utt2mert_aligned_path[utt]
+            ):
+                aligned_mert_feat = np.load(self.utt2mert_aligned_path[utt])
+            else:
+                aligned_mert_feat = align_content_feature_length(
+                    np.load(self.utt2mert_path[utt]),
+                    single_feature["target_len"],
+                    source_hop=self.cfg.preprocess.mert_hop_size,
+                )
             single_feature["mert_feat"] = aligned_mert_feat
 
         if self.cfg.model.condition_encoder.use_wenet:
             assert "target_len" in single_feature.keys()
-            aligned_wenet_feat = self.wenet_aligner.offline_resolution_transformation(
-                np.load(self.utt2wenet_path[utt]), single_feature["target_len"]
-            )
+            if self.cfg.preprocess.use_cached_alignment and os.path.exists(
+                self.utt2wenet_aligned_path[utt]
+            ):
+                aligned_wenet_feat = np.load(self.utt2wenet_aligned_path[utt])
+            else:
+                aligned_wenet_feat = (
+                    self.wenet_aligner.offline_resolution_transformation(
+                        np.load(self.utt2wenet_path[utt]), single_feature["target_len"]
+                    )
+                )
             single_feature["wenet_feat"] = aligned_wenet_feat
 
         # print(single_feature.keys())
@@ -427,6 +475,12 @@ class SVCTestDataset(BaseTestDataset):
             self.utt2whisper_path = load_content_feature_path(
                 self.metadata, cfg.preprocess.processed_dir, cfg.preprocess.whisper_dir
             )
+            if cfg.preprocess.use_cached_alignment:
+                self.utt2whisper_aligned_path = load_content_feature_path(
+                    self.metadata,
+                    cfg.preprocess.processed_dir,
+                    cfg.preprocess.whisper_aligned_dir,
+                )
 
         if cfg.model.condition_encoder.use_contentvec:
             self.contentvec_aligner = ContentvecExtractor(cfg)
@@ -435,16 +489,34 @@ class SVCTestDataset(BaseTestDataset):
                 cfg.preprocess.processed_dir,
                 cfg.preprocess.contentvec_dir,
             )
+            if cfg.preprocess.use_cached_alignment:
+                self.utt2contentVec_aligned_path = load_content_feature_path(
+                    self.metadata,
+                    cfg.preprocess.processed_dir,
+                    cfg.preprocess.contentvec_aligned_dir,
+                )
 
         if cfg.model.condition_encoder.use_mert:
             self.utt2mert_path = load_content_feature_path(
                 self.metadata, cfg.preprocess.processed_dir, cfg.preprocess.mert_dir
             )
+            if cfg.preprocess.use_cached_alignment:
+                self.utt2mert_aligned_path = load_content_feature_path(
+                    self.metadata,
+                    cfg.preprocess.processed_dir,
+                    cfg.preprocess.mert_aligned_dir,
+                )
         if cfg.model.condition_encoder.use_wenet:
             self.wenet_aligner = WenetExtractor(cfg)
             self.utt2wenet_path = load_content_feature_path(
                 self.metadata, cfg.preprocess.processed_dir, cfg.preprocess.wenet_dir
             )
+            if cfg.preprocess.use_cached_alignment:
+                self.utt2wenet_aligned_path = load_content_feature_path(
+                    self.metadata,
+                    cfg.preprocess.processed_dir,
+                    cfg.preprocess.wenet_aligned_dir,
+                )
 
     def __getitem__(self, index):
         single_feature = {}
@@ -522,36 +594,60 @@ class SVCTestDataset(BaseTestDataset):
         ######### Get Content Features Item #########
         if self.cfg.model.condition_encoder.use_whisper:
             assert "target_len" in single_feature.keys()
-            aligned_whisper_feat = (
-                self.whisper_aligner.offline_resolution_transformation(
-                    np.load(self.utt2whisper_path[utt]), single_feature["target_len"]
+            if self.cfg.preprocess.use_cached_alignment and os.path.exists(
+                self.utt2whisper_aligned_path[utt]
+            ):
+                aligned_whisper_feat = np.load(self.utt2whisper_aligned_path[utt])
+            else:
+                aligned_whisper_feat = (
+                    self.whisper_aligner.offline_resolution_transformation(
+                        np.load(self.utt2whisper_path[utt]),
+                        single_feature["target_len"],
+                    )
                 )
-            )
             single_feature["whisper_feat"] = aligned_whisper_feat
 
         if self.cfg.model.condition_encoder.use_contentvec:
             assert "target_len" in single_feature.keys()
-            aligned_contentvec = (
-                self.contentvec_aligner.offline_resolution_transformation(
-                    np.load(self.utt2contentVec_path[utt]), single_feature["target_len"]
+            if self.cfg.preprocess.use_cached_alignment and os.path.exists(
+                self.utt2contentVec_aligned_path[utt]
+            ):
+                aligned_contentvec = np.load(self.utt2contentVec_aligned_path[utt])
+            else:
+                aligned_contentvec = (
+                    self.contentvec_aligner.offline_resolution_transformation(
+                        np.load(self.utt2contentVec_path[utt]),
+                        single_feature["target_len"],
+                    )
                 )
-            )
             single_feature["contentvec_feat"] = aligned_contentvec
 
         if self.cfg.model.condition_encoder.use_mert:
             assert "target_len" in single_feature.keys()
-            aligned_mert_feat = align_content_feature_length(
-                np.load(self.utt2mert_path[utt]),
-                single_feature["target_len"],
-                source_hop=self.cfg.preprocess.mert_hop_size,
-            )
+            if self.cfg.preprocess.use_cached_alignment and os.path.exists(
+                self.utt2mert_aligned_path[utt]
+            ):
+                aligned_mert_feat = np.load(self.utt2mert_aligned_path[utt])
+            else:
+                aligned_mert_feat = align_content_feature_length(
+                    np.load(self.utt2mert_path[utt]),
+                    single_feature["target_len"],
+                    source_hop=self.cfg.preprocess.mert_hop_size,
+                )
             single_feature["mert_feat"] = aligned_mert_feat
 
         if self.cfg.model.condition_encoder.use_wenet:
             assert "target_len" in single_feature.keys()
-            aligned_wenet_feat = self.wenet_aligner.offline_resolution_transformation(
-                np.load(self.utt2wenet_path[utt]), single_feature["target_len"]
-            )
+            if self.cfg.preprocess.use_cached_alignment and os.path.exists(
+                self.utt2wenet_aligned_path[utt]
+            ):
+                aligned_wenet_feat = np.load(self.utt2wenet_aligned_path[utt])
+            else:
+                aligned_wenet_feat = (
+                    self.wenet_aligner.offline_resolution_transformation(
+                        np.load(self.utt2wenet_path[utt]), single_feature["target_len"]
+                    )
+                )
             single_feature["wenet_feat"] = aligned_wenet_feat
 
         return single_feature
