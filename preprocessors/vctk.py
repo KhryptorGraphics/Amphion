@@ -11,6 +11,7 @@ from glob import glob
 from collections import defaultdict
 
 from utils.util import has_existed
+from preprocessors.dataset_validator import validate_file_exists
 
 
 def get_lines(file):
@@ -125,7 +126,7 @@ def main(output_path, dataset_path, TEST_NUM_OF_EVERY_SPEAKER=3):
             }
             res["Path"] = "{}/{}_{}.flac".format(speaker, speaker, chosen_uid)
             res["Path"] = os.path.join(vctk_dir, "wav48_silence_trimmed", res["Path"])
-            assert os.path.exists(res["Path"])
+            validate_file_exists(res["Path"], raise_on_missing=True)
 
             duration = librosa.get_duration(filename=res["Path"])
             res["Duration"] = duration
