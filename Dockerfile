@@ -215,16 +215,47 @@ CMD ["conda", "run", "--no-capture-output", "-n", "amphion", \
      "uvicorn", "models.web.api.main:app", \
      "--host", "0.0.0.0", "--port", "14555"]
 
-# *** Build targets ***
+# =============================================================
+# Build & Run Reference
+# =============================================================
+#
+# This Dockerfile defines five multi-stage build targets:
+#   base        — Ubuntu 22.04 + CUDA 12.4 + system packages
+#   python-base — base + Miniconda + Python 3.10 amphion env
+#   inference   — python-base + minimal inference packages (torch, transformers, gradio)
+#   training    — inference + full training stack (torchaudio, fairseq, evaluation libs, …)
+#   webui       — training + Node.js 20 + FastAPI + built React frontend
+#
+# *** Build individual targets ***
 # docker build --target python-base -t realamphion/amphion:python-base .
 # docker build --target inference   -t realamphion/amphion:inference .
 # docker build --target training    -t realamphion/amphion:training .
 # docker build --target webui       -t realamphion/amphion:webui .
-
-# *** Run ***
-# cd Amphion
-# docker run --runtime=nvidia --gpus all -it -v .:/app realamphion/amphion:inference
-
+#
+# *** Quick inference run (GPU required) ***
+# docker run --rm --gpus all \
+#     -v "$(pwd)":/app \
+#     -v hf_cache:/root/.cache/huggingface \
+#     -v "$(pwd)/output":/app/output \
+#     -e HF_HOME=/root/.cache/huggingface \
+#     -e PYTHONPATH=/app \
+#     -w /app \
+#     realamphion/amphion:inference \
+#     conda run --no-capture-output -n amphion \
+#         python -m models.tts.maskgct.maskgct_inference
+#
+# *** Launch full web UI via docker-compose ***
+# docker compose pull
+# docker compose up -d
+# # Web UI at http://localhost:14555
+#
+# *** Interactive shell ***
+# docker run --rm --gpus all -it -v "$(pwd)":/app realamphion/amphion:inference
+#
 # *** Push and release ***
 # docker login
-# docker push realamphion/amphion
+# docker push realamphion/amphion:inference
+# docker push realamphion/amphion:training
+# docker push realamphion/amphion:webui
+#
+# See docs/docker-quickstart.md for full documentation.

@@ -156,6 +156,41 @@ docker run --runtime=nvidia --gpus all -it -v .:/app realamphion/amphion
 ```
 Mount dataset by argument `-v` is necessary when using Docker. Please refer to [Mount dataset in Docker container](egs/datasets/docker.md) and [Docker Docs](https://docs.docker.com/engine/reference/commandline/container_run/#volume) for more details.
 
+## 🐳 Quick Start with Docker
+
+**Prerequisites:** [Docker Engine 25+](https://docs.docker.com/engine/install/) (or Docker Desktop 4.28+), an NVIDIA GPU with driver ≥ 525.60, and [nvidia-container-toolkit](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/install-guide.html).
+
+### Run Inference (GPU)
+
+```bash
+git clone https://github.com/open-mmlab/Amphion.git
+cd Amphion
+
+# MaskGCT zero-shot TTS — output audio lands in ./output/
+docker run --rm --gpus all \
+    -v "$(pwd)":/app \
+    -v hf_cache:/root/.cache/huggingface \
+    -v "$(pwd)/output":/app/output \
+    -e HF_HOME=/root/.cache/huggingface \
+    -e PYTHONPATH=/app \
+    -w /app \
+    realamphion/amphion:inference \
+    conda run --no-capture-output -n amphion \
+        python -m models.tts.maskgct.maskgct_inference
+```
+
+### Launch Full Web UI
+
+```bash
+git clone https://github.com/open-mmlab/Amphion.git
+cd Amphion
+
+docker compose pull
+docker compose up -d
+# Web UI available at http://localhost:14555
+```
+
+> **Full documentation** (image tags, volume mounts, environment variables, dev mode, troubleshooting): [docs/docker-quickstart.md](docs/docker-quickstart.md)
 
 ## 🐍 Usage in Python
 
