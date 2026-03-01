@@ -5,318 +5,187 @@
 
 import json
 import os
-from dataclasses import dataclass, field
-from typing import Dict, List, Optional
 
 
-DEFAULT_REQUIRED_FIELDS = ["Dataset", "Uid", "Path", "Duration"]
-DEFAULT_SPLITS = ["train", "test", "valid"]
+_DEFAULT_REQUIRED_FIELDS = ["Dataset", "Singer", "Uid", "Path", "Duration"]
+_DEFAULT_SPLITS = ["train", "test", "valid"]
 
 
-@dataclass
-class ValidationResult:
-    """Result of a dataset validation pass.
+def validate_metadata_entry(entry, required_fields=None):
+    """Validate a single metadata entry dict from a preprocessed JSON file.
 
-    Attributes:
-        is_valid: True when no errors were found (warnings are permitted).
-        errors: Fatal problems that indicate corrupt or unusable data.
-        warnings: Non-fatal issues worth reviewing (e.g. very short clips).
-        stats: Summary statistics collected during validation.
-    """
-
-    is_valid: bool = True
-    errors: List[str] = field(default_factory=list)
-    warnings: List[str] = field(default_factory=list)
-    stats: Dict = field(default_factory=dict)
-
-
-def validate_metadata_integrity(
-    utterances: List[dict],
-    required_fields: Optional[List[str]] = None,
-) -> ValidationResult:
-    """Check that every utterance dict contains all required fields with non-None values.
+    Checks that all required fields are present and non-empty.
 
     Args:
-        utterances: List of utterance dicts loaded from a metadata JSON file.
-        required_fields: Fields that must be present and non-None in each entry.
-            Defaults to DEFAULT_REQUIRED_FIELDS.
+        entry (dict): A metadata entry as produced by preprocessors.
+        required_fields (list, optional): Fields that must be present and non-empty.
+            Defaults to ['Dataset', 'Singer', 'Uid', 'Path', 'Duration'].
 
     Returns:
-        ValidationResult with errors for each missing or None-valued field.
+        tuple: (is_valid, errors) where is_valid is bool and errors is a list of
+            string descriptions of any validation failures.
     """
     if required_fields is None:
-        required_fields = DEFAULT_REQUIRED_FIELDS
+        required_fields = _DEFAULT_REQUIRED_FIELDS
 
-    result = ValidationResult()
-    missing_field_counts: Dict[str, int] = {f: 0 for f in required_fields}
+    errors = []
 
-    for idx, utt in enumerate(utterances):
-        uid = utt.get("Uid", f"<index {idx}>")
-        for field_name in required_fields:
-            if field_name not in utt or utt[field_name] is None:
-                result.errors.append(
-                    f"Utterance '{uid}': missing or None value for required field '{field_name}'"
-                )
-                missing_field_counts[field_name] += 1
+    for field in required_fields:
+        if field not in entry:
+            errors.append("Missing required field: '{}'".format(field))
+        elif entry[field] is None:
+            errors.append("Field '{}' is None".format(field))
+        elif isinstance(entry[field], str) and entry[field].strip() == "":
+            errors.append("Field '{}' is empty string".format(field))
 
-    if result.errors:
-        result.is_valid = False
-
-    result.stats["total_utterances"] = len(utterances)
-    result.stats["missing_field_counts"] = {
-        k: v for k, v in missing_field_counts.items() if v > 0
-    }
-
-    return result
+    is_valid = len(errors) == 0
+    return is_valid, errors
 
 
-def validate_file_existence(utterances: List[dict]) -> ValidationResult:
-    """Check that the audio file path in each utterance exists on disk.
+def validate_file_exists(path, raise_on_missing=False):
+    """Check whether a file exists at the given path.
 
     Args:
-        utterances: List of utterance dicts, each expected to have a 'Path' key.
+        path (str): Filesystem path to check.
+        raise_on_missing (bool): If True, raises FileNotFoundError when the file
+            does not exist. Defaults to False.
 
     Returns:
-        ValidationResult with errors for every missing file.
+        bool: True if the file exists, False otherwise (when raise_on_missing=False).
+
+    Raises:
+        FileNotFoundError: If the file does not exist and raise_on_missing=True.
     """
-    result = ValidationResult()
-    missing_files = []
-
-    for idx, utt in enumerate(utterances):
-        uid = utt.get("Uid", f"<index {idx}>")
-        path = utt.get("Path")
-        if path is None:
-            result.errors.append(
-                f"Utterance '{uid}': 'Path' field is missing, cannot check file existence"
-            )
-        elif not os.path.exists(path):
-            result.errors.append(
-                f"Utterance '{uid}': file not found at path '{path}'"
-            )
-            missing_files.append(path)
-
-    if result.errors:
-        result.is_valid = False
-
-    result.stats["total_utterances"] = len(utterances)
-    result.stats["missing_files_count"] = len(missing_files)
-
-    return result
+    exists = os.path.exists(path)
+    if not exists and raise_on_missing:
+        raise FileNotFoundError("File not found: {}".format(path))
+    return exists
 
 
-def validate_audio_properties(
-    utterances: List[dict],
-    min_duration: Optional[float] = None,
-    max_duration: Optional[float] = None,
-) -> ValidationResult:
-    """Check Duration values for each utterance.
-
-    Errors are raised for non-positive (zero or negative) durations.
-    Warnings are raised when a duration falls outside [min_duration, max_duration].
+def validate_audio_duration(duration, min_duration=0.0, max_duration=None):
+    """Validate that an audio duration falls within an acceptable range.
 
     Args:
-        utterances: List of utterance dicts, each expected to have a 'Duration' key.
-        min_duration: Optional lower bound (seconds). Clips shorter than this get a warning.
-        max_duration: Optional upper bound (seconds). Clips longer than this get a warning.
+        duration (float): Duration in seconds.
+        min_duration (float): Minimum acceptable duration (inclusive). Defaults to 0.0.
+        max_duration (float, optional): Maximum acceptable duration (inclusive).
+            If None, no upper bound is enforced. Defaults to None.
 
     Returns:
-        ValidationResult with errors for invalid durations and warnings for suspicious ones.
+        bool: True if the duration is within the specified range, False otherwise.
     """
-    result = ValidationResult()
-    durations = []
-
-    for idx, utt in enumerate(utterances):
-        uid = utt.get("Uid", f"<index {idx}>")
-        duration = utt.get("Duration")
-
-        if duration is None:
-            result.errors.append(
-                f"Utterance '{uid}': 'Duration' field is missing"
-            )
-            result.is_valid = False
-            continue
-
-        try:
-            duration = float(duration)
-        except (TypeError, ValueError):
-            result.errors.append(
-                f"Utterance '{uid}': 'Duration' is not a valid number (got {duration!r})"
-            )
-            result.is_valid = False
-            continue
-
-        if duration <= 0:
-            result.errors.append(
-                f"Utterance '{uid}': 'Duration' must be positive (got {duration})"
-            )
-            result.is_valid = False
-        else:
-            durations.append(duration)
-            if min_duration is not None and duration < min_duration:
-                result.warnings.append(
-                    f"Utterance '{uid}': duration {duration:.3f}s is below min_duration {min_duration}s"
-                )
-            if max_duration is not None and duration > max_duration:
-                result.warnings.append(
-                    f"Utterance '{uid}': duration {duration:.3f}s exceeds max_duration {max_duration}s"
-                )
-
-    result.stats["total_utterances"] = len(utterances)
-    if durations:
-        result.stats["duration_min"] = round(min(durations), 4)
-        result.stats["duration_max"] = round(max(durations), 4)
-        result.stats["duration_total_hours"] = round(sum(durations) / 3600, 4)
-
-    return result
+    if duration < min_duration:
+        return False
+    if max_duration is not None and duration > max_duration:
+        return False
+    return True
 
 
-def validate_metadata_file(
-    json_path: str,
-    required_fields: Optional[List[str]] = None,
-    check_files: bool = True,
-    min_duration: Optional[float] = None,
-    max_duration: Optional[float] = None,
-) -> ValidationResult:
-    """Load a metadata JSON file and run all validation checks.
+def validate_dataset_split(json_path, required_fields=None, check_files=True):
+    """Load and validate all entries in a preprocessed split JSON file.
 
     Args:
-        json_path: Path to the metadata JSON file (e.g. train.json).
-        required_fields: Fields required in each utterance entry. Defaults to
-            DEFAULT_REQUIRED_FIELDS.
-        check_files: When True, verify that every 'Path' exists on disk.
-        min_duration: Optional minimum clip duration in seconds for warnings.
-        max_duration: Optional maximum clip duration in seconds for warnings.
+        json_path (str): Path to a train.json, test.json, or valid.json file.
+        required_fields (list, optional): Fields required in each entry.
+            Defaults to ['Dataset', 'Singer', 'Uid', 'Path', 'Duration'].
+        check_files (bool): If True, also checks that each entry's 'Path' exists
+            on disk. Defaults to True.
 
     Returns:
-        A merged ValidationResult aggregating all individual check results.
+        tuple: (valid_count, errors_list) where valid_count is the number of fully
+            valid entries and errors_list is a list of (index, uid, errors) tuples
+            describing any validation failures.
     """
-    result = ValidationResult()
+    if required_fields is None:
+        required_fields = _DEFAULT_REQUIRED_FIELDS
 
     if not os.path.exists(json_path):
-        result.errors.append(f"Metadata file not found: '{json_path}'")
-        result.is_valid = False
-        return result
+        return 0, [(-1, None, ["Split file not found: {}".format(json_path)])]
 
-    try:
-        with open(json_path, "r", encoding="utf-8") as f:
-            utterances = json.load(f)
-    except json.JSONDecodeError as exc:
-        result.errors.append(f"Failed to parse JSON from '{json_path}': {exc}")
-        result.is_valid = False
-        return result
+    with open(json_path, "r", encoding="utf-8") as f:
+        entries = json.load(f)
 
-    if not isinstance(utterances, list):
-        result.errors.append(
-            f"Expected a JSON list in '{json_path}', got {type(utterances).__name__}"
-        )
-        result.is_valid = False
-        return result
+    valid_count = 0
+    errors_list = []
 
-    # Run individual validation checks and merge results
-    integrity_result = validate_metadata_integrity(utterances, required_fields)
-    audio_result = validate_audio_properties(utterances, min_duration, max_duration)
+    for idx, entry in enumerate(entries):
+        uid = entry.get("Uid", None)
+        entry_errors = []
 
-    _merge_result(result, integrity_result)
-    _merge_result(result, audio_result)
+        is_valid, field_errors = validate_metadata_entry(entry, required_fields)
+        entry_errors.extend(field_errors)
 
-    if check_files:
-        file_result = validate_file_existence(utterances)
-        _merge_result(result, file_result)
+        if check_files and "Path" in entry and entry["Path"]:
+            if not validate_file_exists(entry["Path"]):
+                entry_errors.append("File not found: {}".format(entry["Path"]))
 
-    # Consolidate summary stats
-    total = len(utterances)
-    result.stats["total_utterances"] = total
-    result.stats["json_path"] = json_path
+        if len(entry_errors) == 0:
+            valid_count += 1
+        else:
+            errors_list.append((idx, uid, entry_errors))
 
-    if "duration_min" in audio_result.stats:
-        result.stats["duration_min"] = audio_result.stats["duration_min"]
-    if "duration_max" in audio_result.stats:
-        result.stats["duration_max"] = audio_result.stats["duration_max"]
-    if "duration_total_hours" in audio_result.stats:
-        result.stats["duration_total_hours"] = audio_result.stats["duration_total_hours"]
-    if check_files and "missing_files_count" in result.stats:
-        pass  # already merged from file_result
-
-    _print_summary(json_path, result)
-
-    return result
+    return valid_count, errors_list
 
 
-def validate_dataset(
-    processed_dir: str,
-    dataset_name: str,
-    splits: Optional[List[str]] = None,
-    required_fields: Optional[List[str]] = None,
-    check_files: bool = True,
-    min_duration: Optional[float] = None,
-    max_duration: Optional[float] = None,
-) -> Dict[str, ValidationResult]:
-    """Validate all metadata splits for a preprocessed dataset.
+def validate_dataset(output_dir, dataset_name, splits=None):
+    """Validate all splits for a preprocessed dataset directory.
 
-    Looks for <split>.json files inside `processed_dir/<dataset_name>/` and
-    runs full validation on each split that exists.
+    Expects split files at: output_dir/dataset_name/{split}.json
 
     Args:
-        processed_dir: Root directory containing preprocessed dataset folders.
-        dataset_name: Name of the dataset subdirectory (e.g. 'libritts').
-        splits: List of split names to check. Defaults to ['train', 'test', 'valid'].
-        required_fields: Fields required per utterance. Defaults to DEFAULT_REQUIRED_FIELDS.
-        check_files: When True, verify every 'Path' exists on disk.
-        min_duration: Optional minimum clip duration in seconds for warnings.
-        max_duration: Optional maximum clip duration in seconds for warnings.
+        output_dir (str): Base output directory (same as the output_path used by
+            preprocessors).
+        dataset_name (str): Name of the dataset subdirectory (e.g., 'libritts').
+        splits (list, optional): Split names to validate. Defaults to
+            ['train', 'test', 'valid'].
 
     Returns:
-        A dict mapping split name to its ValidationResult.  Splits whose JSON
-        file does not exist are omitted from the result.
+        dict: Mapping from split name to a dict with keys:
+            - 'valid_count' (int): Number of valid entries.
+            - 'total_count' (int): Total number of entries.
+            - 'errors' (list): List of (index, uid, errors) tuples for invalid entries.
+            - 'file_found' (bool): Whether the split JSON file was found.
     """
     if splits is None:
-        splits = DEFAULT_SPLITS
+        splits = _DEFAULT_SPLITS
 
-    dataset_dir = os.path.join(processed_dir, dataset_name)
-    results: Dict[str, ValidationResult] = {}
+    dataset_dir = os.path.join(output_dir, dataset_name)
+    results = {}
+
+    print("-" * 10)
+    print("Validating dataset: {}\n".format(dataset_name))
 
     for split in splits:
-        json_path = os.path.join(dataset_dir, f"{split}.json")
-        if not os.path.exists(json_path):
+        json_path = os.path.join(dataset_dir, "{}.json".format(split))
+        file_found = os.path.exists(json_path)
+
+        if not file_found:
+            print("[{}] Split file not found: {}".format(split, json_path))
+            results[split] = {
+                "valid_count": 0,
+                "total_count": 0,
+                "errors": [(-1, None, ["Split file not found: {}".format(json_path)])],
+                "file_found": False,
+            }
             continue
-        results[split] = validate_metadata_file(
-            json_path,
-            required_fields=required_fields,
-            check_files=check_files,
-            min_duration=min_duration,
-            max_duration=max_duration,
+
+        with open(json_path, "r", encoding="utf-8") as f:
+            entries = json.load(f)
+        total_count = len(entries)
+
+        valid_count, errors_list = validate_dataset_split(json_path)
+
+        results[split] = {
+            "valid_count": valid_count,
+            "total_count": total_count,
+            "errors": errors_list,
+            "file_found": True,
+        }
+
+        print(
+            "[{}] {}/{} entries valid, {} errors".format(
+                split, valid_count, total_count, len(errors_list)
+            )
         )
 
     return results
-
-
-# ---------------------------------------------------------------------------
-# Internal helpers
-# ---------------------------------------------------------------------------
-
-
-def _merge_result(target: ValidationResult, source: ValidationResult) -> None:
-    """Merge errors, warnings, and validity from *source* into *target* in-place."""
-    target.errors.extend(source.errors)
-    target.warnings.extend(source.warnings)
-    if not source.is_valid:
-        target.is_valid = False
-    target.stats.update(source.stats)
-
-
-def _print_summary(json_path: str, result: ValidationResult) -> None:
-    """Print a concise human-readable summary of the validation result."""
-    total = result.stats.get("total_utterances", "?")
-    missing = result.stats.get("missing_files_count", 0)
-    dur_min = result.stats.get("duration_min", "N/A")
-    dur_max = result.stats.get("duration_max", "N/A")
-    hours = result.stats.get("duration_total_hours", "N/A")
-
-    status = "PASS" if result.is_valid else "FAIL"
-    print(f"[{status}] {json_path}")
-    print(f"  Utterances : {total}")
-    print(f"  Errors     : {len(result.errors)}")
-    print(f"  Warnings   : {len(result.warnings)}")
-    print(f"  Missing files: {missing}")
-    if dur_min != "N/A":
-        print(f"  Duration   : {dur_min}s – {dur_max}s  ({hours} hours total)")
