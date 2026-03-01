@@ -10,8 +10,7 @@ from datetime import datetime, timezone
 from typing import Optional
 
 import numpy as np
-import torch
-import torchaudio
+import soundfile as sf
 
 
 @dataclass
@@ -68,22 +67,18 @@ class InferenceOutputWriter:
         audio_filename = output.uid + ".wav"
         audio_path = os.path.join(self.output_dir, audio_filename)
 
-        # Normalise to a 2-D float32 tensor [1, samples] – same approach as
-        # utils/io.py save_audio().
-        waveform = torch.as_tensor(output.audio, dtype=torch.float32, device="cpu")
-        if waveform.dim() == 1:
-            waveform = waveform.unsqueeze(0)
-        elif waveform.size(0) != 1:
-            # Stereo to mono
-            waveform = torch.mean(waveform, dim=0, keepdim=True)
+        # Normalise to a 1-D float32 numpy array [samples].
+        waveform = np.asarray(output.audio, dtype=np.float32)
+        if waveform.ndim == 2:
+            if waveform.shape[0] == 1:
+                # [1, samples] -> [samples]
+                waveform = waveform[0]
+            else:
+                # Stereo to mono
+                waveform = waveform.mean(axis=0)
 
-        torchaudio.save(
-            audio_path,
-            waveform,
-            output.sample_rate,
-            encoding="PCM_S",
-            bits_per_sample=16,
-        )
+        # Write as 16-bit PCM WAV using soundfile (stable across torchaudio versions).
+        sf.write(audio_path, waveform, output.sample_rate, subtype="PCM_16")
 
         duration_seconds = waveform.shape[-1] / output.sample_rate
 
