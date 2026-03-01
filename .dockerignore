@@ -1,0 +1,64 @@
+# Model checkpoints and large binary files
+ckpts/
+data/
+pretrained/
+
+# Python artifacts
+*.pt
+*.ckpt
+*.npy
+*.pkl
+*.h5
+*.bin
+
+# Audio files
+*.wav
+*.flac
+*.mp3
+*.ogg
+
+# Node.js
+node_modules/
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# Git
+.git/
+.gitignore
+
+# IDE and editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Build artifacts
+build/
+dist/
+*.egg-info/
+
+# Logs
+*.log
+logs/
+
+# Jupyter notebooks checkpoints
+.ipynb_checkpoints/
+
+# Test artifacts
+.pytest_cache/
+.coverage
+htmlcov/
