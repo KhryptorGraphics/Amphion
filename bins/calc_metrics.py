@@ -66,6 +66,7 @@ def calc_metric(
     deg_dir,
     dump_dir,
     metrics,
+    n_workers=1,
     **kwargs,
 ):
     result = defaultdict()
@@ -248,6 +249,12 @@ if __name__ == "__main__":
         default="english",
         help="(Optional)['english','chinese']",
     )
+    parser.add_argument(
+        "--n_workers",
+        type=int,
+        default=1,
+        help="(Optional) Number of parallel workers for metric computation. Defaults to 1.",
+    )
 
     args = parser.parse_args()
 
@@ -256,6 +263,7 @@ if __name__ == "__main__":
         args.deg_dir,
         args.dump_dir,
         args.metrics,
+        n_workers=args.n_workers,
         fs=int(args.fs) if args.fs != "None" else None,
         method=args.align_method,
         db_scale=True if args.db_scale == "True" else False,
