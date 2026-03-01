@@ -15,6 +15,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { HelpTooltip } from "@/components/ui/help-tooltip";
+import { PresetManager } from "@/components/ui/preset-manager";
 import { AudioPlayer } from "@/components/ui/audio-player";
 import { FileUpload } from "@/components/ui/file-upload";
 import { Progress } from "@/components/ui/progress";
@@ -253,6 +254,23 @@ export default function DualCodecVALLEPage() {
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-6">
+              <PresetManager
+                modelId="dualcodec-valle"
+                modelType="tts"
+                currentParams={{
+                  temperature: params.temperature,
+                  topK: params.topK,
+                  topP: params.topP,
+                  maxLength: params.maxLength,
+                  numSamples: params.numSamples,
+                }}
+                onLoadPreset={(newParams) =>
+                  setParams((prev) => ({
+                    ...prev,
+                    ...(newParams as Partial<DualCodecVALLEParams>),
+                  }))
+                }
+              />
               <div className="space-y-2">
                 <div className="flex items-center justify-between">
                   <Label className="flex items-center gap-2">
