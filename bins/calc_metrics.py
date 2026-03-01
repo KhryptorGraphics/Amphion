@@ -61,6 +61,36 @@ METRIC_FUNC = {
 }
 
 
+def _compute_file_metric(args):
+    """Module-level helper for multiprocessing compatibility (picklable).
+
+    Args:
+        args: tuple of (audio_ref, audio_deg, metric_name, kwargs_dict)
+
+    Returns:
+        score if not NaN, else None
+    """
+    audio_ref, audio_deg, metric_name, kwargs_dict = args
+    score = METRIC_FUNC[metric_name](audio_ref, audio_deg, kwargs=kwargs_dict)
+    if np.isnan(score):
+        return None
+    return score
+
+
+def _compute_file_metric_v_uv_f1(args):
+    """Module-level helper for v_uv_f1 metric, returns (tp, fp, fn) tuple.
+
+    Args:
+        args: tuple of (audio_ref, audio_deg, kwargs_dict)
+
+    Returns:
+        tuple of (tp, fp, fn)
+    """
+    audio_ref, audio_deg, kwargs_dict = args
+    tp, fp, fn = METRIC_FUNC["v_uv_f1"](audio_ref, audio_deg, kwargs=kwargs_dict)
+    return tp, fp, fn
+
+
 def calc_metric(
     ref_dir,
     deg_dir,
