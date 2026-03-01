@@ -56,19 +56,21 @@ def get_theme_css(theme):
     """Return CSS styling based on theme."""
     if theme == "dark":
         return """
-        body { background-color: #1a1a1a; color: #ffffff; }
-        .gradio-container { background-color: #2d2d2d; color: #ffffff; }
-        .panel { background-color: #3d3d3d; color: #ffffff; border: 1px solid #555555; }
-        .label { color: #ffffff; }
-        h1, h2, h3, h4, h5, h6 { color: #ffffff; }
+        body { background-color: #1a1a1a !important; color: #ffffff !important; }
+        .gradio-container { background-color: #2d2d2d !important; color: #ffffff !important; }
+        .panel { background-color: #3d3d3d !important; color: #ffffff !important; border: 1px solid #555555 !important; }
+        label { color: #ffffff !important; }
+        h1, h2, h3, h4, h5, h6 { color: #ffffff !important; }
+        input, textarea, select { background-color: #3d3d3d !important; color: #ffffff !important; }
         """
     else:
         return """
-        body { background-color: #ffffff; color: #000000; }
-        .gradio-container { background-color: #f0f0f0; color: #000000; }
-        .panel { background-color: #ffffff; color: #000000; border: 1px solid #cccccc; }
-        .label { color: #000000; }
-        h1, h2, h3, h4, h5, h6 { color: #000000; }
+        body { background-color: #ffffff !important; color: #000000 !important; }
+        .gradio-container { background-color: #f0f0f0 !important; color: #000000 !important; }
+        .panel { background-color: #ffffff !important; color: #000000 !important; border: 1px solid #cccccc !important; }
+        label { color: #000000 !important; }
+        h1, h2, h3, h4, h5, h6 { color: #000000 !important; }
+        input, textarea, select { background-color: #ffffff !important; color: #000000 !important; }
         """
 
 
