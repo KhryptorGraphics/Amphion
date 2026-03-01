@@ -63,6 +63,29 @@ def extract_content_features(dataset, output_path, cfg, num_workers=1):
     )
 
 
+def extract_aligned_content_features(dataset, output_path, cfg):
+    """Pre-compute and cache aligned content features for utterances in the dataset.
+
+    Loads train and test metadata for the dataset, then calls
+    align_and_cache_content_features() to align raw content features to the
+    target mel length and save them to *_aligned subdirectories.
+
+    Args:
+        dataset (str): name of dataset, e.g. opencpop
+        output_path (str): directory that stores train, test and feature files of datasets
+        cfg (dict): dictionary that stores configurations
+    """
+    types = ["train", "test"] if "eval" not in dataset else ["test"]
+    metadata = []
+    for dataset_type in types:
+        dataset_output = os.path.join(output_path, dataset)
+        dataset_file = os.path.join(dataset_output, "{}.json".format(dataset_type))
+        with open(dataset_file, "r") as f:
+            metadata.extend(json.load(f))
+
+    content_extractor.align_and_cache_content_features(cfg, metadata)
+
+
 def preprocess(cfg, args):
     """Proprocess raw data of single or multiple datasets (in cfg.dataset)
 
@@ -161,6 +184,12 @@ def preprocess(cfg, args):
         print("Extracting content features for {}...".format(dataset))
         extract_content_features(dataset, output_path, cfg, args.num_workers)
 
+    # Pre-compute and cache aligned content features when requested
+    if args.align_content_features or cfg.preprocess.use_cached_alignment:
+        for dataset in cfg.dataset:
+            print("Aligning and caching content features for {}...".format(dataset))
+            extract_aligned_content_features(dataset, output_path, cfg)
+
 
 def main():
     parser = argparse.ArgumentParser()
@@ -169,6 +198,7 @@ def main():
     )
     parser.add_argument("--num_workers", type=int, default=int(cpu_count()))
     parser.add_argument("--prepare_alignment", type=bool, default=False)
+    parser.add_argument("--align_content_features", type=bool, default=False)
 
     args = parser.parse_args()
     cfg = load_config(args.config)
