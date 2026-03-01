@@ -11,7 +11,7 @@ from fastapi.staticfiles import StaticFiles
 import os
 import logging
 
-from .routes import tts, vc, svc, health, evaluation, tta, codec, vocoder, training, datasets
+from .routes import tts, vc, svc, health, evaluation, tta, codec, vocoder, training, datasets, presets
 from .websocket.progress import manager
 from .auth import AuthMiddleware
 from .rate_limit import RateLimitMiddleware
@@ -49,8 +49,13 @@ app.add_middleware(
 app.add_middleware(RateLimitMiddleware)
 app.add_middleware(AuthMiddleware)
 
-# Ensure output directory exists
+# Ensure output directories exist
 os.makedirs("/home/kp/repo2/Amphion/output/web", exist_ok=True)
+_presets_dir = os.path.join(
+    os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))),
+    "output", "web", "presets"
+)
+os.makedirs(_presets_dir, exist_ok=True)
 
 # Include routers
 app.include_router(tts.router, prefix="/api/tts", tags=["TTS"])
@@ -62,6 +67,7 @@ app.include_router(vocoder.router, prefix="/api/vocoder", tags=["Vocoder"])
 app.include_router(training.router, prefix="/api/training", tags=["Training"])
 app.include_router(datasets.router, prefix="/api/datasets", tags=["Datasets"])
 app.include_router(evaluation.router, prefix="/api/evaluation", tags=["Evaluation"])
+app.include_router(presets.router, prefix="/api/presets", tags=["Presets"])
 app.include_router(health.router, prefix="/api", tags=["Health"])
 
 
