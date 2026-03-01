@@ -28,6 +28,7 @@ from utils.io_optim import (
 import whisper
 from modules.wenet_extractor.utils.init_model import init_model
 from modules.wenet_extractor.utils.checkpoint import load_checkpoint
+from utils.data_utils import align_content_feature_length
 
 """
     Extractor for content features
@@ -800,3 +801,121 @@ def _get_extractor_for_alignment(cfg, feature_type):
         return WenetExtractor(cfg)
     else:
         return None
+
+
+def align_and_cache_content_features(cfg, metadata):
+    """Pre-compute and cache feature alignment transformations for content features.
+
+    For each utterance in metadata, loads the mel spectrogram to determine the
+    target length, then aligns each enabled content feature (whisper, contentvec,
+    wenet, mert) to the target length using offline_resolution_transformation().
+    The aligned features are saved to *_aligned subdirectories for fast loading
+    during training when use_cached_alignment=True.
+
+    Alignment is pure numpy — no GPU or model loading is required.
+
+    Args:
+        cfg: configuration object with preprocess attributes
+        metadata (list): list of utterance dicts, each containing 'Uid' and 'Dataset'
+    """
+    # Initialize extractors without loading models (alignment is pure numpy)
+    whisper_extractor = None
+    contentvec_extractor = None
+    wenet_extractor = None
+    if cfg.preprocess.extract_whisper_feature:
+        whisper_extractor = WhisperExtractor(cfg)
+    if cfg.preprocess.extract_contentvec_feature:
+        contentvec_extractor = ContentvecExtractor(cfg)
+    if cfg.preprocess.extract_wenet_feature:
+        wenet_extractor = WenetExtractor(cfg)
+
+    for utt in tqdm(metadata, desc="Aligning and caching content features"):
+        uid = utt["Uid"]
+        dataset = utt["Dataset"]
+        processed_dir = cfg.preprocess.processed_dir
+
+        # Load mel to determine target length; mel is stored as (n_mels, T)
+        mel_path = os.path.join(
+            processed_dir, dataset, cfg.preprocess.mel_dir, uid + ".npy"
+        )
+        if not os.path.exists(mel_path):
+            continue
+        mel = np.load(mel_path)
+        target_len = mel.shape[1]
+
+        # Align and cache whisper features
+        if cfg.preprocess.extract_whisper_feature:
+            aligned_dir = os.path.join(
+                processed_dir, dataset, cfg.preprocess.whisper_aligned_dir
+            )
+            os.makedirs(aligned_dir, exist_ok=True)
+            aligned_path = os.path.join(aligned_dir, uid + ".npy")
+            if not os.path.exists(aligned_path):
+                raw_path = os.path.join(
+                    processed_dir, dataset, cfg.preprocess.whisper_dir, uid + ".npy"
+                )
+                if os.path.exists(raw_path):
+                    raw_feat = np.load(raw_path)
+                    aligned_feat = whisper_extractor.offline_resolution_transformation(
+                        raw_feat, target_len
+                    )
+                    np.save(aligned_path, aligned_feat)
+
+        # Align and cache contentvec features
+        if cfg.preprocess.extract_contentvec_feature:
+            aligned_dir = os.path.join(
+                processed_dir, dataset, cfg.preprocess.contentvec_aligned_dir
+            )
+            os.makedirs(aligned_dir, exist_ok=True)
+            aligned_path = os.path.join(aligned_dir, uid + ".npy")
+            if not os.path.exists(aligned_path):
+                raw_path = os.path.join(
+                    processed_dir, dataset, cfg.preprocess.contentvec_dir, uid + ".npy"
+                )
+                if os.path.exists(raw_path):
+                    raw_feat = np.load(raw_path)
+                    aligned_feat = (
+                        contentvec_extractor.offline_resolution_transformation(
+                            raw_feat, target_len
+                        )
+                    )
+                    np.save(aligned_path, aligned_feat)
+
+        # Align and cache wenet features
+        if cfg.preprocess.extract_wenet_feature:
+            aligned_dir = os.path.join(
+                processed_dir, dataset, cfg.preprocess.wenet_aligned_dir
+            )
+            os.makedirs(aligned_dir, exist_ok=True)
+            aligned_path = os.path.join(aligned_dir, uid + ".npy")
+            if not os.path.exists(aligned_path):
+                raw_path = os.path.join(
+                    processed_dir, dataset, cfg.preprocess.wenet_dir, uid + ".npy"
+                )
+                if os.path.exists(raw_path):
+                    raw_feat = np.load(raw_path)
+                    aligned_feat = wenet_extractor.offline_resolution_transformation(
+                        raw_feat, target_len
+                    )
+                    np.save(aligned_path, aligned_feat)
+
+        # Align and cache mert features using align_content_feature_length
+        if cfg.preprocess.extract_mert_feature:
+            aligned_dir = os.path.join(
+                processed_dir, dataset, cfg.preprocess.mert_aligned_dir
+            )
+            os.makedirs(aligned_dir, exist_ok=True)
+            aligned_path = os.path.join(aligned_dir, uid + ".npy")
+            if not os.path.exists(aligned_path):
+                raw_path = os.path.join(
+                    processed_dir, dataset, cfg.preprocess.mert_dir, uid + ".npy"
+                )
+                if os.path.exists(raw_path):
+                    raw_feat = np.load(raw_path)
+                    aligned_feat = align_content_feature_length(
+                        raw_feat,
+                        target_len,
+                        source_hop=cfg.preprocess.mert_hop_size,
+                        target_hop=cfg.preprocess.hop_size,
+                    )
+                    np.save(aligned_path, aligned_feat)
