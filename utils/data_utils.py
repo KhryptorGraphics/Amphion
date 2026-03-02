@@ -25,7 +25,18 @@ def intersperse(lst, item):
     return result
 
 
+_content_feature_path_cache = {}
+
+
 def load_content_feature_path(meta_data, processed_dir, feat_dir):
+    cache_key = (
+        processed_dir,
+        feat_dir,
+        tuple((u["Dataset"], u["Uid"]) for u in meta_data),
+    )
+    if cache_key in _content_feature_path_cache:
+        return _content_feature_path_cache[cache_key]
+
     utt2feat_path = {}
     for utt_info in meta_data:
         utt = utt_info["Dataset"] + "_" + utt_info["Uid"]
@@ -34,6 +45,7 @@ def load_content_feature_path(meta_data, processed_dir, feat_dir):
         )
         utt2feat_path[utt] = feat_path
 
+    _content_feature_path_cache[cache_key] = utt2feat_path
     return utt2feat_path
 
 
