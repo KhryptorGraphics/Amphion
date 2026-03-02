@@ -1,0 +1,26 @@
+{
+  "project_type": "single",
+  "services": {
+    "evaluation": {
+      "path": ".",
+      "tech_stack": ["python", "numpy", "torch", "librosa", "multiprocessing", "concurrent.futures"],
+      "dev_command": null,
+      "test_command": "python -m pytest"
+    }
+  },
+  "infrastructure": {
+    "docker": false,
+    "database": null
+  },
+  "conventions": {
+    "linter": null,
+    "formatter": "black",
+    "testing": "pytest",
+    "pythonpath": "export PYTHONPATH=$(pwd)"
+  },
+  "key_files": {
+    "main_evaluation_script": "bins/calc_metrics.py",
+    "metric_functions": "evaluation/metrics/",
+    "parallel_pattern_reference": "processors/acoustic_extractor.py"
+  }
+}
