@@ -62,6 +62,55 @@ METRIC_FUNC = {
 }
 
 
+def _compute_metric_for_pair(args):
+    """Compute a single metric for one audio pair.
+
+    This is a module-level function (not nested) so it can be pickled by
+    multiprocessing for parallel evaluation.
+
+    Args:
+        args (tuple): (metric, audio_ref, audio_deg, kwargs, content_gt)
+            - metric (str): metric name key from METRIC_FUNC
+            - audio_ref (str): path to reference audio file
+            - audio_deg (str): path to degraded/generated audio file
+            - kwargs (dict): additional keyword arguments passed to the metric
+            - content_gt (str or None): ground truth transcript used when
+              intelligibility_mode is "gt_content"
+
+    Returns:
+        float or tuple: computed metric score; (tp, fp, fn) tuple for v_uv_f1;
+                        float('nan') if an error occurs during computation
+    """
+    metric, audio_ref, audio_deg, kwargs, content_gt = args
+
+    try:
+        if metric in ["wer", "cer"]:
+            model = whisper.load_model("large")
+            mode = kwargs.get("intelligibility_mode", "gt_audio")
+            if torch.cuda.is_available():
+                device = torch.device("cuda")
+                model = model.to(device)
+
+            # Use a shallow copy so parallel workers don't mutate shared state
+            kw = dict(kwargs)
+            if mode == "gt_audio":
+                kw["audio_ref"] = audio_ref
+                kw["audio_deg"] = audio_deg
+                score = METRIC_FUNC[metric](model, kwargs=kw)
+            elif mode == "gt_content":
+                kw["content_gt"] = content_gt
+                kw["audio_deg"] = audio_deg
+                score = METRIC_FUNC[metric](model, kwargs=kw)
+            else:
+                score = float("nan")
+        else:
+            score = METRIC_FUNC[metric](audio_ref, audio_deg, kwargs=kwargs)
+
+        return score
+    except Exception:
+        return float("nan")
+
+
 def calc_metric(
     ref_dir,
     deg_dir,
