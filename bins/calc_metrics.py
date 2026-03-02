@@ -116,6 +116,7 @@ def calc_metric(
     deg_dir,
     dump_dir,
     metrics,
+    n_workers=1,
     **kwargs,
 ):
     result = defaultdict()
@@ -136,6 +137,7 @@ def calc_metric(
             file_gt = ref_dir + "/{}.wav".format(uid)
             audios_ref.append(file_gt)
 
+        ltrs = None
         if metric in ["wer", "cer"] and kwargs["intelligibility_mode"] == "gt_content":
             ltr_path = kwargs["ltr_path"]
             tmpltrs = {}
@@ -160,50 +162,84 @@ def calc_metric(
             fp_total = 0
             fn_total = 0
 
-            for i in tqdm(range(len(audios_ref))):
-                audio_ref = audios_ref[i]
-                audio_deg = audios_deg[i]
-                tp, fp, fn = METRIC_FUNC[metric](audio_ref, audio_deg, kwargs=kwargs)
-                tp_total += tp
-                fp_total += fp
-                fn_total += fn
+            if n_workers > 1:
+                tasks = [
+                    (metric, audios_ref[i], audios_deg[i], kwargs, None)
+                    for i in range(len(audios_ref))
+                ]
+                with multiprocessing.Pool(processes=n_workers) as pool:
+                    for res in tqdm(
+                        pool.imap_unordered(_compute_metric_for_pair, tasks),
+                        total=len(tasks),
+                    ):
+                        if not (isinstance(res, float) and np.isnan(res)):
+                            tp, fp, fn = res
+                            tp_total += tp
+                            fp_total += fp
+                            fn_total += fn
+            else:
+                for i in tqdm(range(len(audios_ref))):
+                    audio_ref = audios_ref[i]
+                    audio_deg = audios_deg[i]
+                    tp, fp, fn = METRIC_FUNC[metric](audio_ref, audio_deg, kwargs=kwargs)
+                    tp_total += tp
+                    fp_total += fp
+                    fn_total += fn
 
             result[metric] = str(tp_total / (tp_total + (fp_total + fn_total) / 2))
         else:
             scores = []
-            for i in tqdm(range(len(audios_ref))):
-                audio_ref = audios_ref[i]
-                audio_deg = audios_deg[i]
 
-                if metric in ["wer", "cer"]:
-                    model = whisper.load_model("large")
-                    mode = kwargs["intelligibility_mode"]
-                    if torch.cuda.is_available():
-                        device = torch.device("cuda")
-                        model = model.to(device)
+            if n_workers > 1:
+                content_gts = [
+                    ltrs[i] if ltrs is not None else None
+                    for i in range(len(audios_ref))
+                ]
+                tasks = [
+                    (metric, audios_ref[i], audios_deg[i], kwargs, content_gts[i])
+                    for i in range(len(audios_ref))
+                ]
+                with multiprocessing.Pool(processes=n_workers) as pool:
+                    for score in tqdm(
+                        pool.imap_unordered(_compute_metric_for_pair, tasks),
+                        total=len(tasks),
+                    ):
+                        if not np.isnan(score):
+                            scores.append(score)
+            else:
+                for i in tqdm(range(len(audios_ref))):
+                    audio_ref = audios_ref[i]
+                    audio_deg = audios_deg[i]
 
-                    if mode == "gt_audio":
-                        kwargs["audio_ref"] = audio_ref
-                        kwargs["audio_deg"] = audio_deg
+                    if metric in ["wer", "cer"]:
+                        model = whisper.load_model("large")
+                        mode = kwargs["intelligibility_mode"]
+                        if torch.cuda.is_available():
+                            device = torch.device("cuda")
+                            model = model.to(device)
+
+                        if mode == "gt_audio":
+                            kwargs["audio_ref"] = audio_ref
+                            kwargs["audio_deg"] = audio_deg
+                            score = METRIC_FUNC[metric](
+                                model,
+                                kwargs=kwargs,
+                            )
+                        elif mode == "gt_content":
+                            kwargs["content_gt"] = ltrs[i]
+                            kwargs["audio_deg"] = audio_deg
+                            score = METRIC_FUNC[metric](
+                                model,
+                                kwargs=kwargs,
+                            )
+                    else:
                         score = METRIC_FUNC[metric](
-                            model,
+                            audio_ref,
+                            audio_deg,
                             kwargs=kwargs,
                         )
-                    elif mode == "gt_content":
-                        kwargs["content_gt"] = ltrs[i]
-                        kwargs["audio_deg"] = audio_deg
-                        score = METRIC_FUNC[metric](
-                            model,
-                            kwargs=kwargs,
-                        )
-                else:
-                    score = METRIC_FUNC[metric](
-                        audio_ref,
-                        audio_deg,
-                        kwargs=kwargs,
-                    )
-                if not np.isnan(score):
-                    scores.append(score)
+                    if not np.isnan(score):
+                        scores.append(score)
 
             scores = np.array(scores)
             result["{}".format(metric)] = str(np.mean(scores))
@@ -302,7 +338,7 @@ if __name__ == "__main__":
         "--n_workers",
         type=int,
         default=1,
-        help="(Optional) Number of parallel workers for metric computation.",
+        help="(Optional) Number of parallel worker processes for per-file metric computation.",
     )
 
     args = parser.parse_args()
@@ -312,6 +348,7 @@ if __name__ == "__main__":
         args.deg_dir,
         args.dump_dir,
         args.metrics,
+        n_workers=args.n_workers,
         fs=int(args.fs) if args.fs != "None" else None,
         method=args.align_method,
         db_scale=True if args.db_scale == "True" else False,
@@ -321,5 +358,4 @@ if __name__ == "__main__":
         ltr_path=args.ltr_path,
         intelligibility_mode=args.intelligibility_mode,
         language=args.language,
-        n_workers=args.n_workers,
     )
