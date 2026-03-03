@@ -10,6 +10,7 @@ import numpy as np
 
 from torchmetrics import PearsonCorrCoef
 
+from utils.audio_loading import load_audio
 from utils.util import JsonHParams
 from utils.f0 import get_f0_features_using_parselmouth, get_pitch_sub_median
 
@@ -47,11 +48,11 @@ def extract_fpc(
 
     # Load audio
     if fs != None:
-        audio_ref, _ = librosa.load(audio_ref, sr=fs)
-        audio_deg, _ = librosa.load(audio_deg, sr=fs)
+        audio_ref, _ = load_audio(audio_ref, sample_rate=fs)
+        audio_deg, _ = load_audio(audio_deg, sample_rate=fs)
     else:
-        audio_ref, fs = librosa.load(audio_ref)
-        audio_deg, fs = librosa.load(audio_deg)
+        audio_ref, fs = load_audio(audio_ref)
+        audio_deg, fs = load_audio(audio_deg)
 
     # Initialize config
     cfg = JsonHParams()

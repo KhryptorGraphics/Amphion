@@ -8,6 +8,7 @@ import librosa
 import numpy as np
 import parselmouth
 
+from utils.audio_loading import load_audio
 from utils.f0 import interpolate
 
 
@@ -111,7 +112,7 @@ def extract_f0_hz(
     cfg.pitch_min = f0_min
 
     # Compute f0
-    audio, _ = librosa.load(wav_path, sr=fs)
+    audio, _ = load_audio(wav_path, sample_rate=fs)
     f0 = get_f0_features_using_parselmouth(
         audio,
         cfg,
@@ -151,11 +152,11 @@ def extract_fpc(
 
     # Load audio
     if fs != None:
-        audio_ref, _ = librosa.load(audio_ref, sr=fs)
-        audio_deg, _ = librosa.load(audio_deg, sr=fs)
+        audio_ref, _ = load_audio(audio_ref, sample_rate=fs)
+        audio_deg, _ = load_audio(audio_deg, sample_rate=fs)
     else:
-        audio_ref, ref_fs = librosa.load(audio_ref)
-        audio_deg, deg_fs = librosa.load(audio_deg)
+        audio_ref, ref_fs = load_audio(audio_ref)
+        audio_deg, deg_fs = load_audio(audio_deg)
         assert ref_fs == deg_fs
         fs = ref_fs
 
