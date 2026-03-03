@@ -6,12 +6,11 @@
 import os
 
 import numpy as np
-import soundfile as sf
 import torch
 import torch.nn.functional as F
 from tqdm import tqdm
-import librosa
 
+from utils.audio_loading import load_audio
 from evaluation.metrics.similarity.models.RawNetModel import RawNet3
 from evaluation.metrics.similarity.models.RawNetBasicBlock import Bottle2neck
 
@@ -22,14 +21,7 @@ from resemblyzer import VoiceEncoder, preprocess_wav
 def extract_rawnet_speaker_embd(
     model, fn: str, n_samples: int, n_segments: int = 10, gpu: bool = False
 ) -> np.ndarray:
-    audio, sample_rate = sf.read(fn)
-    if len(audio.shape) > 1:
-        raise ValueError(
-            f"RawNet3 supports mono input only. Input data has a shape of {audio.shape}."
-        )
-
-    if sample_rate != 16000:
-        audio = librosa.resample(audio, orig_sr=sample_rate, target_sr=16000)
+    audio, _ = load_audio(fn, sample_rate=16000)
     if len(audio) < n_samples:
         shortage = n_samples - len(audio) + 1
         audio = np.pad(audio, (0, shortage), "wrap")
@@ -117,7 +109,7 @@ def extract_similarity(path_ref, path_deg, **kwargs):
 
         for file in tqdm(os.listdir(path_ref)):
             wav_path = os.path.join(path_ref, file)
-            wav, _ = librosa.load(wav_path, sr=16000)
+            wav, _ = load_audio(wav_path, sample_rate=16000)
 
             inputs = feature_extractor(
                 [wav], padding=True, return_tensors="pt", sampling_rate=16000
@@ -133,7 +125,7 @@ def extract_similarity(path_ref, path_deg, **kwargs):
 
         for file in tqdm(os.listdir(path_deg)):
             wav_path = os.path.join(path_deg, file)
-            wav, _ = librosa.load(wav_path, sr=16000)
+            wav, _ = load_audio(wav_path, sample_rate=16000)
 
             inputs = feature_extractor(
                 [wav], padding=True, return_tensors="pt", sampling_rate=16000
