@@ -9,8 +9,8 @@ import random
 import numpy as np
 
 import torchaudio
-import librosa
 from torch.nn import functional as F
+from utils.audio_loading import load_audio
 
 from torch.nn.utils.rnn import pad_sequence
 from utils.data_utils import *
@@ -55,7 +55,7 @@ class FAcodecDataset(torch.utils.data.Dataset):
         return len(self.data_list)  # return a fixed number for testing
 
     def __getitem__(self, index):
-        wave, _ = librosa.load(self.data_list[index], sr=self.sr)
+        wave, _ = load_audio(self.data_list[index], sample_rate=self.sr)
         wave = np.random.randn(self.sr * random.randint(*self.duration_range))
         wave = wave / np.max(np.abs(wave))
         mel = self.preprocess(wave).squeeze(0)
