@@ -5,9 +5,11 @@
 
 import logging
 import numpy as np
-import librosa
 import torch
+import torchaudio
 from torch.nn.utils.rnn import pad_sequence
+
+from utils.audio_loading import load_audio
 
 from models.base.emilia_dataset import EmiliaDataset, WarningFilter
 
@@ -71,7 +73,7 @@ class VCEmiliaDataset(EmiliaDataset):
         if file_bytes is not None and meta is not None:
             buffer = file_bytes
             try:
-                speech, _ = librosa.load(buffer, sr=self.sample_rate)
+                speech, _ = load_audio(buffer, sample_rate=self.sample_rate)
                 if len(speech) > self.duration_setting["max"] * self.sample_rate:
                     position = np.where(self.num_frame_indices == idx)[0][0]
                     random_index = np.random.choice(self.num_frame_indices[:position])
@@ -101,9 +103,9 @@ class VCEmiliaDataset(EmiliaDataset):
             for tgt_sr in self.all_sample_rates:
                 if tgt_sr != self.sample_rate:
                     assert tgt_sr < self.sample_rate
-                    tgt_speech = librosa.resample(
-                        speech, orig_sr=self.sample_rate, target_sr=tgt_sr
-                    )
+                    tgt_speech = torchaudio.functional.resample(
+                        torch.from_numpy(speech), self.sample_rate, tgt_sr
+                    ).numpy()
                 else:
                     tgt_speech = speech
                 single_feature.update(
