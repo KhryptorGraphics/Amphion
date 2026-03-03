@@ -7,7 +7,7 @@ import torch
 import numpy as np
 import torch.utils.data
 from torch.nn.utils.rnn import pad_sequence
-import librosa
+from utils.audio_loading import load_audio
 
 from utils.data_utils import *
 from processors.acoustic_extractor import cal_normalized_mel
@@ -379,7 +379,7 @@ class BaseOnlineDataset(torch.utils.data.Dataset):
         utt_item = self.metadata[index]
 
         wav_path = utt_item["Path"]
-        wav, _ = librosa.load(wav_path, sr=self.sample_rate)
+        wav, _ = load_audio(wav_path, sample_rate=self.sample_rate)
         # wav: (T)
         wav = torch.as_tensor(wav, dtype=torch.float32)
         wav_len = len(wav)
