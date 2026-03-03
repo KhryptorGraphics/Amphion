@@ -49,7 +49,7 @@ while true; do
     --infer_text) shift; infer_text=$1 ; shift ;;
 
     --) shift ; break ;;
-    *) echo "Invalid option: $1" exit 1 ;;
+    *) echo "Invalid option: $1"; exit 1 ;;
   esac
 done
 
