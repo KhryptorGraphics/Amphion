@@ -5,10 +5,10 @@
 
 import os
 import numpy as np
-import librosa
 import torch
 from torch.utils.data import Dataset
 from torch.nn.utils.rnn import pad_sequence
+from utils.audio_loading import load_audio
 from utils.data_utils import *
 from multiprocessing import Pool, Lock
 import random
@@ -226,15 +226,15 @@ class VCDataset(Dataset):
     def add_noise(self, clean):
         # self.noise_filenames: list of noise files
         random_idx = np.random.randint(0, np.size(self.noise_filenames))
-        noise, _ = librosa.load(self.noise_filenames[random_idx], sr=SAMPLE_RATE)
+        noise, _ = load_audio(self.noise_filenames[random_idx], sample_rate=SAMPLE_RATE)
         clean = clean.cpu().numpy()
         if len(noise) >= len(clean):
             noise = noise[0 : len(clean)]
         else:
             while len(noise) <= len(clean):
                 random_idx = (random_idx + 1) % len(self.noise_filenames)
-                newnoise, fs = librosa.load(
-                    self.noise_filenames[random_idx], sr=SAMPLE_RATE
+                newnoise, fs = load_audio(
+                    self.noise_filenames[random_idx], sample_rate=SAMPLE_RATE
                 )
                 noiseconcat = np.append(noise, np.zeros(int(fs * 0.2)))
                 noise = np.append(noiseconcat, newnoise)
@@ -249,7 +249,7 @@ class VCDataset(Dataset):
 
     def __getitem__(self, idx):
         file_path = self.filtered_files[idx]
-        speech, _ = librosa.load(file_path, sr=SAMPLE_RATE)
+        speech, _ = load_audio(file_path, sample_rate=SAMPLE_RATE)
         if len(speech) > 30 * SAMPLE_RATE:
             speech = speech[: 30 * SAMPLE_RATE]
         speech = torch.tensor(speech, dtype=torch.float32)
