@@ -10,6 +10,8 @@ import torch
 import numpy as np
 from numpy import linalg as LA
 
+from utils.audio_loading import load_audio
+
 
 def extract_energy_rmse(
     audio_ref,
@@ -37,12 +39,8 @@ def extract_energy_rmse(
     db_scale = kwargs["db_scale"]
 
     # Load audio
-    if fs != None:
-        audio_ref, _ = librosa.load(audio_ref, sr=fs)
-        audio_deg, _ = librosa.load(audio_deg, sr=fs)
-    else:
-        audio_ref, fs = librosa.load(audio_ref)
-        audio_deg, fs = librosa.load(audio_deg)
+    audio_ref, fs = load_audio(audio_ref, sample_rate=fs)
+    audio_deg, _ = load_audio(audio_deg, sample_rate=fs)
 
     # STFT
     spec_ref = librosa.stft(

@@ -10,6 +10,8 @@ import numpy as np
 
 from torchmetrics import ScaleInvariantSignalDistortionRatio
 
+from utils.audio_loading import load_audio
+
 
 def extract_si_sdr(audio_ref, audio_deg, **kwargs):
     # Load hyperparameters
@@ -19,12 +21,8 @@ def extract_si_sdr(audio_ref, audio_deg, **kwargs):
 
     si_sdr = ScaleInvariantSignalDistortionRatio()
 
-    if fs != None:
-        audio_ref, _ = librosa.load(audio_ref, sr=fs)
-        audio_deg, _ = librosa.load(audio_deg, sr=fs)
-    else:
-        audio_ref, fs = librosa.load(audio_ref)
-        audio_deg, fs = librosa.load(audio_deg)
+    audio_ref, fs = load_audio(audio_ref, sample_rate=fs)
+    audio_deg, _ = load_audio(audio_deg, sample_rate=fs)
 
     if len(audio_ref) != len(audio_deg):
         if method == "cut":

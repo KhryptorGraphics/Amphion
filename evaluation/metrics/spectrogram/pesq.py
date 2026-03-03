@@ -9,6 +9,8 @@ import numpy as np
 
 from pypesq import pesq
 
+from utils.audio_loading import load_audio
+
 
 def extract_pesq(audio_ref, audio_deg, **kwargs):
     """Extract PESQ for a two given audio.
@@ -23,19 +25,10 @@ def extract_pesq(audio_ref, audio_deg, **kwargs):
     fs = kwargs["fs"]
     method = kwargs["method"]
 
-    # Load audio
-    if fs != None:
-        audio_ref, _ = librosa.load(audio_ref, sr=fs)
-        audio_deg, _ = librosa.load(audio_deg, sr=fs)
-    else:
-        audio_ref, fs = librosa.load(audio_ref)
-        audio_deg, fs = librosa.load(audio_deg)
-
-    # Resample
-    if fs != 16000:
-        audio_ref = librosa.resample(audio_ref, orig_sr=fs, target_sr=16000)
-        audio_deg = librosa.resample(audio_deg, orig_sr=fs, target_sr=16000)
-        fs = 16000
+    # Load audio (always resample to 16000 Hz as required by PESQ)
+    audio_ref, fs = load_audio(audio_ref, sample_rate=16000)
+    audio_deg, _ = load_audio(audio_deg, sample_rate=16000)
+    fs = 16000
 
     # Audio length alignment
     if len(audio_ref) != len(audio_deg):
