@@ -4,7 +4,6 @@
 # LICENSE file in the root directory of this source tree.
 
 import math
-import librosa
 import torch
 import torchaudio
 import accelerate
@@ -20,6 +19,7 @@ from models.codec.vevo.vevo_repcodec import VevoRepCodec
 from models.codec.melvqgan.melspec import MelSpectrogram
 from models.codec.amphion_codec.vocos import Vocos
 
+from utils.audio_loading import load_audio
 from utils.util import load_config
 
 
@@ -138,7 +138,7 @@ def count_parameters(model):
 
 
 def load_wav(wav_path, device):
-    speech = librosa.load(wav_path, sr=24000)[0]
+    speech, _ = load_audio(wav_path, sample_rate=24000)
     speech_tensor = torch.tensor(speech).unsqueeze(0).to(device)
     speech16k = torchaudio.functional.resample(speech_tensor, 24000, 16000)
     return speech, speech_tensor, speech16k
