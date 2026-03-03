@@ -181,7 +181,9 @@ def calc_metric(
                 for i in tqdm(range(len(audios_ref))):
                     audio_ref = audios_ref[i]
                     audio_deg = audios_deg[i]
-                    tp, fp, fn = METRIC_FUNC[metric](audio_ref, audio_deg, kwargs=kwargs)
+                    tp, fp, fn = METRIC_FUNC[metric](
+                        audio_ref, audio_deg, kwargs=kwargs
+                    )
                     tp_total += tp
                     fp_total += fp
                     fn_total += fn
