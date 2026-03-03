@@ -47,7 +47,7 @@ while true; do
     --infer_output_dir) shift; infer_output_dir=$1 ; shift ;;
 
     --) shift ; break ;;
-    *) echo "Invalid option: $1" exit 1 ;;
+    *) echo "Invalid option: $1"; exit 1 ;;
   esac
 done
 
