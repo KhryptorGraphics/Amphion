@@ -10,6 +10,8 @@ import librosa
 import soundfile as sf
 import librosa.filters
 
+from utils.audio_loading import load_audio_tensor
+
 
 def load_audio_torch(wave_file, fs):
     """Load audio data into torch tensor
@@ -23,33 +25,23 @@ def load_audio_torch(wave_file, fs):
         fs (int): sample rate
     """
 
-    audio, sample_rate = librosa.load(wave_file, sr=fs, mono=True)
-    # audio: (T,)
+    audio, sample_rate = load_audio_tensor(wave_file, sample_rate=fs, mono=True)
+    # audio: (T,) float32 tensor
     assert len(audio) > 2
 
-    # Check the audio type (for soundfile loading backbone) - float, 8bit or 16bit
-    if np.issubdtype(audio.dtype, np.integer):
-        max_mag = -np.iinfo(audio.dtype).min
-    else:
-        max_mag = max(np.amax(audio), -np.amin(audio))
-        max_mag = (
-            (2**31) + 1
-            if max_mag > (2**15)
-            else ((2**15) + 1 if max_mag > 1.01 else 1.0)
-        )
+    # Determine normalization magnitude (torchaudio always returns float32)
+    max_mag = audio.abs().max().item()
+    max_mag = (
+        (2**31) + 1
+        if max_mag > (2**15)
+        else ((2**15) + 1 if max_mag > 1.01 else 1.0)
+    )
 
     # Normalize the audio
-    audio = torch.FloatTensor(audio.astype(np.float32)) / max_mag
+    audio = audio / max_mag
 
     if (torch.isnan(audio) | torch.isinf(audio)).any():
         return [], sample_rate or fs or 48000
-
-    # Resample the audio to our target samplerate
-    if fs is not None and fs != sample_rate:
-        audio = torch.from_numpy(
-            librosa.core.resample(audio.numpy(), orig_sr=sample_rate, target_sr=fs)
-        )
-        sample_rate = fs
 
     return audio, fs
 
