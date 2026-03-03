@@ -206,6 +206,7 @@ class NoroTrainer(Noro_base_Trainer):
                 batches, drop_last=False, use_random_sampler=True
             ),
             pin_memory=self.cfg.train.dataloader.pin_memory,
+            persistent_workers=self.cfg.train.dataloader.persistent_workers,
         )
         self.accelerator.wait_for_everyone()
         return train_loader
