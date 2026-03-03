@@ -292,6 +292,7 @@ class NS2Trainer(TTSTrainer):
                     batches, drop_last=False, use_random_sampler=True
                 ),
                 pin_memory=self.cfg.train.dataloader.pin_memory,
+                persistent_workers=self.cfg.train.dataloader.persistent_workers,
             )
             self.accelerator.wait_for_everyone()
 
@@ -318,6 +319,7 @@ class NS2Trainer(TTSTrainer):
                 num_workers=self.cfg.train.dataloader.num_worker,
                 batch_sampler=VariableSampler(batches, drop_last=False),
                 pin_memory=self.cfg.train.dataloader.pin_memory,
+                persistent_workers=self.cfg.train.dataloader.persistent_workers,
             )
             self.accelerator.wait_for_everyone()
 
@@ -334,6 +336,7 @@ class NS2Trainer(TTSTrainer):
                 batch_size=self.cfg.train.batch_size,
                 num_workers=self.cfg.train.dataloader.num_worker,
                 pin_memory=self.cfg.train.dataloader.pin_memory,
+                persistent_workers=self.cfg.train.dataloader.persistent_workers,
             )
 
             valid_dataset = Dataset(self.cfg, self.cfg.dataset[0], is_valid=True)
@@ -346,6 +349,7 @@ class NS2Trainer(TTSTrainer):
                 batch_size=self.cfg.train.batch_size,
                 num_workers=self.cfg.train.dataloader.num_worker,
                 pin_memory=self.cfg.train.dataloader.pin_memory,
+                persistent_workers=self.cfg.train.dataloader.persistent_workers,
             )
             self.accelerator.wait_for_everyone()
 
