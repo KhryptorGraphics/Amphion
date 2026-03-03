@@ -443,6 +443,7 @@ class BaseTrainer:
                 ),
                 pin_memory=self.cfg.train.dataloader.pin_memory,
                 prefetch_factor=32,
+                persistent_workers=self.cfg.train.dataloader.num_worker > 0,
             )
             self.accelerator.wait_for_everyone()
 
@@ -467,6 +468,7 @@ class BaseTrainer:
                 batch_size=self.cfg.train.batch_size,
                 num_workers=self.cfg.train.dataloader.num_worker,
                 pin_memory=self.cfg.train.dataloader.pin_memory,
+                persistent_workers=self.cfg.train.dataloader.num_worker > 0,
             )
 
             valid_loader = None
