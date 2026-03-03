@@ -526,14 +526,14 @@ class ModelManager:
         """
         self.load_maskgct()
 
-        import librosa
+        from utils.audio_loading import load_audio
         import whisper
         import py3langid as langid
         from models.tts.maskgct.g2p.g2p_generation import g2p, chn_eng_g2p
 
         # Load audio at different sample rates
-        speech_16k = librosa.load(prompt_wav_path, sr=16000)[0]
-        speech_24k = librosa.load(prompt_wav_path, sr=24000)[0]
+        speech_16k, _ = load_audio(prompt_wav_path, sample_rate=16000)
+        speech_24k, _ = load_audio(prompt_wav_path, sample_rate=24000)
 
         # Load whisper if needed
         if self.maskgct_pipeline['whisper'] is None:
@@ -934,7 +934,7 @@ class ModelManager:
         """
         self.load_noro()
 
-        import librosa
+        from utils.audio_loading import load_audio
         from utils.mel import mel_spectrogram_torch
         from utils.f0 import get_f0_features_using_dio, interpolate
         from torch.nn.utils.rnn import pad_sequence
@@ -942,13 +942,13 @@ class ModelManager:
         cfg = self.noro_pipeline['config']
 
         # Load source audio at 16kHz
-        wav, _ = librosa.load(source_wav, sr=16000)
+        wav, _ = load_audio(source_wav, sample_rate=16000)
         wav = np.pad(wav, (0, 1600 - len(wav) % 1600))
         audio = torch.from_numpy(wav).float().to(self.device)
         audio = audio[None, :]
 
         # Load reference audio at 16kHz
-        ref_wav, _ = librosa.load(reference_wav, sr=16000)
+        ref_wav, _ = load_audio(reference_wav, sample_rate=16000)
         ref_wav = np.pad(ref_wav, (0, 200 - len(ref_wav) % 200))
         ref_audio = torch.from_numpy(ref_wav).float().to(self.device)
         ref_audio = ref_audio[None, :]
@@ -1000,11 +1000,12 @@ class ModelManager:
                 vocoder_sr = self.noro_pipeline['vocoder_config'].get('sampling_rate', 22050)
                 if vocoder_sr != 16000:
                     logger.info(f"Resampling from {vocoder_sr}Hz to 16000Hz...")
-                    audio_output = librosa.resample(
-                        audio_output,
-                        orig_sr=vocoder_sr,
-                        target_sr=16000
-                    )
+                    import torchaudio
+                    audio_output = torchaudio.functional.resample(
+                        torch.from_numpy(audio_output).float(),
+                        orig_freq=vocoder_sr,
+                        new_freq=16000,
+                    ).numpy()
 
                 return 16000, audio_output
             else:
@@ -1569,11 +1570,8 @@ class ModelManager:
             self.load_dualcodec_codec()
 
             # Load audio
-            audio, sr = sf.read(audio_path)
-            if sr != 16000:
-                import librosa
-                audio = librosa.resample(audio, orig_sr=sr, target_sr=16000)
-                sr = 16000
+            from utils.audio_loading import load_audio
+            audio, sr = load_audio(audio_path, sample_rate=16000)
 
             audio_tensor = torch.from_numpy(audio).float().to(self.device)
             if audio_tensor.ndim == 1:
@@ -1596,11 +1594,8 @@ class ModelManager:
             if hasattr(self, '_facodec_use_real') and self._facodec_use_real:
                 try:
                     # Load audio
-                    audio, sr = sf.read(audio_path)
-                    if sr != 16000:
-                        import librosa
-                        audio = librosa.resample(audio, orig_sr=sr, target_sr=16000)
-                        sr = 16000
+                    from utils.audio_loading import load_audio
+                    audio, sr = load_audio(audio_path, sample_rate=16000)
 
                     audio_tensor = torch.from_numpy(audio).float().to(self.facodec_model['device'])
                     if audio_tensor.ndim == 1:

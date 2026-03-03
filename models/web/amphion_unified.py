@@ -252,14 +252,14 @@ def maskgct_inference(
     progress(0.1, desc="Loading models...")
     model_manager.load_maskgct()
 
-    import librosa
+    from utils.audio_loading import load_audio
     import whisper
     import py3langid as langid
     from models.tts.maskgct.g2p.g2p_generation import g2p, chn_eng_g2p
 
     progress(0.2, desc="Processing audio...")
-    speech_16k = librosa.load(prompt_wav_path, sr=16000)[0]
-    speech_24k = librosa.load(prompt_wav_path, sr=24000)[0]
+    speech_16k, _ = load_audio(prompt_wav_path, sample_rate=16000)
+    speech_24k, _ = load_audio(prompt_wav_path, sample_rate=24000)
 
     # Detect language and get prompt text using Whisper
     progress(0.3, desc="Detecting language...")
