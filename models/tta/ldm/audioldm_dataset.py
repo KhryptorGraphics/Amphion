@@ -15,7 +15,7 @@ from models.base.base_dataset import (
     BaseTestDataset,
     BaseTestCollator,
 )
-import librosa
+from utils.audio_loading import load_audio
 
 from transformers import AutoTokenizer
 
@@ -81,8 +81,8 @@ class AudioLDMDataset(BaseOfflineDataset):
             single_feature["melspec"] = np.load(self.utt2melspec_path[utt])
 
         if self.cfg.preprocess.use_wav:
-            wav, sr = librosa.load(
-                self.utt2wav_path[utt], sr=16000
+            wav, sr = load_audio(
+                self.utt2wav_path[utt], sample_rate=16000
             )  # hard coding for 16KHz...
             single_feature["wav"] = wav
 
