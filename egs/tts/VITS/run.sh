@@ -55,7 +55,7 @@ while true; do
     --infer_speaker_name) shift; infer_speaker_name=$1 ; shift ;;
 
     --) shift ; break ;;
-    *) echo "Invalid option: $1" exit 1 ;;
+    *) echo "Invalid option: $1"; exit 1 ;;
   esac
 done
 
