@@ -5,11 +5,13 @@
 
 import random
 import torch
+import torchaudio
 from torch.nn.utils.rnn import pad_sequence
 import json
 import os
 import numpy as np
-import librosa
+
+from utils.audio_loading import load_audio
 
 from utils.data_utils import *
 from processors.acoustic_extractor import cal_normalized_mel, load_mel_extrema
@@ -268,7 +270,7 @@ class SVCOnlineDataset(BaseOnlineDataset):
         wav_path = utt_item["Path"]
 
         ### Use the highest sampling rate to load and randomly select ###
-        highest_sr_wav, _ = librosa.load(wav_path, sr=self.highest_sample_rate)
+        highest_sr_wav, _ = load_audio(wav_path, sample_rate=self.highest_sample_rate)
         highest_sr_wav = self.random_select(
             highest_sr_wav, utt_item["Duration"], wav_path
         )
@@ -277,13 +279,13 @@ class SVCOnlineDataset(BaseOnlineDataset):
         for sr in self.all_sample_rates:
             # Resample to the required sample rate
             if sr != self.highest_sample_rate:
-                wav_sr = librosa.resample(
-                    highest_sr_wav, orig_sr=self.highest_sample_rate, target_sr=sr
+                wav_sr = torchaudio.functional.resample(
+                    torch.as_tensor(highest_sr_wav, dtype=torch.float32),
+                    self.highest_sample_rate,
+                    sr,
                 )
             else:
-                wav_sr = highest_sr_wav
-
-            wav_sr = torch.as_tensor(wav_sr, dtype=torch.float32)
+                wav_sr = torch.as_tensor(highest_sr_wav, dtype=torch.float32)
             single_feature["wav_{}".format(sr)] = wav_sr
             single_feature["wav_{}_len".format(sr)] = len(wav_sr)
 
