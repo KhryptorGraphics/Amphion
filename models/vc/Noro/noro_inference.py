@@ -6,10 +6,10 @@
 import argparse
 import torch
 import numpy as np
-import librosa
 from safetensors.torch import load_model
 from tqdm import tqdm
 import os
+from utils.audio_loading import load_audio
 from utils.util import load_config
 from models.vc.Noro.noro_trainer import NoroTrainer
 from models.vc.Noro.noro_model import Noro_VCmodel
@@ -90,12 +90,12 @@ def main():
     wav_path = args.source_path
     ref_wav_path = args.ref_path
 
-    wav, _ = librosa.load(wav_path, sr=16000)
+    wav, _ = load_audio(wav_path, sample_rate=16000)
     wav = np.pad(wav, (0, 1600 - len(wav) % 1600))
     audio = torch.from_numpy(wav).to(args.local_rank)
     audio = audio[None, :]
 
-    ref_wav, _ = librosa.load(ref_wav_path, sr=16000)
+    ref_wav, _ = load_audio(ref_wav_path, sample_rate=16000)
     ref_wav = np.pad(ref_wav, (0, 200 - len(ref_wav) % 200))
     ref_audio = torch.from_numpy(ref_wav).to(args.local_rank)
     ref_audio = ref_audio[None, :]
