@@ -6,12 +6,12 @@
 # This code is modified from https://github.com/svc-develop-team/so-vits-svc/blob/4.0/preprocess_hubert_f0.py
 
 import os
-import librosa
 import torch
 import numpy as np
 from fairseq import checkpoint_utils
 from tqdm import tqdm
-import torch
+
+from utils.audio_loading import load_audio_tensor
 
 
 def load_hubert_model(hps):
@@ -56,9 +56,9 @@ def content_vector_encoder(model, audio_path, default_sampling_rate=16000):
     # content vector default sr: 16000
     """
 
-    wav16k, sr = librosa.load(audio_path, sr=default_sampling_rate)
+    wav16k, sr = load_audio_tensor(audio_path, sample_rate=default_sampling_rate)
     device = next(model.parameters()).device
-    wav16k = torch.from_numpy(wav16k).to(device)
+    wav16k = wav16k.to(device)
 
     # (1, 256, frame_len)
     content_feature = get_hubert_content(model, wav_16k_tensor=wav16k)
