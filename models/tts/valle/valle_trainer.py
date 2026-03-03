@@ -296,6 +296,7 @@ class VALLETrainer(TTSTrainer):
                 batches, drop_last=False, use_random_sampler=True
             ),
             pin_memory=False,
+            persistent_workers=self.cfg.train.dataloader.persistent_workers,
         )
         self.accelerator.wait_for_everyone()
 
@@ -319,6 +320,7 @@ class VALLETrainer(TTSTrainer):
             num_workers=self.cfg.train.dataloader.num_worker,
             batch_sampler=VariableSampler(batches, drop_last=False),
             pin_memory=False,
+            persistent_workers=self.cfg.train.dataloader.persistent_workers,
         )
         self.accelerator.wait_for_everyone()
 
