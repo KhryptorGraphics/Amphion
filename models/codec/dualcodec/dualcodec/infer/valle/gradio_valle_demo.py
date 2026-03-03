@@ -15,6 +15,7 @@ from dualcodec.utils.utils_infer import (
     speed,
     preprocess_ref_audio_text,
     remove_silence_for_generated_wav,
+    save_spectrogram,
 )
 from dualcodec.infer.valle.utils_valle_infer import (
     load_dualcodec_valle_ar_12hzv1,
@@ -50,11 +51,11 @@ def process_tts(
 ):
     if not ref_audio:
         gr.Warning("Please provide reference audio.")
-        return None, None
+        return None, None, None
 
     if not gen_text.strip():
         gr.Warning("Please enter text to generate.")
-        return None, None
+        return None, None, None
 
     # Preprocess reference audio and text
     ref_audio, ref_text = preprocess_ref_audio_text(ref_audio, ref_text)
@@ -83,7 +84,15 @@ def process_tts(
             final_wave, _ = torchaudio.load(f.name)
             final_wave = final_wave.squeeze().cpu().numpy()
 
-    return (final_sample_rate, final_wave) if final_wave is not None else None
+    # Save the spectrogram
+    spectrogram_path = None
+    if combined_spectrogram is not None:
+        with tempfile.NamedTemporaryFile(suffix=".png", delete=False) as tmp_spectrogram:
+            spectrogram_path = tmp_spectrogram.name
+            save_spectrogram(combined_spectrogram, spectrogram_path)
+
+    audio_output = (final_sample_rate, final_wave) if final_wave is not None else None
+    return audio_output, spectrogram_path, ref_text
 
 
 def get_theme_css(theme):
@@ -200,6 +209,13 @@ with gr.Blocks(title="Valle TTS Demo", theme=gr.themes.Soft()) as demo:
                 type="numpy",
                 format="wav",
             )
+            output_spectrogram = gr.Image(
+                label="Spectrogram",
+            )
+            ref_text_out = gr.Textbox(
+                label="Reference Text (Transcribed)",
+                interactive=False,
+            )
 
     # Theme toggle event - uses CSS injection for reliable cross-version dark mode
     theme_toggle.click(
@@ -222,7 +238,7 @@ with gr.Blocks(title="Valle TTS Demo", theme=gr.themes.Soft()) as demo:
             top_p,
             repeat_penalty,
         ],
-        outputs=[output_audio],
+        outputs=[output_audio, output_spectrogram, ref_text_out],
     )
 
 if __name__ == "__main__":
