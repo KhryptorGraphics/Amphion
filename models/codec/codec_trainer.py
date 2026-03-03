@@ -73,6 +73,7 @@ class CodecTrainer:
             sampler=sampler,
             num_workers=self.cfg.train.dataloader.num_worker,
             pin_memory=self.cfg.train.dataloader.pin_memory,
+            persistent_workers=self.cfg.train.dataloader.persistent_workers,
         )
         return train_loader, None
 
