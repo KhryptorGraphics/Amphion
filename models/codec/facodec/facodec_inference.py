@@ -16,8 +16,9 @@ from .modules.commons import *
 import time
 
 import torchaudio
-import librosa
 from collections import OrderedDict
+
+from utils.audio_loading import load_audio_tensor
 
 
 class FAcodecInference(object):
@@ -51,8 +52,8 @@ class FAcodecInference(object):
 
     @torch.no_grad()
     def inference(self, source, output_dir):
-        source_audio = librosa.load(source, sr=self.cfg.preprocess_params.sr)[0]
-        source_audio = torch.tensor(source_audio).unsqueeze(0).float().to(self.device)
+        source_audio = load_audio_tensor(source, sample_rate=self.cfg.preprocess_params.sr)[0]
+        source_audio = source_audio.unsqueeze(0).to(self.device)
 
         z = self.model.encoder(source_audio[None, ...].to(self.device).float())
         (
@@ -88,13 +89,11 @@ class FAcodecInference(object):
 
     @torch.no_grad()
     def voice_conversion(self, source, reference, output_dir):
-        source_audio = librosa.load(source, sr=self.cfg.preprocess_params.sr)[0]
-        source_audio = torch.tensor(source_audio).unsqueeze(0).float().to(self.device)
+        source_audio = load_audio_tensor(source, sample_rate=self.cfg.preprocess_params.sr)[0]
+        source_audio = source_audio.unsqueeze(0).to(self.device)
 
-        reference_audio = librosa.load(reference, sr=self.cfg.preprocess_params.sr)[0]
-        reference_audio = (
-            torch.tensor(reference_audio).unsqueeze(0).float().to(self.device)
-        )
+        reference_audio = load_audio_tensor(reference, sample_rate=self.cfg.preprocess_params.sr)[0]
+        reference_audio = reference_audio.unsqueeze(0).to(self.device)
 
         z = self.model.encoder(source_audio[None, ...].to(self.device).float())
         z, quantized, commitment_loss, codebook_loss, timbre = self.model.quantizer(
