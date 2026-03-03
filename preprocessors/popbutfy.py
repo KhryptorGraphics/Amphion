@@ -5,13 +5,12 @@
 
 import os
 import json
-import torchaudio
-import librosa
 from tqdm import tqdm
 from glob import glob
 from collections import defaultdict
 
 from utils.util import has_existed
+from utils.audio_loading import load_audio
 from preprocessors import GOLDEN_TEST_SAMPLES
 
 
@@ -113,12 +112,8 @@ def main(output_path, dataset_path):
                 res["Path"] = os.path.join(popbutfy_dir, res["Path"])
                 assert os.path.exists(res["Path"])
 
-                if res["Path"].split("/")[-1].split(".")[-1] == "wav":
-                    waveform, sample_rate = torchaudio.load(res["Path"])
-                    duration = waveform.size(-1) / sample_rate
-                else:
-                    waveform, sample_rate = librosa.load(res["Path"])
-                    duration = waveform.shape[-1] / sample_rate
+                waveform, sample_rate = load_audio(res["Path"])
+                duration = len(waveform) / sample_rate
                 res["Duration"] = duration
 
                 if ([singer, chosen_song]) in test_songs:

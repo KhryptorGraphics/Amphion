@@ -13,8 +13,7 @@ import random
 
 from utils.util import has_existed
 from text import _clean_text
-import librosa
-import soundfile as sf
+from utils.audio_loading import load_audio
 from scipy.io import wavfile
 
 from pathlib import Path
@@ -142,7 +141,7 @@ def prepare_align(dataset, dataset_path, cfg, output_path):
             wav_path = os.path.join(in_dir, "wavs", "{}.wav".format(base_name))
             if os.path.exists(wav_path):
                 os.makedirs(os.path.join(out_dir, speaker), exist_ok=True)
-                wav, _ = librosa.load(wav_path, sampling_rate)
+                wav, _ = load_audio(wav_path, sample_rate=sampling_rate)
                 wav = wav / max(abs(wav)) * max_wav_value
 
                 wavfile.write(
