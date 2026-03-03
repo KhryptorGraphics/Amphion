@@ -13,7 +13,7 @@ import soundfile as sf
 import os
 
 import numpy as np
-import librosa
+from utils.audio_loading import load_audio
 from models.codec.kmeans.repcodec_model import RepCodec
 from models.tts.maskgct.maskgct_s2a import MaskGCT_S2A
 from models.tts.maskgct.maskgct_t2s import MaskGCT_T2S
@@ -328,8 +328,8 @@ def maskgct_inference(
     rescale_cfg_s2a=0.75,
     device=torch.device("cuda:0"),
 ):
-    speech_16k = librosa.load(prompt_speech_path, sr=16000)[0]
-    speech = librosa.load(prompt_speech_path, sr=24000)[0]
+    speech_16k, _ = load_audio(prompt_speech_path, sample_rate=16000)
+    speech, _ = load_audio(prompt_speech_path, sample_rate=24000)
     print("Audio loaded.")
 
     prompt_language = detect_speech_language(prompt_speech_path)

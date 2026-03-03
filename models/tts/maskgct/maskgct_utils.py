@@ -7,7 +7,7 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 import numpy as np
-import librosa
+from utils.audio_loading import load_audio
 from utils.util import load_config
 from tqdm import tqdm
 
@@ -249,8 +249,8 @@ class MaskGCT_Inference_Pipeline:
         cfg_s2a=2.5,
         rescale_cfg_s2a=0.75,
     ):
-        speech_16k = librosa.load(prompt_speech_path, sr=16000)[0]
-        speech = librosa.load(prompt_speech_path, sr=24000)[0]
+        speech_16k, _ = load_audio(prompt_speech_path, sample_rate=16000)
+        speech, _ = load_audio(prompt_speech_path, sample_rate=24000)
 
         combine_semantic_code, _ = self.text2semantic(
             speech_16k,
