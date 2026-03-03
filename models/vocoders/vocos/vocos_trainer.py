@@ -400,6 +400,7 @@ class VocosTrainer(TTSTrainer):
                 ),
                 pin_memory=self.cfg.train.dataloader.pin_memory,
                 prefetch_factor=32,
+                persistent_workers=True,
             )
             self.accelerator.wait_for_everyone()
 
@@ -425,6 +426,7 @@ class VocosTrainer(TTSTrainer):
                 num_workers=self.cfg.train.dataloader.num_worker,
                 pin_memory=self.cfg.train.dataloader.pin_memory,
                 prefetch_factor=32,
+                persistent_workers=True,
             )
 
             valid_loader = None
