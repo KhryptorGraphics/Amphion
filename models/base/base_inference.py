@@ -17,6 +17,7 @@ from models.vocoders.vocoder_inference import synthesis
 from torch.utils.data import DataLoader
 from utils.util import set_all_random_seed
 from utils.util import load_config
+from utils.progress_tracker import ProgressTracker
 
 
 def parse_vocoder(vocoder_dir):
@@ -110,7 +111,7 @@ class BaseInference(object):
     def inference_each_batch(self, batch_data):
         raise NotImplementedError
 
-    def inference_for_batches(self, args, target_speaker=None):
+    def inference_for_batches(self, args, target_speaker=None, progress_callback=None):
         ###### Construct test_batch ######
         loader = self.build_testdata_loader(args, target_speaker)
 
@@ -123,6 +124,9 @@ class BaseInference(object):
         )
         self.model.eval()
 
+        # Initialize progress tracker when a callback is provided
+        tracker = ProgressTracker(n_batch) if progress_callback is not None else None
+
         ###### Inference for each batch ######
         pred_res = []
         with torch.no_grad():
@@ -134,6 +138,11 @@ class BaseInference(object):
                 y_pred, stats = self.inference_each_batch(batch_data)
 
                 pred_res += y_pred
+
+                # Report progress via callback after each batch
+                if tracker is not None:
+                    tracker.update(1)
+                    progress_callback(tracker.current, tracker.total, tracker.get_status())
 
         return pred_res
 
