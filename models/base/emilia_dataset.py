@@ -3,9 +3,9 @@
 # This source code is licensed under the MIT license found in the
 # LICENSE file in the root directory of this source tree.
 
-import librosa
 import torch
 import json
+from utils.audio_loading import load_audio
 import numpy as np
 import logging
 import pickle
@@ -264,7 +264,7 @@ class EmiliaDataset(torch.utils.data.Dataset):
         if file_bytes is not None and meta is not None:
             buffer = file_bytes
             try:
-                speech, sr = librosa.load(buffer, sr=self.cfg.preprocess.sample_rate)
+                speech, sr = load_audio(buffer, sample_rate=self.cfg.preprocess.sample_rate)
                 if (
                     len(speech)
                     > self.duration_setting["max"] * self.cfg.preprocess.sample_rate
