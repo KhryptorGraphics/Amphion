@@ -7,12 +7,13 @@ import logging
 import json
 import parselmouth
 import numpy as np
-import librosa
+import torchaudio
 import random
 import torch
 from torch.nn.utils.rnn import pad_sequence
 from librosa.feature import chroma_stft
 
+from utils.audio_loading import load_audio
 from utils.f0 import f0_to_coarse, interpolate
 from models.vc.base.vc_emilia_dataset import VCEmiliaDataset
 
@@ -150,8 +151,8 @@ class CocoDataset(VCEmiliaDataset):
 
         single_features = dict()
         try:
-            speech, _ = librosa.load(item["Path"], sr=self.sample_rate)
-        except:
+            speech, _ = load_audio(item["Path"], sample_rate=self.sample_rate)
+        except Exception:
             raise Exception("Failed to load file {}".format(item["Path"]))
 
         # pad the speech to the multiple of hop_size
@@ -169,9 +170,9 @@ class CocoDataset(VCEmiliaDataset):
         for tgt_sr in self.all_sample_rates:
             if tgt_sr != self.sample_rate:
                 assert tgt_sr < self.sample_rate
-                tgt_speech = librosa.resample(
-                    speech, orig_sr=self.sample_rate, target_sr=tgt_sr
-                )
+                tgt_speech = torchaudio.functional.resample(
+                    torch.from_numpy(speech), self.sample_rate, tgt_sr
+                ).numpy()
             else:
                 tgt_speech = speech
             single_features.update(
