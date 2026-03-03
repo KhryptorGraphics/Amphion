@@ -6,7 +6,8 @@
 import numpy as np
 import scipy.signal as sig
 import copy
-import librosa
+
+from utils.audio_loading import load_audio
 
 
 def bandpower(ps, mode="time"):
@@ -79,10 +80,7 @@ def getHarmonics(fund, sr, nHarmonics=6, aliased=False):
 
 def extract_snr(audio, sr=None):
     """Extract Signal-to-Noise Ratio for a given audio."""
-    if sr != None:
-        audio, _ = librosa.load(audio, sr=sr)
-    else:
-        audio, sr = librosa.load(audio, sr=sr)
+    audio, sr = load_audio(audio, sample_rate=sr)
     faxis, ps = sig.periodogram(
         audio, fs=sr, window=("kaiser", 38)
     )  # get periodogram, parametrized like in matlab
