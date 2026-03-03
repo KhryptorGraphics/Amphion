@@ -6,10 +6,10 @@
 import os
 import torch
 import numpy as np
-import librosa
 
 import safetensors
 from utils.util import load_config
+from utils.audio_loading import load_audio
 
 from transformers import SeamlessM4TFeatureExtractor
 
@@ -91,8 +91,8 @@ class AudioTokenizer:
         speech_path: str = None,
     ):
         if speech_path is not None:
-            speech_16k = librosa.load(speech_path, sr=16000)[0]
-            speech = librosa.load(speech_path, sr=24000)[0]
+            speech_16k = load_audio(speech_path, sample_rate=16000)[0]
+            speech = load_audio(speech_path, sample_rate=24000)[0]
         semantic_code, rec_feat = self.wav2semantic(speech_16k)
         acoustic_code = self.wav2acoustic(speech)
         return semantic_code, rec_feat, acoustic_code

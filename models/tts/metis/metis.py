@@ -9,8 +9,8 @@ import numpy as np
 import torch
 import torch.nn.functional as F
 import safetensors
-import librosa
 
+from utils.audio_loading import load_audio
 from models.tts.metis.audio_tokenizer import AudioTokenizer
 from models.tts.maskgct.maskgct_utils import build_t2s_model, build_s2a_model, g2p_
 from models.tts.metis.metis_model import MetisStage1
@@ -257,13 +257,13 @@ class Metis:
                 halton_scheduler,
             )
         elif model_type == "se":
-            source_speech_16k = librosa.load(source_speech_path, sr=16000)[0]
+            source_speech_16k = load_audio(source_speech_path, sample_rate=16000)[0]
             combine_semantic_code = self.speech2semantic_wo_prompt(
                 source_speech_16k, n_timesteps, cfg=cfg
             )
         elif model_type in ["vc", "tse"]:
-            source_speech_16k = librosa.load(source_speech_path, sr=16000)[0]
-            prompt_speech_16k = librosa.load(prompt_speech_path, sr=16000)[0]
+            source_speech_16k = load_audio(source_speech_path, sample_rate=16000)[0]
+            prompt_speech_16k = load_audio(prompt_speech_path, sample_rate=16000)[0]
             combine_semantic_code = self.speech2semantic_w_prompt(
                 source_speech_16k,
                 prompt_speech_16k,
