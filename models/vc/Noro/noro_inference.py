@@ -8,6 +8,7 @@ import torch
 import numpy as np
 import librosa
 from safetensors.torch import load_model
+from tqdm import tqdm
 import os
 from utils.util import load_config
 from models.vc.Noro.noro_trainer import NoroTrainer
@@ -99,41 +100,60 @@ def main():
     ref_audio = torch.from_numpy(ref_wav).to(args.local_rank)
     ref_audio = ref_audio[None, :]
 
-    with torch.no_grad():
-        ref_mel = mel_spectrogram_torch(ref_audio, cfg)
-        ref_mel = ref_mel.transpose(1, 2).to(device=args.local_rank)
-        ref_mask = (
-            torch.ones(ref_mel.shape[0], ref_mel.shape[1]).to(args.local_rank).bool()
-        )
+    stages = [
+        "Extracting reference mel",
+        "Extracting content features",
+        "Extracting pitch features",
+        "Running diffusion inference",
+        "Saving output",
+    ]
+    with tqdm(total=len(stages), desc="Noro VC inference", unit="step") as pbar:
+        with torch.no_grad():
+            pbar.set_description("Extracting reference mel")
+            ref_mel = mel_spectrogram_torch(ref_audio, cfg)
+            ref_mel = ref_mel.transpose(1, 2).to(device=args.local_rank)
+            ref_mask = (
+                torch.ones(ref_mel.shape[0], ref_mel.shape[1]).to(args.local_rank).bool()
+            )
+            pbar.update(1)
 
-        _, content_feature = w2v.extract_content_features(audio)
-        content_feature = content_feature.to(device=args.local_rank)
+            pbar.set_description("Extracting content features")
+            _, content_feature = w2v.extract_content_features(audio)
+            content_feature = content_feature.to(device=args.local_rank)
+            pbar.update(1)
 
-        wav = audio.cpu().numpy()
-        wav = wav[0, :]
-        f0s = []
-        pitch_raw = get_f0_features_using_dio(wav, cfg.preprocess)
-        pitch_raw, _ = interpolate(pitch_raw)
-        frame_num = len(wav) // cfg.preprocess.hop_size
-        pitch_raw = torch.from_numpy(pitch_raw[:frame_num]).float()
-        f0s.append(pitch_raw)
-        pitch = pad_sequence(f0s, batch_first=True, padding_value=0).float()
-        pitch = (pitch - pitch.mean(dim=1, keepdim=True)) / (
-            pitch.std(dim=1, keepdim=True) + 1e-6
-        )
-        pitch = pitch.to(device=args.local_rank)
+            pbar.set_description("Extracting pitch features")
+            wav = audio.cpu().numpy()
+            wav = wav[0, :]
+            f0s = []
+            pitch_raw = get_f0_features_using_dio(wav, cfg.preprocess)
+            pitch_raw, _ = interpolate(pitch_raw)
+            frame_num = len(wav) // cfg.preprocess.hop_size
+            pitch_raw = torch.from_numpy(pitch_raw[:frame_num]).float()
+            f0s.append(pitch_raw)
+            pitch = pad_sequence(f0s, batch_first=True, padding_value=0).float()
+            pitch = (pitch - pitch.mean(dim=1, keepdim=True)) / (
+                pitch.std(dim=1, keepdim=True) + 1e-6
+            )
+            pitch = pitch.to(device=args.local_rank)
+            pbar.update(1)
 
-        x0 = model.inference(
-            content_feature=content_feature,
-            pitch=pitch,
-            x_ref=ref_mel,
-            x_ref_mask=ref_mask,
-            inference_steps=200,
-            sigma=1.2,
-        )  # 150-300 0.95-1.5
+            pbar.set_description("Running diffusion inference")
+            x0 = model.inference(
+                content_feature=content_feature,
+                pitch=pitch,
+                x_ref=ref_mel,
+                x_ref_mask=ref_mask,
+                inference_steps=200,
+                sigma=1.2,
+            )  # 150-300 0.95-1.5
+            pbar.update(1)
 
-        recon_path = f"{args.output_dir}/recon_mel.npy"
-        np.save(recon_path, x0.transpose(1, 2).detach().cpu().numpy())
+            pbar.set_description("Saving output")
+            recon_path = f"{args.output_dir}/recon_mel.npy"
+            np.save(recon_path, x0.transpose(1, 2).detach().cpu().numpy())
+            pbar.update(1)
+
         print(f"Mel spectrogram saved to: {recon_path}")
 
 

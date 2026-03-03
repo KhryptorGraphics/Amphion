@@ -64,7 +64,13 @@ class FastSpeech2Inference(TTSInference):
     @torch.inference_mode()
     def inference_for_batches(self):
         y_pred = []
-        for i, batch in tqdm(enumerate(self.test_dataloader)):
+        total_batches = len(self.test_dataloader)
+        for i, batch in tqdm(
+            enumerate(self.test_dataloader),
+            total=total_batches,
+            desc="Batch inference",
+            unit="batch",
+        ):
             y_pred, mel_lens, _ = self._inference_each_batch(batch)
             y_ls = y_pred.chunk(self.test_batch_size)
             tgt_ls = mel_lens.chunk(self.test_batch_size)

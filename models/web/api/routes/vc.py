@@ -14,6 +14,8 @@ import soundfile as sf
 
 from ..models.manager import ModelManager
 from ..upload_validation import validate_audio_file
+from ..websocket.progress import manager as ws_manager
+from utils.progress_tracker import ProgressTracker
 
 logger = logging.getLogger(__name__)
 router = APIRouter()
@@ -256,7 +258,8 @@ async def noro_voice_conversion(
     source_audio: UploadFile = File(..., description="Source audio to convert"),
     reference_audio: UploadFile = File(..., description="Target voice reference audio"),
     inference_steps: int = Form(200, description="Number of diffusion steps (150-300)"),
-    sigma: float = Form(1.2, description="Sigma parameter (0.95-1.5)")
+    sigma: float = Form(1.2, description="Sigma parameter (0.95-1.5)"),
+    task_id: Optional[str] = Form(None, description="Optional task ID for WebSocket progress updates"),
 ):
     """
     Convert voice using Noro (noise-robust) model.
@@ -293,12 +296,45 @@ async def noro_voice_conversion(
     try:
         logger.info(f"Noro VC request (steps={inference_steps}, sigma={sigma})")
 
+        # Send initial progress via WebSocket if task_id provided
+        noro_stages = [
+            "Extracting reference mel",
+            "Extracting content features",
+            "Extracting pitch features",
+            "Running diffusion inference",
+            "Saving output",
+        ]
+        tracker = ProgressTracker(total=len(noro_stages))
+        if task_id:
+            status = tracker.get_status()
+            await ws_manager.send_progress(
+                task_id,
+                progress=status["progress"],
+                message="Starting Noro VC inference",
+                stage="start",
+                eta_seconds=status["eta_seconds"],
+                eta_formatted=status["eta_formatted"],
+            )
+
         sample_rate, audio_data = manager.noro_inference(
             source_wav=tmp_src_path,
             reference_wav=tmp_ref_path,
             inference_steps=inference_steps,
             sigma=sigma
         )
+
+        # Send completion progress via WebSocket if task_id provided
+        if task_id:
+            tracker.set_current(len(noro_stages))
+            status = tracker.get_status()
+            await ws_manager.send_progress(
+                task_id,
+                progress=status["progress"],
+                message="Inference complete",
+                stage="inference_done",
+                eta_seconds=status["eta_seconds"],
+                eta_formatted=status["eta_formatted"],
+            )
 
         # Save output
         output_path = f"/home/kp/repo2/Amphion/output/web/noro_{os.urandom(8).hex()}.wav"
@@ -308,6 +344,9 @@ async def noro_voice_conversion(
         background_tasks.add_task(cleanup_file, tmp_src_path)
         background_tasks.add_task(cleanup_file, tmp_ref_path)
         background_tasks.add_task(cleanup_file, output_path)
+
+        if task_id:
+            await ws_manager.send_complete(task_id)
 
         return FileResponse(
             output_path,
@@ -319,6 +358,8 @@ async def noro_voice_conversion(
         cleanup_file(tmp_src_path)
         cleanup_file(tmp_ref_path)
         logger.error(f"Noro model not available: {e}")
+        if task_id:
+            await ws_manager.send_error(task_id, "Noro model not available. Checkpoint needs to be downloaded.")
         raise HTTPException(
             status_code=503,
             detail="Noro model not available. Checkpoint needs to be downloaded."
@@ -327,4 +368,6 @@ async def noro_voice_conversion(
         cleanup_file(tmp_src_path)
         cleanup_file(tmp_ref_path)
         logger.error(f"Noro conversion error: {e}")
+        if task_id:
+            await ws_manager.send_error(task_id, str(e))
         raise HTTPException(status_code=500, detail=str(e))

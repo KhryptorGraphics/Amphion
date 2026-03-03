@@ -15,6 +15,7 @@ import json5
 import numpy as np
 import torch
 from accelerate.logging import get_logger
+from tqdm import tqdm
 from torch.utils.data import DataLoader
 
 from models.vocoders.vocoder_inference import synthesis
@@ -128,7 +129,13 @@ class BaseInference(object):
 
     @torch.inference_mode()
     def inference(self):
-        for i, batch in enumerate(self.test_dataloader):
+        total_batches = len(self.test_dataloader)
+        for i, batch in tqdm(
+            enumerate(self.test_dataloader),
+            total=total_batches,
+            desc="Batch inference",
+            unit="batch",
+        ):
             y_pred = self._inference_each_batch(batch).cpu()
 
             # Judge whether the min-max normliazation is used

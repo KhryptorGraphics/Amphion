@@ -333,7 +333,13 @@ class VocoderInference(object):
 
     def inference(self):
         """Inference via batches"""
-        for i, batch in tqdm(enumerate(self.test_dataloader)):
+        total_batches = len(self.test_dataloader)
+        for i, batch in tqdm(
+            enumerate(self.test_dataloader),
+            total=total_batches,
+            desc="Vocoder synthesis",
+            unit="batch",
+        ):
             if self.cfg.preprocess.use_frame_pitch:
                 audio_pred = _vocoder_forward_funcs[self.cfg.model.generator](
                     self.cfg,

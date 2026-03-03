@@ -36,7 +36,15 @@ class ConnectionManager:
                 del self.active_connections[task_id]
         logger.info(f"Client disconnected from task {task_id}")
 
-    async def send_progress(self, task_id: str, progress: float, message: str, stage: str = ""):
+    async def send_progress(
+        self,
+        task_id: str,
+        progress: float,
+        message: str,
+        stage: str = "",
+        eta_seconds: float = None,
+        eta_formatted: str = None,
+    ):
         """
         Send progress update to all clients watching a task.
 
@@ -45,17 +53,22 @@ class ConnectionManager:
             progress: Progress percentage (0-100)
             message: Status message
             stage: Current processing stage
+            eta_seconds: Estimated seconds remaining (from ProgressTracker)
+            eta_formatted: Human-readable ETA string (e.g., "5m 30s")
         """
         if task_id in self.active_connections:
             dead_connections = set()
+            payload = {
+                "task_id": task_id,
+                "progress": progress,
+                "message": message,
+                "stage": stage,
+                "eta_seconds": eta_seconds,
+                "eta_formatted": eta_formatted,
+            }
             for connection in self.active_connections[task_id]:
                 try:
-                    await connection.send_json({
-                        "task_id": task_id,
-                        "progress": progress,
-                        "message": message,
-                        "stage": stage
-                    })
+                    await connection.send_json(payload)
                 except Exception as e:
                     logger.error(f"Error sending to client: {e}")
                     dead_connections.add(connection)
