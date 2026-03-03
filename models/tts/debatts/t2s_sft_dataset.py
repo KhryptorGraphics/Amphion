@@ -5,8 +5,8 @@
 
 from cmath import inf
 import io
-import librosa
 import torch
+import torchaudio
 import json
 import tqdm
 import numpy as np
@@ -23,6 +23,7 @@ import concurrent.futures
 from pathlib import Path
 from transformers import SeamlessM4TFeatureExtractor
 from transformers import Wav2Vec2BertModel
+from utils.audio_loading import load_audio
 
 os.chdir("./models/tts/debatts")
 import sys
@@ -113,7 +114,7 @@ class T2SDataset(torch.utils.data.Dataset):
 
     def __getitem__(self, idx):
         wav_path = self.wav_paths[idx]
-        speech, sr = librosa.load(wav_path, sr=self.cfg.preprocess.sample_rate)
+        speech, sr = load_audio(wav_path, sample_rate=self.cfg.preprocess.sample_rate)
         speech = np.pad(
             speech,
             (
@@ -125,9 +126,9 @@ class T2SDataset(torch.utils.data.Dataset):
         )
         # resample the speech to 16k for feature extraction
         if self.cfg.preprocess.sample_rate != 16000:
-            speech_16k = librosa.resample(
-                speech, orig_sr=self.cfg.preprocess.sample_rate, target_sr=16000
-            )
+            speech_16k = torchaudio.functional.resample(
+                torch.from_numpy(speech), self.cfg.preprocess.sample_rate, 16000
+            ).numpy()
         else:
             speech_16k = speech
         inputs = self.processor(speech_16k, sampling_rate=16000)
@@ -136,8 +137,8 @@ class T2SDataset(torch.utils.data.Dataset):
         attention_mask = inputs["attention_mask"][0]
 
         prompt0_wav_path = self.prompt0_paths[idx]  # Get prompt0 path
-        speech_prompt0, sr_prompt0 = librosa.load(
-            prompt0_wav_path, sr=self.cfg.preprocess.sample_rate
+        speech_prompt0, sr_prompt0 = load_audio(
+            prompt0_wav_path, sample_rate=self.cfg.preprocess.sample_rate
         )
         speech_prompt0 = np.pad(
             speech_prompt0,
@@ -150,9 +151,11 @@ class T2SDataset(torch.utils.data.Dataset):
         )
         # resample the speech to 16k for feature extraction
         if self.cfg.preprocess.sample_rate != 16000:
-            speech_16k_prompt0 = librosa.resample(
-                speech_prompt0, orig_sr=self.cfg.preprocess.sample_rate, target_sr=16000
-            )
+            speech_16k_prompt0 = torchaudio.functional.resample(
+                torch.from_numpy(speech_prompt0),
+                self.cfg.preprocess.sample_rate,
+                16000,
+            ).numpy()
         else:
             speech_16k_prompt0 = speech_prompt0
 
