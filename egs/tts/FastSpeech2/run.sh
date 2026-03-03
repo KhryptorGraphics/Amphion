@@ -51,7 +51,7 @@ while true; do
     --vocoder_dir) shift; vocoder_dir=$1 ; shift ;;
 
     --) shift ; break ;;
-    *) echo "Invalid option: $1" exit 1 ;;
+    *) echo "Invalid option: $1"; exit 1 ;;
   esac
 done
 
