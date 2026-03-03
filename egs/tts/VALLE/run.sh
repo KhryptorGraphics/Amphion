@@ -60,7 +60,7 @@ while true; do
     --resume_type) shift; resume_type=$1 ; shift ;;
 
     --) shift ; break ;;
-    *) echo "Invalid option: $1" exit 1 ;;
+    *) echo "Invalid option: $1"; exit 1 ;;
   esac
 done
 
