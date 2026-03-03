@@ -48,7 +48,7 @@ while true; do
     --infer_vocoder_dir) shift; infer_vocoder_dir=$1 ; shift ;;
 
     --) shift ; break ;;
-    *) echo "Invalid option: $1" exit 1 ;;
+    *) echo "Invalid option: $1"; exit 1 ;;
   esac
 done
 
