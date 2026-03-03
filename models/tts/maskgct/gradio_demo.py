@@ -373,6 +373,14 @@ def inference(
     target_len,
     n_timesteps,
 ):
+    if not prompt_wav:
+        gr.Warning("Please provide reference audio.")
+        return None
+
+    if not target_text.strip():
+        gr.Warning("Please enter text to generate.")
+        return None
+
     print(f"===== New task submitted =====")
     global output_file_name_idx
     save_path = f"./output/output_{output_file_name_idx}.wav"
